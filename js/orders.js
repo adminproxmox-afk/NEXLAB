@@ -1,4 +1,5 @@
 import { getOrders } from "../api/orderService.js";
+import { isFirebaseConfigured } from "../api/firebaseAuth.js";
 const money = (value) => new Intl.NumberFormat("uk-UA").format(value) + " ₴";
 const date = (value) =>
   new Intl.DateTimeFormat("uk-UA", {
@@ -23,6 +24,11 @@ const statuses = {
 export async function initializeOrdersPage() {
   const root = document.querySelector("[data-orders]");
   if (!root) return;
+  if (isFirebaseConfigured()) {
+    root.innerHTML =
+      '<div class="empty-state"><span class="empty-mark">▣</span><h2>Історія замовлень поки недоступна</h2><p>Облікові записи вже працюють через Firebase. Для збереження замовлень магазину ще потрібна серверна частина.</p><a class="button button-primary" href="catalog.html">До каталогу ↗</a></div>';
+    return;
+  }
   const orders = await getOrders();
   if (!orders.length) {
     root.innerHTML =
