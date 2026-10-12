@@ -4,7 +4,6 @@ import { getOrders } from "../api/orderService.js";
 import { getMyProjects } from "../api/userProjectsService.js";
 import { getFavorites } from "./favorites.js";
 import { toast } from "./notifications.js";
-import { isFirebaseConfigured } from "../api/firebaseAuth.js";
 
 const safe = (value) =>
   String(value || "").replace(
@@ -41,14 +40,13 @@ export async function initializeProfile() {
   if (!root) return;
   const user = getCurrentUser();
   if (!user) return;
-  const serverDataAvailable = !isFirebaseConfigured();
-  const [orders, projects] = serverDataAvailable
-    ? await Promise.all([getOrders(user.id), getMyProjects(user.id)])
-    : [null, null];
+  const [orders, projects] = await Promise.all([
+    getOrders(),
+    getMyProjects(),
+  ]);
   const orderCount = orders?.length ?? "—";
   const projectCount = projects?.length ?? "—";
   root.innerHTML = `<div class="page-title"><p class="eyebrow">Особистий простір</p><h1>Мій профіль</h1><p>Керуй даними облікового запису та своїми проєктами.</p></div>
-    ${serverDataAvailable ? "" : '<p class="guide-notice" role="status">Профіль працює через Firebase. Історія замовлень і збережені проєкти з’являться після підключення серверної частини магазину.</p>'}
     <div class="profile-layout"><nav class="profile-nav"><a class="is-active" href="#account">Основна інформація</a><a href="orders.html">Мої замовлення <span>${orderCount}</span></a><a href="favorites.html">Обране <span>${getFavorites().length}</span></a><a href="my-projects.html">Мої проєкти <span>${projectCount}</span></a><a href="#settings">Налаштування</a></nav>
     <div class="profile-content"><section class="profile-overview" aria-label="Огляд профілю"><div><span>Замовлення</span><strong>${orderCount}</strong></div><div><span>Обране</span><strong>${getFavorites().length}</strong></div><div><span>Мої проєкти</span><strong>${projectCount}</strong></div></section><section class="profile-panel" id="account"><div class="profile-heading"><span class="profile-avatar">${safe(user.name.slice(0, 1).toUpperCase())}</span><div><p class="eyebrow">Обліковий запис NEXLAB</p><h2>${safe(user.name)}</h2></div></div><dl class="profile-facts"><div><dt>Електронна пошта</dt><dd>${safe(user.email)}</dd></div><div><dt>Дата реєстрації</dt><dd>${date(user.createdAt)}</dd></div><div><dt>Роль</dt><dd>${user.role === "admin" ? "Адміністратор" : "Користувач"}</dd></div></dl>
     <form class="profile-form" data-profile-form novalidate><h3>Основна інформація</h3><label>Ім’я<input name="name" value="${safe(user.name)}" autocomplete="name"><small class="field-error" data-error="name"></small></label><label>Електронна пошта<input name="email" type="email" value="${safe(user.email)}" autocomplete="email"><small class="field-error" data-error="email"></small></label><button class="button button-primary" type="submit">Зберегти зміни</button></form></section>

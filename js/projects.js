@@ -7,6 +7,7 @@ import { getProjectById } from "./projectService.js";
 import { getProducts } from "./productService.js";
 import { toast } from "./notifications.js";
 import { money, projectCover, safe } from "./project-ui.js";
+import { isFirebaseConfigured } from "../api/firebaseAuth.js";
 
 export async function initializeMyProjects() {
   const root = document.querySelector("[data-my-projects]");
@@ -52,7 +53,7 @@ export async function initializeMyProjects() {
         })
         .join("")}</div>`;
     } catch (error) {
-      root.innerHTML = `<div class="project-empty" role="alert"><h2>Не вдалося завантажити майстерню</h2><p>${error.status === 401 ? "Увійди до облікового запису, щоб переглянути збережені проєкти." : "Перевір підключення до сервера та спробуй ще раз."}</p><button class="button button-quiet" type="button" data-project-retry>Спробувати ще раз</button></div>`;
+      root.innerHTML = `<div class="project-empty" role="alert"><h2>Не вдалося завантажити майстерню</h2><p>${error.status === 401 || error.message === "UNAUTHENTICATED" ? "Увійди до облікового запису, щоб переглянути збережені проєкти." : isFirebaseConfigured() ? "Перевір доступ до Firebase та спробуй ще раз." : "Перевір підключення до сервера та спробуй ще раз."}</p><button class="button button-quiet" type="button" data-project-retry>Спробувати ще раз</button></div>`;
     }
   }
   root.addEventListener("change", async (event) => {

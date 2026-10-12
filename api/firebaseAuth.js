@@ -21,6 +21,10 @@ async function services() {
   return servicesPromise;
 }
 
+export async function getFirebaseServices() {
+  return services();
+}
+
 function mapError(error) {
   const codes = {
     "auth/email-already-in-use": "EMAIL_TAKEN",
@@ -146,6 +150,15 @@ export async function firebaseChangePassword({ currentPassword, newPassword }) {
     );
     await authSdk.reauthenticateWithCredential(user, credential);
     await authSdk.updatePassword(user, newPassword);
+  } catch (error) {
+    throw mapError(error);
+  }
+}
+
+export async function firebaseSendPasswordReset(email) {
+  try {
+    const { auth, authSdk } = await services();
+    await authSdk.sendPasswordResetEmail(auth, email);
   } catch (error) {
     throw mapError(error);
   }

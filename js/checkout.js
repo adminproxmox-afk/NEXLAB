@@ -9,6 +9,7 @@ import { refreshProducts } from "../api/productService.js";
 import { createOrder } from "../api/orderService.js";
 import { getCurrentUser } from "./session.js";
 import { shopConfig } from "./shop-config.js";
+import { isFirebaseConfigured } from "../api/firebaseAuth.js";
 const money = (value) => new Intl.NumberFormat("uk-UA").format(value) + " ₴";
 const safe = (value) =>
   String(value ?? "").replace(
@@ -50,7 +51,7 @@ export async function initializeCheckout(settings = shopConfig) {
   function render() {
     const items = getCart();
     summary.innerHTML = items.length
-      ? `<h2>Твоє замовлення</h2>${items.map((item) => `<div class="summary-row"><span>${safe(item.name)} × ${item.quantity}</span><strong>${money(item.price * item.quantity)}</strong></div>`).join("")}<div class="summary-row"><span>Знижка</span><span>− ${money(cartDiscount())}</span></div><div class="summary-row summary-total"><span>Товари до сплати</span><strong>${money(cartTotal())}</strong></div><p>${safe(settings.priceNote)} Доставку оплачуй за тарифом перевізника. Онлайн-оплата не підключена.</p><a class="text-link" href="cart.html">Повернутися до кошика</a>`
+      ? `<h2>Твоє замовлення</h2>${items.map((item) => `<div class="summary-row"><span>${safe(item.name)} × ${item.quantity}</span><strong>${money(item.price * item.quantity)}</strong></div>`).join("")}<div class="summary-row"><span>Знижка</span><span>− ${money(cartDiscount())}</span></div><div class="summary-row summary-total"><span>Товари до сплати</span><strong>${money(cartTotal())}</strong></div><p>${safe(settings.priceNote)} Доставку оплачуй за тарифом перевізника. Онлайн-оплата не підключена.</p>${isFirebaseConfigured() ? "<p>Це заявка на замовлення. Магазин перевірить актуальні ціни й наявність перед підтвердженням.</p>" : ""}<a class="text-link" href="cart.html">Повернутися до кошика</a>`
       : '<h2>Кошик порожній</h2><a class="button button-primary" href="catalog.html">До каталогу</a>';
     form.querySelector('button[type="submit"]').disabled = !items.length;
   }

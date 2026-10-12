@@ -1,5 +1,4 @@
 import { getOrders } from "../api/orderService.js";
-import { isFirebaseConfigured } from "../api/firebaseAuth.js";
 const money = (value) => new Intl.NumberFormat("uk-UA").format(value) + " ₴";
 const date = (value) =>
   new Intl.DateTimeFormat("uk-UA", {
@@ -24,11 +23,6 @@ const statuses = {
 export async function initializeOrdersPage() {
   const root = document.querySelector("[data-orders]");
   if (!root) return;
-  if (isFirebaseConfigured()) {
-    root.innerHTML =
-      '<div class="empty-state"><span class="empty-mark">▣</span><h2>Історія замовлень поки недоступна</h2><p>Облікові записи вже працюють через Firebase. Для збереження замовлень магазину ще потрібна серверна частина.</p><a class="button button-primary" href="catalog.html">До каталогу ↗</a></div>';
-    return;
-  }
   const orders = await getOrders();
   if (!orders.length) {
     root.innerHTML =
@@ -38,7 +32,7 @@ export async function initializeOrdersPage() {
   const created = new URLSearchParams(location.search).get("created");
   root.innerHTML =
     (orders.some((order) => order.id === created)
-      ? '<p class="guide-notice" role="status">Замовлення збережено. Воно очікує підтвердження магазину.</p>'
+      ? `<p class="guide-notice" role="status">Замовлення збережено. ${orders.find((order) => order.id === created)?.verificationRequired ? "Магазин перевірить ціни й наявність перед підтвердженням." : "Воно очікує підтвердження магазину."}</p>`
       : "") +
     `<div class="orders-list">${orders
       .map((order) => {

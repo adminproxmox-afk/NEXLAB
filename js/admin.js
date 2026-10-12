@@ -6,6 +6,20 @@ import {
   setShopSettings,
 } from "../api/productService.js";
 import { getCurrentUser, isAdmin } from "./session.js";
+import {
+  firebaseSendPasswordReset,
+  isFirebaseConfigured,
+} from "../api/firebaseAuth.js";
+import {
+  loadFirebaseAdminData,
+  removeFirebaseProduct,
+  removeFirebaseProject,
+  removeFirebaseReview,
+  saveFirebaseProduct,
+  saveFirebaseProject,
+  saveFirebaseSettings,
+  updateFirebaseOrderStatus,
+} from "../api/firebaseAdminService.js";
 
 const safe = (value) =>
   String(value ?? "").replace(
@@ -51,6 +65,7 @@ function orderCard(order, settings) {
     .join("");
   return `<article class="admin-order profile-panel" data-order-status="${safe(order.status)}" data-order-search="${safe(searchable)}"><div class="admin-order-heading"><div><p class="eyebrow">Замовлення · ${shortDate(order.date)}</p><h3 class="order-id">№ ${safe(order.id)}</h3></div><strong>${money(order.total)}</strong></div>
     <div class="admin-order-details"><p><strong>${safe(order.delivery.name)}</strong><br>${safe(order.delivery.phone)}</p><p>${safe(order.delivery.city)}, ${safe(order.delivery.address)}</p><p>${safe(settings.deliveryMethods.find((item) => item.id === order.delivery.carrier)?.name || order.delivery.carrier)} · ${safe(settings.paymentMethods.find((item) => item.id === order.delivery.payment)?.name || order.delivery.payment)}</p></div>
+    ${order.verificationRequired ? '<p class="guide-notice" role="note">Заявка з GitHub Pages: перед підтвердженням перевір ціни та залишки вручну.</p>' : ""}
     <details><summary>Склад замовлення (${order.items.length})</summary><ul class="admin-order-items">${items}</ul></details>
     <form class="admin-order-form" data-admin-order="${safe(order.id)}"><label>Статус<select name="status">${(transitions[order.status] || [order.status]).map((value) => `<option value="${value}" ${order.status === value ? "selected" : ""}>${labels[value] || safe(value)}</option>`).join("")}</select></label><button class="button button-quiet" type="submit" ${order.status === "returned" ? "disabled" : ""}>Зберегти статус</button><span role="status" data-admin-status></span>${order.status === "delivered" ? "<small>Позначай повернення лише після фактичного отримання товару.</small>" : ""}</form>
   </article>`;
@@ -132,14 +147,21 @@ export async function initializeAdmin() {
     errorBox.hidden = true;
     root.querySelector("[data-admin-refresh]").disabled = true;
     try {
-      const [products, { orders }, { reviews }, { users }, { settings }, { projects }] = await Promise.all([
-        getProducts(),
-        request("admin/orders"),
-        request("admin/reviews"),
-        request("admin/users"),
-        request("admin/settings"),
-        request("admin/projects"),
-      ]);
+      let data;
+      if (isFirebaseConfigured()) {
+        data = await loadFirebaseAdminData();
+      } else {
+        const [products, { orders }, { reviews }, { users }, { settings }, { projects }] = await Promise.all([
+          getProducts(),
+          request("admin/orders"),
+          request("admin/reviews"),
+          request("admin/users"),
+          request("admin/settings"),
+          request("admin/projects"),
+        ]);
+        data = { products, orders, reviews, users, settings, projects };
+      }
+      const { products, orders, reviews, users, settings, projects } = data;
       const settingsForm = root.querySelector("[data-admin-settings]");
       root.querySelector(".admin-title-row .eyebrow").textContent = `${settings.name} · КЕРУВАННЯ МАГАЗИНОМ`;
       for (const [key, value] of Object.entries(settings)) {
@@ -178,8 +200,13 @@ export async function initializeAdmin() {
             .join("")
         : '<p class="admin-empty">Відгуків поки немає.</p>';
       root.querySelector("[data-admin-users]").innerHTML = users.length
-        ? `<div class="admin-user-list">${users.map((account) => `<article class="admin-record" data-user-search="${safe(`${account.name} ${account.email}`)}"><div><strong>${safe(account.name)}${account.role === "admin" ? " · адміністратор" : ""}</strong><small>${safe(account.email)} · ${shortDate(account.createdAt)}</small>${account.role === "user" ? `<small data-reset-result="${safe(account.id)}" role="status"></small>` : ""}</div><span>${account.orderCount} замовл.</span>${account.role === "user" ? `<button class="button button-quiet" type="button" data-reset-user="${safe(account.id)}">Видати тимчасовий пароль</button>` : ""}</article>`).join("")}</div>`
+        ? `<div class="admin-user-list">${users.map((account) => `<article class="admin-record" data-user-search="${safe(`${account.name} ${account.email}`)}"><div><strong>${safe(account.name)}${account.role === "admin" ? " · адміністратор" : ""}</strong><small>${safe(account.email)} · ${shortDate(account.createdAt)}</small>${account.role === "user" ? `<small data-reset-result="${safe(account.id)}" role="status"></small>` : ""}</div><span>${account.orderCount ?? "—"} замовл.</span>${account.role === "user" ? `<button class="button button-quiet" type="button" data-reset-user="${safe(account.id)}" data-reset-email="${safe(account.email)}">${isFirebaseConfigured() ? "Надіслати посилання для зміни пароля" : "Видати тимчасовий пароль"}</button>` : ""}</article>`).join("")}</div>`
         : '<p class="admin-empty">Користувачів поки немає.</p>';
+      if (isFirebaseConfigured()) {
+        errorBox.textContent =
+          "Дані зберігаються у Firebase. Перевір ціни й залишки кожного нового замовлення перед підтвердженням: GitHub Pages не має захищеного сервера для автоматичної перевірки та списання складу.";
+        errorBox.hidden = false;
+      }
       root.querySelector("[data-admin-updated]").textContent =
         `Оновлено о ${new Intl.DateTimeFormat("uk-UA", { hour: "2-digit", minute: "2-digit" }).format(new Date())}`;
       applyAdminFilters(root);
@@ -187,7 +214,9 @@ export async function initializeAdmin() {
       errorBox.textContent =
         error.message === "BACKEND_UNAVAILABLE"
           ? "Сервер недоступний. Запусти npm start і онови сторінку."
-          : "Не вдалося завантажити дані. Онови сторінку або перевір з’єднання з базою.";
+          : isFirebaseConfigured()
+            ? "Не вдалося завантажити дані Firebase. Перевір, що Firestore створено, опубліковано правила з firestore.rules і роль цього акаунта — admin."
+            : "Не вдалося завантажити дані. Онови сторінку або перевір з’єднання з базою.";
       errorBox.hidden = false;
     } finally {
       root.querySelector("[data-admin-refresh]").disabled = false;
@@ -310,7 +339,10 @@ export async function initializeAdmin() {
       if (!window.confirm(`Видалити проєкт «${deleteProject.dataset.deleteProject}»? Його буде також прибрано з майстерень користувачів.`)) return;
       deleteProject.disabled = true;
       try {
-        await request("admin/projects", { method: "DELETE", body: { id: deleteProject.dataset.deleteProject } });
+        if (isFirebaseConfigured())
+          await removeFirebaseProject(deleteProject.dataset.deleteProject);
+        else
+          await request("admin/projects", { method: "DELETE", body: { id: deleteProject.dataset.deleteProject } });
         await load();
       } catch (error) {
         const status = deleteProject.closest("form").querySelector("[data-admin-status]");
@@ -329,10 +361,13 @@ export async function initializeAdmin() {
         return;
       deleteProduct.disabled = true;
       try {
-        await request("admin/products", {
-          method: "DELETE",
-          body: { id: deleteProduct.dataset.deleteProduct },
-        });
+        if (isFirebaseConfigured())
+          await removeFirebaseProduct(deleteProduct.dataset.deleteProduct);
+        else
+          await request("admin/products", {
+            method: "DELETE",
+            body: { id: deleteProduct.dataset.deleteProduct },
+          });
         await refreshProducts();
         await load();
       } catch {
@@ -350,10 +385,13 @@ export async function initializeAdmin() {
     if (!window.confirm("Видалити цей відгук?")) return;
     button.disabled = true;
     try {
-      await request("admin/reviews", {
-        method: "DELETE",
-        body: { id: button.dataset.deleteReview },
-      });
+      if (isFirebaseConfigured())
+        await removeFirebaseReview(button.dataset.deleteReview);
+      else
+        await request("admin/reviews", {
+          method: "DELETE",
+          body: { id: button.dataset.deleteReview },
+        });
       await load();
     } catch {
       errorBox.textContent =
@@ -365,23 +403,30 @@ export async function initializeAdmin() {
   root.addEventListener("click", async (event) => {
     const button = event.target.closest("[data-reset-user]");
     if (!button) return;
-    if (
-      !window.confirm(
-        "Видати користувачу новий тимчасовий пароль? Його активні сеанси буде завершено.",
-      )
-    )
+    const email = button.dataset.resetEmail || button.closest(".admin-record").querySelector("small").textContent.split(" · ")[0];
+    if (!window.confirm(
+      isFirebaseConfigured()
+        ? `Надіслати посилання для зміни пароля на ${email}?`
+        : "Видати користувачу новий тимчасовий пароль? Його активні сеанси буде завершено.",
+    ))
       return;
     button.disabled = true;
     const output = root.querySelector(
       `[data-reset-result="${CSS.escape(button.dataset.resetUser)}"]`,
     );
     try {
-      const { temporaryPassword } = await request(
-        "admin/users/reset-password",
-        { method: "POST", body: { id: button.dataset.resetUser } },
-      );
-      output.textContent = `Тимчасовий пароль (покажи користувачу безпечним способом): ${temporaryPassword}`;
-      button.textContent = "Пароль видано";
+      if (isFirebaseConfigured()) {
+        await firebaseSendPasswordReset(email);
+        output.textContent = "Посилання надіслано на електронну пошту користувача.";
+        button.textContent = "Посилання надіслано";
+      } else {
+        const { temporaryPassword } = await request(
+          "admin/users/reset-password",
+          { method: "POST", body: { id: button.dataset.resetUser } },
+        );
+        output.textContent = `Тимчасовий пароль (покажи користувачу безпечним способом): ${temporaryPassword}`;
+        button.textContent = "Пароль видано";
+      }
     } catch {
       output.textContent =
         "Не вдалося змінити пароль. Онови сторінку й спробуй ще раз.";
@@ -422,8 +467,10 @@ export async function initializeAdmin() {
           demoNotice: settingsForm.elements.demoNotice.value.trim(),
           returnInstructions: settingsForm.elements.returnInstructions.value.trim(),
         };
-        const result = await request("admin/settings", { method: "PUT", body: settings });
-        setShopSettings(result.settings);
+        const savedSettings = isFirebaseConfigured()
+          ? await saveFirebaseSettings(settings)
+          : (await request("admin/settings", { method: "PUT", body: settings })).settings;
+        setShopSettings(savedSettings);
         status.textContent = "Налаштування збережено. Вони вже діють на сайті.";
       } else if (projectForm) {
         const input = {
@@ -438,10 +485,12 @@ export async function initializeAdmin() {
             quantity: Number(row.querySelector("[data-component-quantity]").value),
           })),
         };
-        await request("admin/projects", {
-          method: form.dataset.adminProject === "edit" ? "PATCH" : "POST",
-          body: input,
-        });
+        if (isFirebaseConfigured()) await saveFirebaseProject(input);
+        else
+          await request("admin/projects", {
+            method: form.dataset.adminProject === "edit" ? "PATCH" : "POST",
+            body: input,
+          });
         await load();
         const editor = [...root.querySelectorAll(".admin-project-editor")].find((item) => item.dataset.projectId === input.id);
         if (editor) {
@@ -485,10 +534,12 @@ export async function initializeAdmin() {
             .map((image) => image.trim())
             .filter(Boolean),
         };
-        await request("admin/products", {
-          method: form.dataset.existing === "true" ? "PATCH" : "POST",
-          body: input,
-        });
+        if (isFirebaseConfigured()) await saveFirebaseProduct(input);
+        else
+          await request("admin/products", {
+            method: form.dataset.existing === "true" ? "PATCH" : "POST",
+            body: input,
+          });
         await refreshProducts();
         if (form.dataset.existing === "true") {
           await load();
@@ -511,13 +562,19 @@ export async function initializeAdmin() {
           status.textContent = "Статус не змінено.";
           return;
         }
-        await request("admin/orders", {
-          method: "PATCH",
-          body: {
-            id: form.dataset.adminOrder,
-            status: form.elements.status.value,
-          },
-        });
+        if (isFirebaseConfigured())
+          await updateFirebaseOrderStatus(
+            form.dataset.adminOrder,
+            form.elements.status.value,
+          );
+        else
+          await request("admin/orders", {
+            method: "PATCH",
+            body: {
+              id: form.dataset.adminOrder,
+              status: form.elements.status.value,
+            },
+          });
         status.textContent = "Статус збережено.";
         await load();
       }
