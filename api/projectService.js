@@ -5,19 +5,27 @@ import { isFirebaseConfigured } from "./firebaseAuth.js";
 import { listFirebaseDocuments } from "./firebaseStore.js";
 export { projects };
 let pending;
+let firebaseProjectsWarning = "";
+export function getFirebaseProjectsWarning() {
+  return firebaseProjectsWarning;
+}
 export async function getProjects() {
   if (!pending) {
     pending = isFirebaseConfigured()
-      ? listFirebaseDocuments("projects").then((records) => {
-          const overrides = new Map(records.map((record) => [record.id, record]));
-          const merged = projects
-            .map((project) => overrides.get(project.id) || project)
-            .filter((project) => !project.deleted);
-          const known = new Set(projects.map((project) => project.id));
-          for (const record of records)
-            if (!known.has(record.id) && !record.deleted) merged.push(record);
-          return getProducts().then((items) =>
-            merged.map((project) => ({
+      ? listFirebaseDocuments("projects")
+          .then(async (records) => {
+            const overrides = new Map(
+              records.map((record) => [record.id, record]),
+            );
+            const merged = projects
+              .map((project) => overrides.get(project.id) || project)
+              .filter((project) => !project.deleted);
+            const known = new Set(projects.map((project) => project.id));
+            for (const record of records)
+              if (!known.has(record.id) && !record.deleted) merged.push(record);
+            const items = await getProducts();
+            firebaseProjectsWarning = "";
+            return merged.map((project) => ({
               ...project,
               estimatedPrice: project.components.reduce(
                 (sum, item) =>
@@ -27,9 +35,22 @@ export async function getProjects() {
                     item.quantity,
                 0,
               ),
-            })),
-          );
-        })
+            }));
+          })
+          .catch(async (error) => {
+            if (
+              ![
+                "permission-denied",
+                "unavailable",
+                "firestore/permission-denied",
+                "firestore/unavailable",
+              ].includes(error.code)
+            )
+              throw error;
+            firebaseProjectsWarning =
+              "Показуємо базові DIY-проєкти: не вдалося синхронізувати їх із Firebase. Перевір правила Firestore.";
+            return fallbackProjects();
+          })
       : request("projects")
           .then((result) => result.projects)
           .catch(async (error) => {

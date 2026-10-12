@@ -3,7 +3,10 @@ import {
   getCategories,
   getProductById,
   loadShopSettings,
+  getFirebaseCatalogWarning,
 } from "./productService.js";
+import { getFirebaseProjectsWarning } from "./projectService.js";
+import { isFirebaseConfigured } from "../api/firebaseAuth.js";
 import { productCard } from "./product-card.js";
 import { initializeCatalog } from "./catalog.js";
 import { initializeProductPage } from "./product-page.js";
@@ -125,6 +128,17 @@ async function start() {
     initializeAdmin(),
   ]);
   renderCartPage();
+  const dataWarnings = [
+    getFirebaseCatalogWarning(),
+    getFirebaseProjectsWarning(),
+  ].filter(Boolean);
+  if (dataWarnings.length)
+    document
+      .querySelector("main")
+      ?.insertAdjacentHTML(
+        "afterbegin",
+        `<p class="service-error" role="status">${dataWarnings.join(" ")}</p>`,
+      );
   window.addEventListener("nexlab:cart-updated", renderCartPage);
   window.addEventListener("nexlab:favorites-updated", updateHeaderCounts);
   window.addEventListener("storage", (event) => {
@@ -144,6 +158,8 @@ start().catch((error) => {
   if (main)
     main.insertAdjacentHTML(
       "afterbegin",
-      '<p class="service-error" role="alert">Не вдалося з’єднатися з магазином. Запусти сервер NEXLAB і онови сторінку.</p>',
+      isFirebaseConfigured()
+        ? '<p class="service-error" role="alert">Не вдалося завантажити дані Firebase. Перевір з’єднання, створення Firestore та опубліковані правила firestore.rules.</p>'
+        : '<p class="service-error" role="alert">Не вдалося з’єднатися з магазином. Запусти сервер NEXLAB і онови сторінку.</p>',
     );
 });

@@ -10,6 +10,10 @@ export { products, categories };
 let pending;
 let currentCategories = categories;
 let storeSettings = shopConfig;
+let firebaseCatalogWarning = "";
+export function getFirebaseCatalogWarning() {
+  return firebaseCatalogWarning;
+}
 export function setShopSettings(settings) {
   storeSettings = settings;
 }
@@ -71,6 +75,7 @@ export async function refreshProducts() {
             }),
           );
           currentCategories = categories;
+          firebaseCatalogWarning = "";
           return products;
         })
       : request("products"))
@@ -83,6 +88,15 @@ export async function refreshProducts() {
       })
       .catch((error) => {
         if (error.message === "BACKEND_UNAVAILABLE") return products;
+        if (
+          isFirebaseConfigured() &&
+          ["permission-denied", "unavailable", "firestore/permission-denied", "firestore/unavailable"].includes(error.code)
+        ) {
+          currentCategories = categories;
+          firebaseCatalogWarning =
+            "Показуємо базовий каталог: не вдалося синхронізувати дані з Firebase. Перевір правила Firestore.";
+          return products;
+        }
         throw error;
       })
       .finally(() => (pending = null));

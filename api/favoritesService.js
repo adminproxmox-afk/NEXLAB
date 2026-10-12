@@ -20,13 +20,15 @@ export function getFavorites() {
     const user = getCurrentUser(),
       key = keyFor(user);
     if (user) {
-      const guest = read(GUEST_KEY);
-      if (guest.length) {
+      const guest = read(GUEST_KEY),
+        legacy = read(LEGACY_KEY);
+      if (guest.length || legacy.length) {
         localStorage.setItem(
           key,
-          JSON.stringify([...new Set([...read(key), ...guest])]),
+          JSON.stringify([...new Set([...read(key), ...guest, ...legacy])]),
         );
         localStorage.removeItem(GUEST_KEY);
+        localStorage.removeItem(LEGACY_KEY);
       }
     } else if (
       localStorage.getItem(key) === null &&
