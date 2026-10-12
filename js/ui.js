@@ -17,11 +17,12 @@ const safe = (value) =>
       ],
   );
 
-export function renderSharedLayout() {
+export function renderSharedLayout(settings = { name: "NEXLAB" }) {
+  const storeName = safe(settings.name || "NEXLAB");
   const header = document.querySelector("[data-site-header]");
   if (header) {
     header.innerHTML = `<header class="site-header"><div class="header-inner wrap">
-      <a class="brand" href="${prefix}index.html" aria-label="NEXLAB — головна сторінка"><span class="brand-mark">N</span>NEXLAB</a>
+      <a class="brand" href="${prefix}index.html" aria-label="${storeName} — головна сторінка"><span class="brand-mark">${storeName.slice(0, 1)}</span>${storeName}</a>
       <nav class="main-nav" data-mobile-nav aria-label="Головна навігація">
         <a href="${prefix}index.html" ${path === "index.html" ? 'aria-current="page"' : ""}>Головна</a>
         <a href="${prefix}catalog.html" ${path === "catalog.html" ? 'aria-current="page"' : ""}>Каталог</a>
@@ -39,11 +40,11 @@ export function renderSharedLayout() {
   const footer = document.querySelector("[data-site-footer]");
   if (footer)
     footer.innerHTML = `<footer class="site-footer"><div class="footer-main wrap">
-    <div class="footer-brand"><a class="brand" href="${prefix}index.html"><span class="brand-mark">N</span>NEXLAB</a><p>Електроніка й інструменти для тих, хто перетворює ідеї на пристрої.</p><a class="footer-contact" href="${prefix}contacts.html">Зв’язатися з командою</a></div>
+    <div class="footer-brand"><a class="brand" href="${prefix}index.html"><span class="brand-mark">${storeName.slice(0, 1)}</span>${storeName}</a><p>Електроніка й інструменти для тих, хто перетворює ідеї на пристрої.</p><a class="footer-contact" href="${prefix}contacts.html">Зв’язатися з командою</a></div>
     <div class="footer-column"><strong>Каталог</strong><a href="${prefix}catalog.html?category=Електронні%20компоненти">Електронні компоненти</a><a href="${prefix}catalog.html?category=Мікроконтролери">Мікроконтролери</a><a href="${prefix}catalog.html?category=Інструменти">Інструменти</a><a href="${prefix}catalog.html?category=Комп’ютери">Комп’ютери</a><a href="${prefix}catalog.html?category=3D-друк">3D-друк</a></div>
     <div class="footer-column"><strong>Покупцям</strong><a href="${prefix}delivery.html">Доставка</a><a href="${prefix}payment.html">Оплата</a><a href="${prefix}warranty.html">Гарантія</a><a href="${prefix}returns.html">Повернення</a></div>
     <div class="footer-column"><strong>Компанія</strong><a href="${prefix}about.html">Про нас</a><a href="${prefix}contacts.html">Контакти</a><a href="${prefix}privacy.html">Конфіденційність</a>${isAdmin() ? `<a href="${prefix}admin/index.html">Для команди</a>` : ""}</div>
-  </div><div class="footer-bottom wrap"><span>© 2026 NEXLAB</span><span>Збирай. Перевіряй. Запускай.</span></div></footer>`;
+  </div><div class="footer-bottom wrap"><span>© ${new Date().getFullYear()} ${storeName}</span><span>Збирай. Перевіряй. Запускай.</span></div></footer>`;
   if (!document.querySelector("[data-auth-gate]"))
     document.body.insertAdjacentHTML(
       "beforeend",

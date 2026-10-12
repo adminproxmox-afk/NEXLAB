@@ -199,13 +199,19 @@ function diagram(guide) {
 }
 export async function renderProjectGuide(project, root) {
   const guide = projectGuides[project.id];
-  if (!guide) return;
+  if (!guide) {
+    root.insertAdjacentHTML(
+      "beforeend",
+      `<section class="project-guide" id="build-guide"><div class="section-heading"><div><p class="eyebrow">Від компонентів до першого запуску</p><h2>Кроки складання</h2></div></div><p class="guide-notice">Загальні кроки для старту. Перед підключенням перевір напругу, розташування контактів і сумісність усіх компонентів.</p><ol>${(project.steps?.length ? project.steps : commonSteps).map((step) => `<li>${safe(step)}</li>`).join("")}</ol></section>`,
+    );
+    return;
+  }
   const codePath = guide.code || "guides/" + project.id + ".ino";
   const response = await fetch(codePath);
   if (!response.ok) throw new Error("GUIDE_UNAVAILABLE");
   const code = await response.text();
   root.insertAdjacentHTML(
     "beforeend",
-    `<section class="project-guide"><div class="section-heading"><div><p class="eyebrow">Від компонентів до першого запуску</p><h2>Збери й перевір</h2></div></div><p class="guide-notice">${safe(guide.extra)}</p><div class="guide-grid"><section class="guide-panel"><h3>Схема з’єднань</h3>${diagram(guide)}<table class="guide-wiring"><thead><tr><th scope="col">${safe(guide.board)}</th><th scope="col">Компонент</th></tr></thead><tbody>${guide.wiring.map(([from, to]) => `<tr><td>${safe(from)}</td><td>${safe(to)}</td></tr>`).join("")}</tbody></table></section><section class="guide-panel"><h3>Кроки складання</h3><ol>${(guide.steps || commonSteps).map((step) => `<li>${safe(step)}</li>`).join("")}</ol><p><strong>Бібліотеки:</strong> ${safe(guide.libraries.join(", ") || "Лише стандартні бібліотеки Arduino")}</p><p><strong>Очікуваний результат:</strong> ${safe(guide.result)}</p><h3>Стартовий код</h3><a class="button button-quiet" href="${safe(codePath)}" download>Завантажити .ino ↓</a><details><summary>Переглянути код</summary><pre><code>${safe(code)}</code></pre></details><p>Документація: ${guide.sources.map((source) => `<a href="${safe(source.url)}" target="_blank" rel="noopener noreferrer">${safe(source.title)}</a>`).join(" · ")}</p></section></div></section>`,
+    `<section class="project-guide"><div class="section-heading"><div><p class="eyebrow">Від компонентів до першого запуску</p><h2>Збери й перевір</h2></div></div><p class="guide-notice">${safe(guide.extra)}</p><div class="guide-grid"><section class="guide-panel"><h3>Схема з’єднань</h3>${diagram(guide)}<table class="guide-wiring"><thead><tr><th scope="col">${safe(guide.board)}</th><th scope="col">Компонент</th></tr></thead><tbody>${guide.wiring.map(([from, to]) => `<tr><td>${safe(from)}</td><td>${safe(to)}</td></tr>`).join("")}</tbody></table></section><section class="guide-panel"><h3>Кроки складання</h3><ol>${(project.steps?.length ? project.steps : guide.steps || commonSteps).map((step) => `<li>${safe(step)}</li>`).join("")}</ol><p><strong>Бібліотеки:</strong> ${safe(guide.libraries.join(", ") || "Лише стандартні бібліотеки Arduino")}</p><p><strong>Очікуваний результат:</strong> ${safe(guide.result)}</p><h3>Стартовий код</h3><a class="button button-quiet" href="${safe(codePath)}" download>Завантажити .ino ↓</a><details><summary>Переглянути код</summary><pre><code>${safe(code)}</code></pre></details><p>Документація: ${guide.sources.map((source) => `<a href="${safe(source.url)}" target="_blank" rel="noopener noreferrer">${safe(source.title)}</a>`).join(" · ")}</p></section></div></section>`,
   );
 }

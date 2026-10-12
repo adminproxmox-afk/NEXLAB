@@ -2,6 +2,7 @@ import {
   getProducts,
   getCategories,
   getProductById,
+  loadShopSettings,
 } from "./productService.js";
 import { productCard } from "./product-card.js";
 import { initializeCatalog } from "./catalog.js";
@@ -83,10 +84,13 @@ function bindProductButtons() {
 
 async function start() {
   await initializeUsers();
-  renderSharedLayout();
+  const settings = await loadShopSettings();
+  renderSharedLayout(settings);
+  const homeNotice = document.querySelector(".hero .demo-notice");
+  if (homeNotice) homeNotice.textContent = settings.demoNotice;
   bindLayoutEvents();
   initializeAuthForms();
-  initializeInfoPage();
+  initializeInfoPage(settings);
   if (!protectCurrentPage()) return;
   bindProductButtons();
   bindCartPage();
@@ -117,7 +121,7 @@ async function start() {
     initializeProfile(),
     initializeOrdersPage(),
     initializeMyProjects(),
-    initializeCheckout(),
+    initializeCheckout(settings),
     initializeAdmin(),
   ]);
   renderCartPage();

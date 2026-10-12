@@ -144,6 +144,62 @@ function productInput(input) {
   result.shortDescription = result.description.split(/[.!?]/)[0];
   return result;
 }
+function shopSettingsInput(input) {
+  if (!input || typeof input !== "object" || Array.isArray(input))
+    fail("INVALID_SETTINGS");
+  const methods = (value) => {
+    if (!Array.isArray(value) || value.length < 1 || value.length > 5)
+      fail("INVALID_SETTINGS");
+    return value.map((item) => {
+      const id = text(item?.id, 40).toLowerCase();
+      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)) fail("INVALID_SETTINGS");
+      return { id, name: text(item.name, 80) };
+    });
+  };
+  const result = {
+    name: text(input.name, 80),
+    sellerName: text(input.sellerName, 120),
+    sellerCity: text(input.sellerCity, 100),
+    supportEmail: input.supportEmail ? email(input.supportEmail) : null,
+    supportPhone: input.supportPhone ? text(input.supportPhone, 30) : null,
+    warrantyMonths: input.warrantyMonths === null || input.warrantyMonths === "" ? null : Number(input.warrantyMonths),
+    returnInstructions: text(input.returnInstructions, 2000),
+    demoNotice: text(input.demoNotice, 500),
+    deliveryNote: text(input.deliveryNote, 2000),
+    deliveryMethods: methods(input.deliveryMethods),
+    paymentMethods: methods(input.paymentMethods),
+    priceNote: text(input.priceNote, 1000),
+  };
+  if (result.warrantyMonths !== null && (!Number.isInteger(result.warrantyMonths) || result.warrantyMonths < 0 || result.warrantyMonths > 120)) fail("INVALID_SETTINGS");
+  if (new Set(result.deliveryMethods.map((item) => item.id)).size !== result.deliveryMethods.length || new Set(result.paymentMethods.map((item) => item.id)).size !== result.paymentMethods.length) fail("INVALID_SETTINGS");
+  return result;
+}
+function projectInput(input) {
+  if (!input || typeof input !== "object" || Array.isArray(input))
+    fail("INVALID_PROJECT");
+  const id = text(input.id, 64).toLowerCase();
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)) fail("INVALID_PROJECT");
+  if (!Array.isArray(input.components) || input.components.length < 1 || input.components.length > 30)
+    fail("INVALID_PROJECT");
+  const components = input.components.map((item) => {
+    if (!item || typeof item.productId !== "string" || !Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > 1000)
+      fail("INVALID_PROJECT");
+    return { productId: text(item.productId, 64), quantity: item.quantity };
+  });
+  if (new Set(components.map((item) => item.productId)).size !== components.length) fail("INVALID_PROJECT");
+  const result = {
+    id,
+    name: text(input.name, 120),
+    description: text(input.description, 2000),
+    difficulty: text(input.difficulty, 30),
+    image: text(input.image, 30),
+    components,
+    steps: Array.isArray(input.steps) ? input.steps.map((step) => text(step, 500)) : [],
+  };
+  if (result.steps.length > 20 || !['Легкий', 'Середній', 'Просунутий'].includes(result.difficulty) || !productImages.has(result.image))
+    fail("INVALID_PROJECT");
+  return result;
+}
 async function passwordHash(value) {
   const salt = randomBytes(16).toString("hex");
   return `${salt}:${(await scrypt(value, salt, 64)).toString("hex")}`;
@@ -171,7 +227,15 @@ export async function createApp({
     CREATE TABLE IF NOT EXISTS product_data(id TEXT PRIMARY KEY,body TEXT NOT NULL,deleted INTEGER NOT NULL DEFAULT 0 CHECK(deleted IN (0,1)));
     CREATE TABLE IF NOT EXISTS orders(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),request_key TEXT NOT NULL,body TEXT NOT NULL,UNIQUE(user_id,request_key));
     CREATE TABLE IF NOT EXISTS reviews(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),product_id TEXT NOT NULL,rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),text TEXT NOT NULL,date TEXT NOT NULL);
-    CREATE TABLE IF NOT EXISTS saved_projects(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),project_id TEXT NOT NULL,created_at TEXT NOT NULL,UNIQUE(user_id,project_id));`);
+    CREATE TABLE IF NOT EXISTS saved_projects(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),project_id TEXT NOT NULL,created_at TEXT NOT NULL,UNIQUE(user_id,project_id));
+    CREATE TABLE IF NOT EXISTS shop_settings(id INTEGER PRIMARY KEY CHECK(id=1),body TEXT NOT NULL);
+    CREATE TABLE IF NOT EXISTS store_projects(id TEXT PRIMARY KEY,body TEXT NOT NULL);`);
+  db.prepare("INSERT OR IGNORE INTO shop_settings(id,body) VALUES(1,?)").run(JSON.stringify(shopConfig));
+  const seedProject = db.prepare("INSERT OR IGNORE INTO store_projects(id,body) VALUES(?,?)");
+  for (const project of projects) seedProject.run(project.id, JSON.stringify(project));
+  function currentShopSettings() {
+    return JSON.parse(db.prepare("SELECT body FROM shop_settings WHERE id=1").get().body);
+  }
   if (
     !db
       .prepare("PRAGMA table_info(saved_projects)")
@@ -348,6 +412,9 @@ export async function createApp({
         ];
       });
   }
+  function allProjects() {
+    return db.prepare("SELECT body FROM store_projects ORDER BY rowid").all().map((row) => JSON.parse(row.body));
+  }
   async function body(req) {
     if (!(req.headers["content-type"] || "").startsWith("application/json"))
       fail("JSON_REQUIRED", 415);
@@ -492,16 +559,22 @@ export async function createApp({
           return send(res, 200, newSession(res, user.id));
         }
         if (path === "/api/products" && method === "GET")
-          return send(res, 200, { products: allProducts(), categories });
-        if (path === "/api/projects" && method === "GET") {
-          const products = allProducts();
           return send(res, 200, {
-            projects: projects.map((project) => ({
+            products: allProducts(),
+            categories,
+            settings: currentShopSettings(),
+          });
+        if (path === "/api/store" && method === "GET")
+          return send(res, 200, { settings: currentShopSettings() });
+        if (path === "/api/projects" && method === "GET") {
+          const productList = allProducts(), projectList = allProjects();
+          return send(res, 200, {
+            projects: projectList.map((project) => ({
               ...project,
               estimatedPrice: project.components.reduce(
                 (s, c) =>
                   s +
-                  (products.find((p) => p.id === c.productId)?.price || 0) *
+                  (productList.find((p) => p.id === c.productId)?.price || 0) *
                     c.quantity,
                 0,
               ),
@@ -538,11 +611,12 @@ export async function createApp({
           if (!/^\+?380\d{9}$/.test(customer.phone.replace(/[\s()-]/g, "")))
             fail("INVALID_PHONE");
           customer.phone = customer.phone.replace(/[\s()-]/g, "");
+          const settings = currentShopSettings();
           if (
-            !shopConfig.deliveryMethods.some(
+            !settings.deliveryMethods.some(
               (item) => item.id === customer.carrier,
             ) ||
-            !shopConfig.paymentMethods.some(
+            !settings.paymentMethods.some(
               (item) => item.id === customer.payment,
             )
           )
@@ -679,10 +753,11 @@ export async function createApp({
               "SELECT id,project_id AS projectId,created_at AS createdAt,checklist FROM saved_projects WHERE user_id=? ORDER BY rowid DESC",
             )
             .all(user.id);
+          const projectList = allProjects();
           return send(res, 200, {
             projects: saved.map((row) => {
               const components =
-                projects.find((project) => project.id === row.projectId)
+                projectList.find((project) => project.id === row.projectId)
                   ?.components || [];
               let checklist = [];
               try {
@@ -708,7 +783,7 @@ export async function createApp({
         if (path === "/api/my-projects" && method === "POST") {
           requireUser();
           const input = await body(req);
-          if (!projects.some((p) => p.id === input.projectId))
+          if (!allProjects().some((p) => p.id === input.projectId))
             fail("PROJECT_NOT_FOUND", 404);
           db.prepare(
             "INSERT OR IGNORE INTO saved_projects(id,user_id,project_id,created_at,checklist) VALUES(?,?,?,?,?)",
@@ -724,7 +799,7 @@ export async function createApp({
         if (path === "/api/my-projects" && method === "PATCH") {
           requireUser();
           const input = await body(req),
-            project = projects.find((item) => item.id === input.projectId);
+            project = allProjects().find((item) => item.id === input.projectId);
           if (
             !project ||
             !Array.isArray(input.checklist) ||
@@ -782,6 +857,53 @@ export async function createApp({
             ).run(JSON.stringify(product), product.id);
             db.exec("COMMIT");
             return send(res, 200, { saved: true });
+          } catch (error) {
+            db.exec("ROLLBACK");
+            throw error;
+          }
+        }
+        if (path === "/api/admin/settings" && method === "GET") {
+          requireUser();
+          if (user.role !== "admin") fail("FORBIDDEN", 403);
+          return send(res, 200, { settings: currentShopSettings() });
+        }
+        if (path === "/api/admin/settings" && method === "PUT") {
+          requireUser();
+          if (user.role !== "admin") fail("FORBIDDEN", 403);
+          const settings = shopSettingsInput(await body(req));
+          db.prepare("UPDATE shop_settings SET body=? WHERE id=1").run(JSON.stringify(settings));
+          return send(res, 200, { settings });
+        }
+        if (path === "/api/admin/projects" && method === "GET") {
+          requireUser();
+          if (user.role !== "admin") fail("FORBIDDEN", 403);
+          return send(res, 200, { projects: allProjects() });
+        }
+        if (path === "/api/admin/projects" && ["POST", "PATCH"].includes(method)) {
+          requireUser();
+          if (user.role !== "admin") fail("FORBIDDEN", 403);
+          const project = projectInput(await body(req));
+          if (!project.components.every((item) => allProducts().some((product) => product.id === item.productId)))
+            fail("INVALID_PROJECT_COMPONENT");
+          const existing = db.prepare("SELECT id FROM store_projects WHERE id=?").get(project.id);
+          if (method === "PATCH" && !existing) fail("PROJECT_NOT_FOUND", 404);
+          if (method === "POST" && existing) fail("PROJECT_EXISTS", 409);
+          db.prepare("INSERT INTO store_projects(id,body) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET body=excluded.body")
+            .run(project.id, JSON.stringify(project));
+          return send(res, method === "POST" ? 201 : 200, { project });
+        }
+        if (path === "/api/admin/projects" && method === "DELETE") {
+          requireUser();
+          if (user.role !== "admin") fail("FORBIDDEN", 403);
+          const input = await body(req);
+          if (typeof input.id !== "string") fail("INVALID_PROJECT");
+          db.exec("BEGIN IMMEDIATE");
+          try {
+            const result = db.prepare("DELETE FROM store_projects WHERE id=?").run(input.id);
+            if (!result.changes) fail("PROJECT_NOT_FOUND", 404);
+            db.prepare("DELETE FROM saved_projects WHERE project_id=?").run(input.id);
+            db.exec("COMMIT");
+            return send(res, 200, { deleted: true });
           } catch (error) {
             db.exec("ROLLBACK");
             throw error;

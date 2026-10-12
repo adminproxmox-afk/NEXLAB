@@ -1,4 +1,5 @@
-import { shopConfig as config } from "./shop-config.js";
+import { shopConfig } from "./shop-config.js";
+let config = shopConfig;
 
 const safe = (value) =>
   String(value ?? "").replace(
@@ -154,12 +155,13 @@ const pages = {
   },
 };
 
-export function initializeInfoPage() {
+export function initializeInfoPage(settings = shopConfig) {
+  config = settings;
   const root = document.querySelector("[data-info-page]");
   if (!root) return;
   const page = pages[root.dataset.infoPage];
   if (!page) return;
-  document.title = page.title + " — NEXLAB";
+  document.title = page.title + " — " + config.name;
   const sourceLinks =
     root.dataset.infoPage === "delivery"
       ? '<nav class="info-source-links" aria-label="Офіційні тарифи"><a href="https://www.ukrposhta.ua/ua/taryfy-ukrposhta-priorytetnyi" target="_blank" rel="noopener noreferrer">Актуальні тарифи Укрпошти ↗</a><a href="https://novaposhta.ua/shipping-cost/?language=uk" target="_blank" rel="noopener noreferrer">Актуальні тарифи Нової пошти ↗</a></nav>'
@@ -172,7 +174,7 @@ export function initializeInfoPage() {
     .sections()
     .map(
       ([heading, copy]) =>
-        `<section class="profile-panel"><h2>${safe(heading)}</h2><p>${heading === "Телефон" && config.supportPhone ? `<a href="tel:${safe(config.supportPhone)}">${safe(copy)}</a>` : safe(copy)}</p></section>`,
+        `<section class="profile-panel"><h2>${safe(heading)}</h2><p>${heading === "Телефон" && config.supportPhone ? `<a href="tel:${safe(config.supportPhone)}">${safe(copy)}</a>` : heading === "Електронна пошта" && config.supportEmail ? `<a href="mailto:${safe(config.supportEmail)}">${safe(copy)}</a>` : safe(copy)}</p></section>`,
     )
     .join(
       "",
