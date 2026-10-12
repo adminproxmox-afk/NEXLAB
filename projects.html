@@ -1,26 +1,94 @@
 <!doctype html>
 <html lang="uk">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#111412">
-  <meta name="description" content="DIY-проєкти NEXLAB з переліком компонентів, схемами та стартовим кодом.">
-  <title>DIY-проєкти — NEXLAB</title>
-  <link rel="stylesheet" href="css/style.css">
-  <script type="module" src="js/main.js"></script>
-</head>
-<body>
-  <div data-site-header></div>
-  <main class="wrap page-main">
-    <div class="breadcrumbs"><a href="index.html">Головна</a><span>/</span><span>DIY-проєкти</span></div>
-    <header class="projects-intro"><div><p class="eyebrow">NEXLAB / Майстерня</p><h1>Від компонентів —<br><span>до першого запуску.</span></h1><p>Обери ідею, перевір комплект і збери пристрій за схемою. У кожному проєкті — список деталей та стартовий код.</p></div><div class="projects-intro-stamp" aria-hidden="true"><span>OPEN</span><strong>LAB<br>NOTES</strong><small>ЗБИРАЙ · ТЕСТУЙ · ПОВТОРЮЙ</small></div></header>
-    <section class="project-browser" data-projects-directory aria-label="Каталог DIY-проєктів">
-      <div class="project-browser-tools"><label class="project-search"><span aria-hidden="true">⌕</span><input type="search" data-project-search placeholder="Знайти за назвою або компонентом" aria-label="Пошук DIY-проєктів"></label><div class="project-filters" role="group" aria-label="Рівень складності"><button class="is-active" type="button" data-project-filter="all" aria-pressed="true">Усі рівні</button><button type="button" data-project-filter="Легкий" aria-pressed="false">Легкий</button><button type="button" data-project-filter="Середній" aria-pressed="false">Середній</button><button type="button" data-project-filter="Просунутий" aria-pressed="false">Просунутий</button></div></div>
-      <div class="project-results-line"><span data-project-count role="status">Завантажуємо проєкти…</span><span>Вартість орієнтовна · наявність оновлюється з каталогом</span></div>
-      <div class="project-grid projects-directory" data-project-grid><p role="status">Завантажуємо проєкти…</p></div>
-    </section>
-  </main>
-  <div data-site-footer></div>
-  <div class="toast-region" aria-live="polite" data-toast-region></div>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#111412" />
+    <meta
+      name="description"
+      content="DIY-проєкти NEXLAB з переліком компонентів, схемами та стартовим кодом."
+    />
+    <title>DIY-проєкти — NEXLAB</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script type="module" src="js/main.js"></script>
+  </head>
+  <body>
+    <div data-site-header></div>
+    <main class="wrap page-main">
+      <div class="breadcrumbs">
+        <a href="index.html">Головна</a><span>/</span><span>DIY-проєкти</span>
+      </div>
+      <header class="projects-intro">
+        <div>
+          <p class="eyebrow">NEXLAB / Майстерня</p>
+          <h1>Від компонентів —<br /><span>до першого запуску.</span></h1>
+          <p>
+            Обери ідею, перевір комплект і збери пристрій за схемою. У кожному
+            проєкті — список деталей та стартовий код.
+          </p>
+        </div>
+        <div class="projects-intro-stamp" aria-hidden="true">
+          <span>OPEN</span><strong>LAB<br />NOTES</strong
+          ><small>ЗБИРАЙ · ТЕСТУЙ · ПОВТОРЮЙ</small>
+        </div>
+      </header>
+      <section
+        class="project-browser"
+        data-projects-directory
+        aria-label="Каталог DIY-проєктів"
+      >
+        <div class="project-browser-tools">
+          <label class="project-search"
+            ><span aria-hidden="true">⌕</span
+            ><input
+              type="search"
+              data-project-search
+              placeholder="Знайти за назвою або компонентом"
+              aria-label="Пошук DIY-проєктів"
+          /></label>
+          <div
+            class="project-filters"
+            role="group"
+            aria-label="Рівень складності"
+          >
+            <button
+              class="is-active"
+              type="button"
+              data-project-filter="all"
+              aria-pressed="true"
+            >
+              Усі рівні</button
+            ><button
+              type="button"
+              data-project-filter="Легкий"
+              aria-pressed="false"
+            >
+              Легкий</button
+            ><button
+              type="button"
+              data-project-filter="Середній"
+              aria-pressed="false"
+            >
+              Середній</button
+            ><button
+              type="button"
+              data-project-filter="Просунутий"
+              aria-pressed="false"
+            >
+              Просунутий
+            </button>
+          </div>
+        </div>
+        <div class="project-results-line">
+          <span data-project-count role="status">Завантажуємо проєкти…</span
+          ><span>Вартість орієнтовна · наявність оновлюється з каталогом</span>
+        </div>
+        <div class="project-grid projects-directory" data-project-grid>
+          <p role="status">Завантажуємо проєкти…</p>
+        </div>
+      </section>
+    </main>
+    <div data-site-footer></div>
+    <div class="toast-region" aria-live="polite" data-toast-region></div>
+  </body>
 </html>

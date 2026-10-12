@@ -1,1 +1,1 @@
-export { getFavorites, toggleFavorite } from '../api/favoritesService.js';
+export { getFavorites, toggleFavorite } from "../api/favoritesService.js";

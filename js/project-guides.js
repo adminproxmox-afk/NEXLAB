@@ -1,23 +1,211 @@
-const sensorSource={title:'DHT22: підключення та підтягувальний резистор',url:'https://learn.adafruit.com/dht/connecting-to-a-dhtxx-sensor'};
-const oledSource={title:'SSD1306: бібліотеки та приклади',url:'https://learn.adafruit.com/monochrome-oled-breakouts/arduino-library-and-examples'};
-const commonSteps=['Від’єднай живлення та звір маркування контактів зі схемою своєї плати.','З’єднай контакти за таблицею. Перевір спільну землю, полярність і напругу.','Встанови потрібні бібліотеки, відкрий стартовий код і вибери правильну плату.','Завантаж прошивку та перевір результат. Перед підключенням периферії ще раз звір напругу й контакти.'];
-export const projectGuides={
-  'weather-station':{board:'ESP32 DevKit (WROOM-32)',wiring:[['3V3','DHT22 VCC'],['GND','DHT22 GND'],['GPIO17','DHT22 DATA'],['3V3','OLED VCC'],['GND','OLED GND'],['GPIO21','OLED SDA'],['GPIO22','OLED SCL']],libraries:['DHT sensor library','Adafruit Unified Sensor','Adafruit SSD1306','Adafruit GFX Library'],extra:'Для DHT22 без готового модуля потрібен резистор 10 кОм між DATA та 3V3. USB-кабель і макетна плата не входять у цей перелік. OLED має бути I²C, адреса в прикладі — 0x3C.',result:'Температура й вологість на OLED; оновлення приблизно раз на 2 секунди.',steps:['Вимкни ESP32 та переконайся, що OLED має інтерфейс I²C і адресу 0x3C.','Підключи DHT22 до 3V3, GND та GPIO17; підключи OLED до 3V3, GND, GPIO21 (SDA) і GPIO22 (SCL).','Для датчика без готової плати постав резистор 10 кОм між DATA та 3V3.','В Arduino IDE встанови перелічені бібліотеки, вибери ESP32 Dev Module і відкрий `weather-station.ino`.','Завантаж код. Якщо покази відсутні, перевір адресу OLED і з’єднання DATA датчика.'],sources:[sensorSource,oledSource]},
-  'arduino-robot':{board:'Arduino UNO R3',code:'guides/arduino-robot/arduino-robot.ino',wiring:[['5V','HC-SR04 VCC'],['GND','HC-SR04 GND'],['D9','HC-SR04 TRIG'],['D10','HC-SR04 ECHO']],libraries:[],extra:'Це перший етап робота: перевірка відстані. Для рухомого робота додатково потрібні шасі, мотори, драйвер моторів і відповідне живлення. Їх немає в поточному наборі, тому його ціна не включає ці деталі. Мотори не підключають безпосередньо до GPIO.',result:'У моніторі порту 115200 бод з’являються відстань і повідомлення про перешкоду. Керування моторами додається після вибору драйвера.',steps:['Вимкни Arduino UNO і підключи HC-SR04: VCC до 5V, GND до GND.','З’єднай TRIG із D9, а ECHO — з D10; для іншої плати спершу перевір допустиму напругу входів.','В Arduino IDE вибери Arduino UNO та відкрий файл `arduino-robot.ino`. Додаткові бібліотеки не потрібні.','Завантаж код і відкрий монітор порту на швидкості 115200 бод.','Піднеси предмет до датчика та перевір виміряну відстань. Це тест сенсора; мотори й шасі до комплекту не входять.'],sources:[{title:'Arduino UNO R3: контакти та документація',url:'https://docs.arduino.cc/hardware/uno-rev3'}]},
-  'smart-lamp':{board:'ESP32 DevKit (WROOM-32)',wiring:[['Зовнішнє 5V','WS2812B +5V'],['GND (спільна)','WS2812B GND'],['GPIO18 → перетворювач рівня → 330 Ом','WS2812B DIN']],libraries:['FastLED'],extra:'Додатково потрібні блок 5 V з достатнім струмом, перетворювач логічного рівня 3,3→5 V, резистор 330 Ом і конденсатор 500–1000 мкФ. USB-C модуль у каталозі не гарантує струм для всієї стрічки. Живи стрічку окремо від плати; приклад обмежує яскравість і потужність.',result:'Зміни пароль точки доступу в коді, підключись до NEXLAB-Lamp і відкрий адресу з монітора порту. Кнопки вмикають та вимикають стрічку.',steps:['Від’єднай живлення. Підготуй окреме стабільне джерело 5 V для LED-стрічки.','З’єднай землю джерела з GND ESP32; LED DIN підключай до GPIO18 через перетворювач рівня та резистор 330 Ом.','Додай конденсатор 500–1000 мкФ між +5 V та GND біля стрічки. Не живи стрічку від USB-порту ESP32.','Встанови FastLED, відкрий `smart-lamp.ino` і зміни пароль точки доступу `change-this-password`.','Завантаж код, підключи телефон до NEXLAB-Lamp і відкрий IP-адресу з монітора порту.'],sources:[{title:'FastLED: обмеження споживання',url:'https://fastled.io/docs/d3/d1d/group___power.html'},{title:'NeoPixel: живлення й підключення',url:'https://learn.adafruit.com/adafruit-neopixel-uberguide/best-practices'}]},
-  'smart-home':{board:'ESP32 на релейному модулі',wiring:[['3V3','DHT22 VCC'],['GND','DHT22 GND'],['GPIO17 (приклад)','DHT22 DATA'],['GPIO16 (звір зі схемою модуля)','Керування каналом реле']],libraries:['DHT sensor library','Adafruit Unified Sensor'],extra:'Релейні модулі мають різні GPIO й активні рівні. Перед прошивкою перевір RELAY_PIN і ACTIVE_LEVEL за схемою виробника. Приклад призначено для низьковольтного стенда без мережі 230 V. Резистор 10 кОм для голого DHT22 додається окремо.',result:'На стенді реле активується, коли температура перевищує 28 °C. За помилки сенсора реле вимкнене.',steps:['Використовуй лише низьковольтний стенд; не підключай мережу 230 V до цього навчального прикладу.','Перевір схему саме свого релейного модуля: GPIO та активний рівень можуть відрізнятися.','Підключи DHT22 до 3V3, GND і GPIO17; без готової плати датчика додай резистор 10 кОм між DATA та 3V3.','Встанови DHT sensor library і Adafruit Unified Sensor. У коді звір RELAY_PIN та ACTIVE_LEVEL зі схемою модуля.','Завантаж код і перевір спрацювання реле без підключеного навантаження.'],sources:[sensorSource]},
-  'mini-weather':{board:'Heltec WiFi Kit 32 V1/V2 (приклад)',wiring:[['3V3','DHT22 VCC'],['GND','DHT22 GND'],['GPIO17','DHT22 DATA'],['GPIO4 (вбудовано)','OLED SDA'],['GPIO15 (вбудовано)','OLED SCL'],['GPIO16 (вбудовано)','OLED RESET']],libraries:['DHT sensor library','Adafruit Unified Sensor','Adafruit SSD1306','Adafruit GFX Library'],extra:'Код і контакти відповідають Heltec WiFi Kit 32 V1/V2. Для іншої плати або ревізії потрібно змінити OLED_SDA, OLED_SCL, OLED_RESET за її документацією. Резистор підтягування DHT22 та USB-кабель додаються окремо.',result:'Вбудований OLED показує температуру та вологість.',steps:['Перевір, що в тебе Heltec WiFi Kit 32 V1 або V2: вбудовані контакти OLED на інших платах відрізняються.','Підключи DHT22 до 3V3, GND та GPIO17; для окремого сенсора потрібен резистор 10 кОм між DATA та 3V3.','Установи бібліотеки DHT sensor library, Adafruit Unified Sensor, Adafruit SSD1306 та Adafruit GFX Library.','Відкрий `mini-weather.ino`, вибери відповідну плату Heltec та завантаж код.','Перевір температуру й вологість на вбудованому OLED. Якщо екран не запускається, звір ревізію плати та її контакти.'],sources:[sensorSource,{title:'Heltec WiFi Kit 32 V2: схема',url:'https://resource.heltec.cn/download/WiFi_Kit_32/WIFI_Kit_32_Schematic_diagram_V2.pdf'}]},
-  'iot-controller':{board:'ESP32 DevKit (WROOM-32)',wiring:[['3V3','OLED VCC'],['GND','OLED GND'],['GPIO21','OLED SDA'],['GPIO22','OLED SCL']],libraries:['Adafruit SSD1306','Adafruit GFX Library'],extra:'Стартовий приклад перемикає стан на екрані. Для керування зовнішнім пристроєм потрібно окремо вибрати сумісний драйвер або виконавчий модуль. Зміни пароль точки доступу в коді.',result:'Підключись до NEXLAB-Control та відкрий адресу на OLED. Кнопка перемикає стан ON / OFF.',steps:['Вимкни живлення ESP32 і підключи OLED I²C: VCC до 3V3, GND до GND, SDA до GPIO21, SCL до GPIO22.','Установи Adafruit SSD1306 і Adafruit GFX Library.','Відкрий `iot-controller.ino` та зміни пароль точки доступу `change-this-password`.','Завантаж прошивку й зачекай, доки OLED покаже стан і IP-адресу точки доступу.','Підключись до NEXLAB-Control та відкрий цю IP-адресу. Кнопка перемикає стан екрана; зовнішнє навантаження ще не підключене.'],sources:[oledSource]}
+const sensorSource = {
+  title: "DHT22: підключення та підтягувальний резистор",
+  url: "https://learn.adafruit.com/dht/connecting-to-a-dhtxx-sensor",
 };
-const safe=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-function diagram(guide){
-  const height=100+guide.wiring.length*52;
-  return `<svg class="guide-diagram" role="img" aria-label="Схема з’єднань ${safe(guide.board)}" viewBox="0 0 820 ${height}" xmlns="http://www.w3.org/2000/svg"><rect width="820" height="${height}" rx="12" fill="#111613"/><text x="25" y="36" fill="#d5dfce" font-size="20">Плата → компонент</text>${guide.wiring.map(([from,to],index)=>{const y=75+index*52;return `<rect x="20" y="${y-22}" width="360" height="40" rx="6" fill="#28372d"/><rect x="470" y="${y-22}" width="330" height="40" rx="6" fill="#19352f"/><path d="M380 ${y-2} H470" stroke="#8be4d0" stroke-width="3"/><text x="32" y="${y+3}" fill="#d7e3ca" font-size="14">${safe(from)}</text><text x="482" y="${y+3}" fill="#c0ded5" font-size="16">${safe(to)}</text>`;}).join('')}</svg>`;
+const oledSource = {
+  title: "SSD1306: бібліотеки та приклади",
+  url: "https://learn.adafruit.com/monochrome-oled-breakouts/arduino-library-and-examples",
+};
+const commonSteps = [
+  "Від’єднай живлення та звір маркування контактів зі схемою своєї плати.",
+  "З’єднай контакти за таблицею. Перевір спільну землю, полярність і напругу.",
+  "Встанови потрібні бібліотеки, відкрий стартовий код і вибери правильну плату.",
+  "Завантаж прошивку та перевір результат. Перед підключенням периферії ще раз звір напругу й контакти.",
+];
+export const projectGuides = {
+  "weather-station": {
+    board: "ESP32 DevKit (WROOM-32)",
+    wiring: [
+      ["3V3", "DHT22 VCC"],
+      ["GND", "DHT22 GND"],
+      ["GPIO17", "DHT22 DATA"],
+      ["3V3", "OLED VCC"],
+      ["GND", "OLED GND"],
+      ["GPIO21", "OLED SDA"],
+      ["GPIO22", "OLED SCL"],
+    ],
+    libraries: [
+      "DHT sensor library",
+      "Adafruit Unified Sensor",
+      "Adafruit SSD1306",
+      "Adafruit GFX Library",
+    ],
+    extra:
+      "Для DHT22 без готового модуля потрібен резистор 10 кОм між DATA та 3V3. USB-кабель і макетна плата не входять у цей перелік. OLED має бути I²C, адреса в прикладі — 0x3C.",
+    result:
+      "Температура й вологість на OLED; оновлення приблизно раз на 2 секунди.",
+    steps: [
+      "Вимкни ESP32 та переконайся, що OLED має інтерфейс I²C і адресу 0x3C.",
+      "Підключи DHT22 до 3V3, GND та GPIO17; підключи OLED до 3V3, GND, GPIO21 (SDA) і GPIO22 (SCL).",
+      "Для датчика без готової плати постав резистор 10 кОм між DATA та 3V3.",
+      "В Arduino IDE встанови перелічені бібліотеки, вибери ESP32 Dev Module і відкрий `weather-station.ino`.",
+      "Завантаж код. Якщо покази відсутні, перевір адресу OLED і з’єднання DATA датчика.",
+    ],
+    sources: [sensorSource, oledSource],
+  },
+  "arduino-robot": {
+    board: "Arduino UNO R3",
+    code: "guides/arduino-robot/arduino-robot.ino",
+    wiring: [
+      ["5V", "HC-SR04 VCC"],
+      ["GND", "HC-SR04 GND"],
+      ["D9", "HC-SR04 TRIG"],
+      ["D10", "HC-SR04 ECHO"],
+    ],
+    libraries: [],
+    extra:
+      "Це перший етап робота: перевірка відстані. Для рухомого робота додатково потрібні шасі, мотори, драйвер моторів і відповідне живлення. Їх немає в поточному наборі, тому його ціна не включає ці деталі. Мотори не підключають безпосередньо до GPIO.",
+    result:
+      "У моніторі порту 115200 бод з’являються відстань і повідомлення про перешкоду. Керування моторами додається після вибору драйвера.",
+    steps: [
+      "Вимкни Arduino UNO і підключи HC-SR04: VCC до 5V, GND до GND.",
+      "З’єднай TRIG із D9, а ECHO — з D10; для іншої плати спершу перевір допустиму напругу входів.",
+      "В Arduino IDE вибери Arduino UNO та відкрий файл `arduino-robot.ino`. Додаткові бібліотеки не потрібні.",
+      "Завантаж код і відкрий монітор порту на швидкості 115200 бод.",
+      "Піднеси предмет до датчика та перевір виміряну відстань. Це тест сенсора; мотори й шасі до комплекту не входять.",
+    ],
+    sources: [
+      {
+        title: "Arduino UNO R3: контакти та документація",
+        url: "https://docs.arduino.cc/hardware/uno-rev3",
+      },
+    ],
+  },
+  "smart-lamp": {
+    board: "ESP32 DevKit (WROOM-32)",
+    wiring: [
+      ["Зовнішнє 5V", "WS2812B +5V"],
+      ["GND (спільна)", "WS2812B GND"],
+      ["GPIO18 → перетворювач рівня → 330 Ом", "WS2812B DIN"],
+    ],
+    libraries: ["FastLED"],
+    extra:
+      "Додатково потрібні блок 5 V з достатнім струмом, перетворювач логічного рівня 3,3→5 V, резистор 330 Ом і конденсатор 500–1000 мкФ. USB-C модуль у каталозі не гарантує струм для всієї стрічки. Живи стрічку окремо від плати; приклад обмежує яскравість і потужність.",
+    result:
+      "Зміни пароль точки доступу в коді, підключись до NEXLAB-Lamp і відкрий адресу з монітора порту. Кнопки вмикають та вимикають стрічку.",
+    steps: [
+      "Від’єднай живлення. Підготуй окреме стабільне джерело 5 V для LED-стрічки.",
+      "З’єднай землю джерела з GND ESP32; LED DIN підключай до GPIO18 через перетворювач рівня та резистор 330 Ом.",
+      "Додай конденсатор 500–1000 мкФ між +5 V та GND біля стрічки. Не живи стрічку від USB-порту ESP32.",
+      "Встанови FastLED, відкрий `smart-lamp.ino` і зміни пароль точки доступу `change-this-password`.",
+      "Завантаж код, підключи телефон до NEXLAB-Lamp і відкрий IP-адресу з монітора порту.",
+    ],
+    sources: [
+      {
+        title: "FastLED: обмеження споживання",
+        url: "https://fastled.io/docs/d3/d1d/group___power.html",
+      },
+      {
+        title: "NeoPixel: живлення й підключення",
+        url: "https://learn.adafruit.com/adafruit-neopixel-uberguide/best-practices",
+      },
+    ],
+  },
+  "smart-home": {
+    board: "ESP32 на релейному модулі",
+    wiring: [
+      ["3V3", "DHT22 VCC"],
+      ["GND", "DHT22 GND"],
+      ["GPIO17 (приклад)", "DHT22 DATA"],
+      ["GPIO16 (звір зі схемою модуля)", "Керування каналом реле"],
+    ],
+    libraries: ["DHT sensor library", "Adafruit Unified Sensor"],
+    extra:
+      "Релейні модулі мають різні GPIO й активні рівні. Перед прошивкою перевір RELAY_PIN і ACTIVE_LEVEL за схемою виробника. Приклад призначено для низьковольтного стенда без мережі 230 V. Резистор 10 кОм для голого DHT22 додається окремо.",
+    result:
+      "На стенді реле активується, коли температура перевищує 28 °C. За помилки сенсора реле вимкнене.",
+    steps: [
+      "Використовуй лише низьковольтний стенд; не підключай мережу 230 V до цього навчального прикладу.",
+      "Перевір схему саме свого релейного модуля: GPIO та активний рівень можуть відрізнятися.",
+      "Підключи DHT22 до 3V3, GND і GPIO17; без готової плати датчика додай резистор 10 кОм між DATA та 3V3.",
+      "Встанови DHT sensor library і Adafruit Unified Sensor. У коді звір RELAY_PIN та ACTIVE_LEVEL зі схемою модуля.",
+      "Завантаж код і перевір спрацювання реле без підключеного навантаження.",
+    ],
+    sources: [sensorSource],
+  },
+  "mini-weather": {
+    board: "Heltec WiFi Kit 32 V1/V2 (приклад)",
+    wiring: [
+      ["3V3", "DHT22 VCC"],
+      ["GND", "DHT22 GND"],
+      ["GPIO17", "DHT22 DATA"],
+      ["GPIO4 (вбудовано)", "OLED SDA"],
+      ["GPIO15 (вбудовано)", "OLED SCL"],
+      ["GPIO16 (вбудовано)", "OLED RESET"],
+    ],
+    libraries: [
+      "DHT sensor library",
+      "Adafruit Unified Sensor",
+      "Adafruit SSD1306",
+      "Adafruit GFX Library",
+    ],
+    extra:
+      "Код і контакти відповідають Heltec WiFi Kit 32 V1/V2. Для іншої плати або ревізії потрібно змінити OLED_SDA, OLED_SCL, OLED_RESET за її документацією. Резистор підтягування DHT22 та USB-кабель додаються окремо.",
+    result: "Вбудований OLED показує температуру та вологість.",
+    steps: [
+      "Перевір, що в тебе Heltec WiFi Kit 32 V1 або V2: вбудовані контакти OLED на інших платах відрізняються.",
+      "Підключи DHT22 до 3V3, GND та GPIO17; для окремого сенсора потрібен резистор 10 кОм між DATA та 3V3.",
+      "Установи бібліотеки DHT sensor library, Adafruit Unified Sensor, Adafruit SSD1306 та Adafruit GFX Library.",
+      "Відкрий `mini-weather.ino`, вибери відповідну плату Heltec та завантаж код.",
+      "Перевір температуру й вологість на вбудованому OLED. Якщо екран не запускається, звір ревізію плати та її контакти.",
+    ],
+    sources: [
+      sensorSource,
+      {
+        title: "Heltec WiFi Kit 32 V2: схема",
+        url: "https://resource.heltec.cn/download/WiFi_Kit_32/WIFI_Kit_32_Schematic_diagram_V2.pdf",
+      },
+    ],
+  },
+  "iot-controller": {
+    board: "ESP32 DevKit (WROOM-32)",
+    wiring: [
+      ["3V3", "OLED VCC"],
+      ["GND", "OLED GND"],
+      ["GPIO21", "OLED SDA"],
+      ["GPIO22", "OLED SCL"],
+    ],
+    libraries: ["Adafruit SSD1306", "Adafruit GFX Library"],
+    extra:
+      "Стартовий приклад перемикає стан на екрані. Для керування зовнішнім пристроєм потрібно окремо вибрати сумісний драйвер або виконавчий модуль. Зміни пароль точки доступу в коді.",
+    result:
+      "Підключись до NEXLAB-Control та відкрий адресу на OLED. Кнопка перемикає стан ON / OFF.",
+    steps: [
+      "Вимкни живлення ESP32 і підключи OLED I²C: VCC до 3V3, GND до GND, SDA до GPIO21, SCL до GPIO22.",
+      "Установи Adafruit SSD1306 і Adafruit GFX Library.",
+      "Відкрий `iot-controller.ino` та зміни пароль точки доступу `change-this-password`.",
+      "Завантаж прошивку й зачекай, доки OLED покаже стан і IP-адресу точки доступу.",
+      "Підключись до NEXLAB-Control та відкрий цю IP-адресу. Кнопка перемикає стан екрана; зовнішнє навантаження ще не підключене.",
+    ],
+    sources: [oledSource],
+  },
+};
+const safe = (value) =>
+  String(value ?? "").replace(
+    /[&<>"']/g,
+    (char) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+        char
+      ],
+  );
+function diagram(guide) {
+  const height = 100 + guide.wiring.length * 52;
+  return `<svg class="guide-diagram" role="img" aria-label="Схема з’єднань ${safe(guide.board)}" viewBox="0 0 820 ${height}" xmlns="http://www.w3.org/2000/svg"><rect width="820" height="${height}" rx="12" fill="#111613"/><text x="25" y="36" fill="#d5dfce" font-size="20">Плата → компонент</text>${guide.wiring
+    .map(([from, to], index) => {
+      const y = 75 + index * 52;
+      return `<rect x="20" y="${y - 22}" width="360" height="40" rx="6" fill="#28372d"/><rect x="470" y="${y - 22}" width="330" height="40" rx="6" fill="#19352f"/><path d="M380 ${y - 2} H470" stroke="#8be4d0" stroke-width="3"/><text x="32" y="${y + 3}" fill="#d7e3ca" font-size="14">${safe(from)}</text><text x="482" y="${y + 3}" fill="#c0ded5" font-size="16">${safe(to)}</text>`;
+    })
+    .join("")}</svg>`;
 }
-export async function renderProjectGuide(project,root){
-  const guide=projectGuides[project.id];if(!guide)return;
-  const codePath=guide.code||'guides/'+project.id+'.ino';
-  const response=await fetch(codePath);if(!response.ok)throw new Error('GUIDE_UNAVAILABLE');
-  const code=await response.text();
-  root.insertAdjacentHTML('beforeend',`<section class="project-guide"><div class="section-heading"><div><p class="eyebrow">Від компонентів до першого запуску</p><h2>Збери й перевір</h2></div></div><p class="guide-notice">${safe(guide.extra)}</p><div class="guide-grid"><section class="guide-panel"><h3>Схема з’єднань</h3>${diagram(guide)}<table class="guide-wiring"><thead><tr><th scope="col">${safe(guide.board)}</th><th scope="col">Компонент</th></tr></thead><tbody>${guide.wiring.map(([from,to])=>`<tr><td>${safe(from)}</td><td>${safe(to)}</td></tr>`).join('')}</tbody></table></section><section class="guide-panel"><h3>Кроки складання</h3><ol>${(guide.steps||commonSteps).map(step=>`<li>${safe(step)}</li>`).join('')}</ol><p><strong>Бібліотеки:</strong> ${safe(guide.libraries.join(', ') || 'Лише стандартні бібліотеки Arduino')}</p><p><strong>Очікуваний результат:</strong> ${safe(guide.result)}</p><h3>Стартовий код</h3><a class="button button-quiet" href="${safe(codePath)}" download>Завантажити .ino ↓</a><details><summary>Переглянути код</summary><pre><code>${safe(code)}</code></pre></details><p>Документація: ${guide.sources.map(source=>`<a href="${safe(source.url)}" target="_blank" rel="noopener noreferrer">${safe(source.title)}</a>`).join(' · ')}</p></section></div></section>`);
+export async function renderProjectGuide(project, root) {
+  const guide = projectGuides[project.id];
+  if (!guide) return;
+  const codePath = guide.code || "guides/" + project.id + ".ino";
+  const response = await fetch(codePath);
+  if (!response.ok) throw new Error("GUIDE_UNAVAILABLE");
+  const code = await response.text();
+  root.insertAdjacentHTML(
+    "beforeend",
+    `<section class="project-guide"><div class="section-heading"><div><p class="eyebrow">Від компонентів до першого запуску</p><h2>Збери й перевір</h2></div></div><p class="guide-notice">${safe(guide.extra)}</p><div class="guide-grid"><section class="guide-panel"><h3>Схема з’єднань</h3>${diagram(guide)}<table class="guide-wiring"><thead><tr><th scope="col">${safe(guide.board)}</th><th scope="col">Компонент</th></tr></thead><tbody>${guide.wiring.map(([from, to]) => `<tr><td>${safe(from)}</td><td>${safe(to)}</td></tr>`).join("")}</tbody></table></section><section class="guide-panel"><h3>Кроки складання</h3><ol>${(guide.steps || commonSteps).map((step) => `<li>${safe(step)}</li>`).join("")}</ol><p><strong>Бібліотеки:</strong> ${safe(guide.libraries.join(", ") || "Лише стандартні бібліотеки Arduino")}</p><p><strong>Очікуваний результат:</strong> ${safe(guide.result)}</p><h3>Стартовий код</h3><a class="button button-quiet" href="${safe(codePath)}" download>Завантажити .ino ↓</a><details><summary>Переглянути код</summary><pre><code>${safe(code)}</code></pre></details><p>Документація: ${guide.sources.map((source) => `<a href="${safe(source.url)}" target="_blank" rel="noopener noreferrer">${safe(source.title)}</a>`).join(" · ")}</p></section></div></section>`,
+  );
 }

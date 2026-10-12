@@ -1,6 +1,6 @@
-#include <WiFi.h>
-#include <WebServer.h>
 #include <FastLED.h>
+#include <WebServer.h>
+#include <WiFi.h>
 constexpr int DATA_PIN = 18;
 constexpr int LED_COUNT = 60;
 CRGB leds[LED_COUNT];
@@ -14,10 +14,22 @@ void setup() {
   WiFi.softAP("NEXLAB-Lamp", "change-this-password");
   Serial.println(WiFi.softAPIP());
   server.on("/", HTTP_GET, []() {
-    server.send(200, "text/html", "<h1>NEXLAB Lamp</h1><form method='post' action='/on'><button>On</button></form><form method='post' action='/off'><button>Off</button></form>");
+    server.send(200, "text/html",
+                "<h1>NEXLAB Lamp</h1><form method='post' "
+                "action='/on'><button>On</button></form><form method='post' "
+                "action='/off'><button>Off</button></form>");
   });
-  server.on("/on", HTTP_POST, []() {fill_solid(leds, LED_COUNT, CRGB::Orange); FastLED.show(); server.sendHeader("Location", "/"); server.send(303);});
-  server.on("/off", HTTP_POST, []() {FastLED.clear(true); server.sendHeader("Location", "/"); server.send(303);});
+  server.on("/on", HTTP_POST, []() {
+    fill_solid(leds, LED_COUNT, CRGB::Orange);
+    FastLED.show();
+    server.sendHeader("Location", "/");
+    server.send(303);
+  });
+  server.on("/off", HTTP_POST, []() {
+    FastLED.clear(true);
+    server.sendHeader("Location", "/");
+    server.send(303);
+  });
   server.begin();
 }
-void loop() {server.handleClient();}
+void loop() { server.handleClient(); }

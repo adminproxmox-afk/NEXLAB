@@ -1,1 +1,97 @@
-<!doctype html><html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111412"><title>Оформлення — NEXLAB</title><link rel="stylesheet" href="css/style.css"><script type="module" src="js/main.js"></script></head><body><div data-site-header></div><main class="wrap page-main"><div class="breadcrumbs"><a href="index.html">Головна</a><span>/</span><a href="cart.html">Кошик</a><span>/</span><span>Оформлення</span></div><div class="page-title"><p class="eyebrow">Останній крок</p><h1>Оформити замовлення</h1><p>Заявка потребує підтвердження магазину. Онлайн-оплата не підключена.</p><p class="demo-notice">Демонстраційний сайт: заявки не є реальними замовленнями. Не вводь справжні персональні дані.</p></div><div class="checkout-layout"><form class="checkout-form" data-checkout-form><fieldset><legend>Одержувач</legend><label>Ім’я та прізвище<input name="name" autocomplete="name" maxlength="80" required></label><label>Телефон<input name="phone" type="tel" placeholder="+380XXXXXXXXX" autocomplete="tel" maxlength="30" required></label></fieldset><fieldset><legend>Доставка</legend><label>Перевізник<select name="carrier" required><option value="nova-poshta">Нова пошта</option><option value="ukrposhta">Укрпошта</option></select></label><label>Місто<input name="city" autocomplete="address-level2" maxlength="100" required></label><label>Відділення / поштомат<input name="address" placeholder="Номер та адреса відділення" maxlength="200" required></label></fieldset><fieldset><legend>Оплата</legend><label>Спосіб оплати<select name="payment" required><option value="cod">Післяплата</option></select></label></fieldset><p>Доставка та комісія за післяплату оплачуються окремо за тарифом перевізника. <a class="text-link" href="delivery.html">Умови доставки ↗</a></p><p class="checkout-message" role="alert" data-checkout-message></p><button class="button button-primary" type="submit">Підтвердити замовлення</button></form><aside class="cart-summary checkout-summary" data-checkout-summary></aside></div></main><div data-site-footer></div><div class="toast-region" aria-live="polite" data-toast-region></div></body></html>
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#111412" />
+    <title>Оформлення — NEXLAB</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script type="module" src="js/main.js"></script>
+  </head>
+  <body>
+    <div data-site-header></div>
+    <main class="wrap page-main">
+      <div class="breadcrumbs">
+        <a href="index.html">Головна</a><span>/</span
+        ><a href="cart.html">Кошик</a><span>/</span><span>Оформлення</span>
+      </div>
+      <div class="page-title">
+        <p class="eyebrow">Останній крок</p>
+        <h1>Оформити замовлення</h1>
+        <p>
+          Заявка потребує підтвердження магазину. Онлайн-оплата не підключена.
+        </p>
+        <p class="demo-notice">
+          Демонстраційний сайт: заявки не є реальними замовленнями. Не вводь
+          справжні персональні дані.
+        </p>
+      </div>
+      <div class="checkout-layout">
+        <form class="checkout-form" data-checkout-form>
+          <fieldset>
+            <legend>Одержувач</legend>
+            <label
+              >Ім’я та прізвище<input
+                name="name"
+                autocomplete="name"
+                maxlength="80"
+                required /></label
+            ><label
+              >Телефон<input
+                name="phone"
+                type="tel"
+                placeholder="+380XXXXXXXXX"
+                autocomplete="tel"
+                maxlength="30"
+                required
+            /></label>
+          </fieldset>
+          <fieldset>
+            <legend>Доставка</legend>
+            <label
+              >Перевізник<select name="carrier" required>
+                <option value="nova-poshta">Нова пошта</option>
+                <option value="ukrposhta">Укрпошта</option>
+              </select></label
+            ><label
+              >Місто<input
+                name="city"
+                autocomplete="address-level2"
+                maxlength="100"
+                required /></label
+            ><label
+              >Відділення / поштомат<input
+                name="address"
+                placeholder="Номер та адреса відділення"
+                maxlength="200"
+                required
+            /></label>
+          </fieldset>
+          <fieldset>
+            <legend>Оплата</legend>
+            <label
+              >Спосіб оплати<select name="payment" required>
+                <option value="cod">Післяплата</option>
+              </select></label
+            >
+          </fieldset>
+          <p>
+            Доставка та комісія за післяплату оплачуються окремо за тарифом
+            перевізника.
+            <a class="text-link" href="delivery.html">Умови доставки ↗</a>
+          </p>
+          <p class="checkout-message" role="alert" data-checkout-message></p>
+          <button class="button button-primary" type="submit">
+            Підтвердити замовлення
+          </button>
+        </form>
+        <aside
+          class="cart-summary checkout-summary"
+          data-checkout-summary
+        ></aside>
+      </div>
+    </main>
+    <div data-site-footer></div>
+    <div class="toast-region" aria-live="polite" data-toast-region></div>
+  </body>
+</html>

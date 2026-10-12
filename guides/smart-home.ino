@@ -13,7 +13,9 @@ void setup() {
 void loop() {
   float temperature = dht.readTemperature();
   bool activate = !isnan(temperature) && temperature > 28;
-  digitalWrite(RELAY_PIN, activate ? ACTIVE_LEVEL : (ACTIVE_LEVEL == HIGH ? LOW : HIGH));
-  Serial.print("Temperature: "); Serial.println(temperature);
+  digitalWrite(RELAY_PIN,
+               activate ? ACTIVE_LEVEL : (ACTIVE_LEVEL == HIGH ? LOW : HIGH));
+  Serial.print("Temperature: ");
+  Serial.println(temperature);
   delay(2200);
 }

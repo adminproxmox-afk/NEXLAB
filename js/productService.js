@@ -1,1 +1,1 @@
-export * from '../api/productService.js';
+export * from "../api/productService.js";
