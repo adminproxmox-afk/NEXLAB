@@ -13,15 +13,26 @@ const safe = (value) =>
   );
 
 export async function initializeCatalog() {
-  if (!document.querySelector("[data-catalog-page]")) return;
+  const page = document.querySelector("[data-catalog-page]");
+  if (!page) return;
+
+  const controls = page.querySelector("[data-catalog-controls]");
+  const title = page.querySelector("[data-catalog-title]");
+  if (!controls || !title) {
+    page.insertAdjacentHTML(
+      "beforeend",
+      '<p class="service-error" role="status">Не вдалося відкрити каталог. Онови сторінку або повідом команді NEXLAB.</p>',
+    );
+    console.error("Catalog page is missing its required controls or title.");
+    return;
+  }
+
   const [products, categories] = await Promise.all([
     getProducts(),
     getCategories(),
   ]);
   const params = new URLSearchParams(location.search);
-  const controls = document.querySelector("[data-catalog-controls]");
-  const title = document.querySelector("[data-catalog-title]");
-  const breadcrumb = document.querySelector("[data-catalog-breadcrumbs]");
+  const breadcrumb = page.querySelector("[data-catalog-breadcrumbs]");
   const isFavorites =
     params.get("favorites") === "1" ||
     document.body.hasAttribute("data-favorites-page");
