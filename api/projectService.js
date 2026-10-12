@@ -38,17 +38,7 @@ export async function getProjects() {
             }));
           })
           .catch(async (error) => {
-            if (
-              ![
-                "permission-denied",
-                "unavailable",
-                "firestore/permission-denied",
-                "firestore/unavailable",
-              ].includes(error.code)
-            )
-              throw error;
-            firebaseProjectsWarning =
-              "Показуємо базові DIY-проєкти: не вдалося синхронізувати їх із Firebase. Перевір правила Firestore.";
+            firebaseProjectsWarning = `Показуємо базові DIY-проєкти: Firebase повернув ${error.code || "помилку доступу"}. Перевір, чи створено Firestore та опубліковано правила.`;
             return fallbackProjects();
           })
       : request("projects")

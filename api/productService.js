@@ -11,8 +11,11 @@ let pending;
 let currentCategories = categories;
 let storeSettings = shopConfig;
 let firebaseCatalogWarning = "";
+let firebaseSettingsWarning = "";
 export function getFirebaseCatalogWarning() {
-  return firebaseCatalogWarning;
+  return [firebaseSettingsWarning, firebaseCatalogWarning]
+    .filter(Boolean)
+    .join(" ");
 }
 export function setShopSettings(settings) {
   storeSettings = settings;
@@ -22,10 +25,10 @@ export async function loadShopSettings() {
     try {
       storeSettings =
         (await getFirebaseDocument("settings", "store")) || shopConfig;
+      firebaseSettingsWarning = "";
     } catch (error) {
-      if (error.code !== "permission-denied" && error.code !== "unavailable")
-        throw error;
       storeSettings = shopConfig;
+      firebaseSettingsWarning = `Використовуються базові налаштування магазину: Firebase повернув ${error.code || "помилку доступу"}. Перевір, чи створено Firestore та опубліковано правила.`;
     }
     return storeSettings;
   }
@@ -88,13 +91,9 @@ export async function refreshProducts() {
       })
       .catch((error) => {
         if (error.message === "BACKEND_UNAVAILABLE") return products;
-        if (
-          isFirebaseConfigured() &&
-          ["permission-denied", "unavailable", "firestore/permission-denied", "firestore/unavailable"].includes(error.code)
-        ) {
+        if (isFirebaseConfigured()) {
           currentCategories = categories;
-          firebaseCatalogWarning =
-            "Показуємо базовий каталог: не вдалося синхронізувати дані з Firebase. Перевір правила Firestore.";
+          firebaseCatalogWarning = `Показуємо базовий каталог: Firebase повернув ${error.code || "помилку доступу"}. Перевір, чи створено Firestore та опубліковано правила.`;
           return products;
         }
         throw error;
