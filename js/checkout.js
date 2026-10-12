@@ -122,7 +122,10 @@ export async function initializeCheckout(settings = shopConfig) {
       };
       message.textContent =
         messages[error.message] ||
-        "Не вдалося зберегти замовлення. Спробуй ще раз.";
+        (error.code === "permission-denied" ||
+        error.code === "firestore/permission-denied"
+          ? "Firebase відхилив запис. Опублікуй актуальні правила з firestore.rules у Firebase Console і спробуй знову."
+          : "Не вдалося зберегти замовлення. Спробуй ще раз.");
       if (error.status === 409) {
         sessionStorage.removeItem("nexlab-checkout-attempt");
         try {
