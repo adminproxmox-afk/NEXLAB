@@ -28,13 +28,13 @@ export async function initializeCatalog() {
   const isSale = params.get("tag") === "sale";
   if (isFavorites) title.textContent = "Обране";
   if (isSale) title.textContent = "Акції";
-  if (isFavorites)
+  if (isFavorites && breadcrumb)
     breadcrumb.innerHTML =
       '<a href="index.html">Головна</a><span>/</span><span>Обране</span>';
-  else if (isSale)
+  else if (isSale && breadcrumb)
     breadcrumb.innerHTML =
       '<a href="index.html">Головна</a><span>/</span><span>Акції</span>';
-  else if (params.get("category"))
+  else if (params.get("category") && breadcrumb)
     breadcrumb.innerHTML = `<a href="index.html">Головна</a><span>/</span><a href="catalog.html">Каталог</a><span>/</span><span>${safe(params.get("category"))}</span>`;
   const categoriesOptions = categories
     .map(
