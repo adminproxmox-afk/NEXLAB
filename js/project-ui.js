@@ -1,5 +1,6 @@
 export const safe=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 export const money=value=>new Intl.NumberFormat('uk-UA').format(value)+' ₴';
+export const componentLabel=count=>count+' '+({one:'компонент',few:'компоненти',many:'компонентів',other:'компонента'}[new Intl.PluralRules('uk-UA').select(count)]);
 
 export function projectInventory(project,products){
   const items=project.components.map(component=>({component,product:products.find(item=>item.id===component.productId)}));
@@ -16,5 +17,5 @@ export function projectCover(project,products){
 export function projectCard(project,products){
   const {ready,total}=projectInventory(project,products);
   const url='project.html?id='+encodeURIComponent(project.id);
-  return `<article class="project-card">${projectCover(project,products)}<div class="project-card-body"><div class="project-card-kicker"><span>${safe(project.difficulty)}</span><span>${ready}/${total} позицій у наявності</span></div><h3><a href="${url}">${safe(project.name)}</a></h3><p>${safe(project.description)}</p><div class="project-card-meta"><span>${total} компонентів</span><strong>≈ ${money(project.estimatedPrice)}</strong></div><a class="project-card-open" href="${url}">Відкрити проєкт <span aria-hidden="true">↗</span></a></div></article>`;
+  return `<article class="project-card">${projectCover(project,products)}<div class="project-card-body"><div class="project-card-kicker"><span>${safe(project.difficulty)}</span><span>${ready}/${total} позицій у наявності</span></div><h3><a href="${url}">${safe(project.name)}</a></h3><p>${safe(project.description)}</p><div class="project-card-meta"><span>${componentLabel(total)}</span><strong>≈ ${money(project.estimatedPrice)}</strong></div><a class="project-card-open" href="${url}">Відкрити проєкт <span aria-hidden="true">↗</span></a></div></article>`;
 }
