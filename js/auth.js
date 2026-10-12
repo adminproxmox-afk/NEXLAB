@@ -49,7 +49,7 @@ export function initializeAuthForms() {
     if (form)
       form.insertAdjacentHTML(
         "beforebegin",
-        '<p class="demo-notice" role="status">Облікові записи працюють лише на версії сайта з підключеним сервером. Каталог і проєкти доступні без входу.</p>',
+        '<p class="demo-notice" role="status">Для облікових записів потрібен запущений сервер NEXLAB або налаштований Firebase. Каталог і проєкти доступні без входу.</p>',
       );
   }
   const loginForm = document.querySelector("[data-login-form]");
@@ -79,7 +79,7 @@ export function initializeAuthForms() {
         loginForm,
         "password",
         error.message === "BACKEND_UNAVAILABLE"
-          ? "Облікові записи потребують запущеного сервера NEXLAB."
+          ? "Облікові записи потребують запущеного сервера NEXLAB або налаштованого Firebase."
           : "Електронна пошта або пароль не збігаються.",
       );
       setBusy(button, false, "Увійти");
@@ -137,7 +137,7 @@ export function initializeAuthForms() {
         error.message === "EMAIL_TAKEN"
           ? "Цю адресу вже зареєстровано."
           : error.message === "BACKEND_UNAVAILABLE"
-            ? "Облікові записи потребують запущеного сервера NEXLAB."
+            ? "Облікові записи потребують запущеного сервера NEXLAB або налаштованого Firebase."
             : "Не вдалося створити обліковий запис.",
       );
       setBusy(button, false, "Створити обліковий запис");

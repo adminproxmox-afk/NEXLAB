@@ -1,4 +1,5 @@
 import { request, setCsrfToken } from "../api/client.js";
+import { firebaseLogout, firebaseSession, isFirebaseConfigured } from "../api/firebaseAuth.js";
 let currentUser = null;
 export function setSession({ user, csrf }) {
   currentUser = user;
@@ -9,6 +10,10 @@ export function setSession({ user, csrf }) {
 export async function initializeSession() {
   localStorage.removeItem("nexlab_users");
   localStorage.removeItem("nexlab_session");
+  if (isFirebaseConfigured()) {
+    const session = await firebaseSession();
+    return setSession(session);
+  }
   try {
     return setSession(await request("session"));
   } catch (error) {
@@ -18,6 +23,10 @@ export async function initializeSession() {
   }
 }
 export async function logout() {
+  if (isFirebaseConfigured()) {
+    await firebaseLogout();
+    return setSession({ user: null, csrf: "firebase" });
+  }
   setSession(await request("auth/logout", { method: "POST", body: {} }));
 }
 export const getCurrentUser = () => currentUser;

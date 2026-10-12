@@ -1,9 +1,10 @@
+import { isFirebaseConfigured } from "./firebaseAuth.js";
 let csrfToken = "";
 let backendUnavailable = false;
 export function setCsrfToken(token) {
   csrfToken = token || "";
 }
-export const hasBackend = () => !backendUnavailable;
+export const hasBackend = () => isFirebaseConfigured() || !backendUnavailable;
 export async function request(path, options = {}) {
   if (backendUnavailable) throw new Error("BACKEND_UNAVAILABLE");
   const { body, ...rest } = options;
