@@ -1,15 +1,49 @@
-import { getMyProjects } from '../api/userProjectsService.js';
+import { getMyProjects, updateMyProject, deleteMyProject } from '../api/userProjectsService.js';
 import { getProjectById } from './projectService.js';
-import { getProductById } from './productService.js';
-import { productArt, products } from './products.js';
-import { getCurrentUser } from './session.js';
-
-const safe=value=>String(value||'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+import { getProducts } from './productService.js';
+import { toast } from './notifications.js';
+import { money, projectCover, safe } from './project-ui.js';
 
 export async function initializeMyProjects() {
-  const root=document.querySelector('[data-my-projects]'); if(!root)return;
-  const user=getCurrentUser(); const saved=await getMyProjects(user?.id);
-  const records=await Promise.all(saved.map(async record=>({record,project:await getProjectById(record.projectId)})));
-  const products=await Promise.all(records.map(({project})=>getProductById(project?.components[0]?.productId)));
-  root.innerHTML=records.length?`<div class="my-project-grid">${records.map(({record,project},index)=>project?`<article class="my-project-card"><a href="project.html?id=${encodeURIComponent(project.id)}" class="my-project-art">${products[index]?productArt(products[index],true):''}</a><div class="my-project-copy"><p class="eyebrow">${safe(project.difficulty)}</p><h2>${safe(project.name)}</h2><div class="progress-meta"><span>Готовність</span><strong>${Math.min(100,Math.max(0,record.progress))}%</strong></div><div class="progress-track"><span style="width:${Math.min(100,Math.max(0,record.progress))}%"></span></div><div class="my-project-components">${record.components.map(item=>`<span>${safe(products.find(product=>product.id===item.productId)?.name || item.productId)}</span>`).join('')}</div><a class="text-link" href="project.html?id=${encodeURIComponent(project.id)}">Відкрити проєкт <span>↗</span></a></div></article>`:'').join('')}</div>`:'<div class="empty-state"><span class="empty-mark">◈</span><h2>Збережених проєктів поки немає</h2><p>Обери DIY-проєкт і збережи його у своїй майстерні.</p><a class="button button-primary" href="index.html#projects">Переглянути проєкти <span>↗</span></a></div>';
+  const root=document.querySelector('[data-my-projects]');
+  if(!root)return;
+  async function draw(){
+    root.innerHTML='<p role="status">Завантажуємо твою майстерню…</p>';
+    try{
+      const [saved,products]=await Promise.all([getMyProjects(),getProducts()]);
+      const records=await Promise.all(saved.map(async record=>({record,project:await getProjectById(record.projectId)})));
+      const valid=records.filter(item=>item.project);
+      if(!valid.length){root.innerHTML='<div class="project-empty"><span aria-hidden="true">◈</span><h2>Майстерня поки порожня</h2><p>Збережи цікавий проєкт — тут зможеш відмічати підготовлені компоненти й стежити за збіркою.</p><a class="button button-primary" href="projects.html">Обрати проєкт <span>↗</span></a></div>';return;}
+      root.innerHTML=`<div class="my-project-grid">${valid.map(({record,project})=>{
+        const checklist=project.components.map((_,index)=>record.checklist?.[index]===true);
+        const completed=checklist.filter(Boolean).length,progress=project.components.length?Math.round(completed/project.components.length*100):0;
+        return `<article class="my-project-card" data-saved-project="${safe(project.id)}"><a href="project.html?id=${encodeURIComponent(project.id)}" class="my-project-art">${projectCover(project,products)}</a><div class="my-project-copy"><div class="my-project-heading"><p class="eyebrow">${safe(project.difficulty)}</p><a class="my-project-open" href="project.html?id=${encodeURIComponent(project.id)}" aria-label="Відкрити ${safe(project.name)}">↗</a></div><h2><a href="project.html?id=${encodeURIComponent(project.id)}">${safe(project.name)}</a></h2><div class="progress-meta"><span data-progress-label>${completed} із ${project.components.length} компонентів підготовлено</span><strong data-progress-value>${progress}%</strong></div><div class="progress-track" role="progressbar" aria-label="Прогрес складання: ${safe(project.name)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress}"><span data-progress-fill style="width:${progress}%"></span></div><div class="my-project-checklist">${project.components.map((item,index)=>{const product=products.find(entry=>entry.id===item.productId);return `<label><input type="checkbox" data-project-check="${index}" ${checklist[index]?'checked':''}><span class="my-project-check-photo">${product?.images?.[0]?`<img src="${safe(product.images[0])}" alt="" loading="lazy" decoding="async">`:''}</span><span class="my-project-check-name">${safe(product?.name||item.productId)}${item.quantity>1?` · ${item.quantity} шт.`:''}</span><span class="my-project-checkmark" aria-hidden="true">✓</span></label>`;}).join('')}</div><div class="my-project-footer"><span>Набір ≈ ${money(project.estimatedPrice)}</span><button type="button" class="my-project-remove" data-project-remove>Прибрати з майстерні</button></div></div></article>`;
+      }).join('')}</div>`;
+    }catch(error){
+      root.innerHTML=`<div class="project-empty" role="alert"><h2>Не вдалося завантажити майстерню</h2><p>${error.status===401?'Увійди до облікового запису, щоб переглянути збережені проєкти.':'Перевір підключення до сервера та спробуй ще раз.'}</p><button class="button button-quiet" type="button" data-project-retry>Спробувати ще раз</button></div>`;
+    }
+  }
+  root.addEventListener('change',async event=>{
+    const checkbox=event.target.closest('[data-project-check]');
+    if(!checkbox)return;
+    const card=checkbox.closest('[data-saved-project]'),checks=[...card.querySelectorAll('[data-project-check]')];
+    const completed=checks.filter(input=>input.checked).length,progress=Math.round(completed/checks.length*100);
+    card.querySelector('[data-progress-label]').textContent=`${completed} із ${checks.length} компонентів підготовлено`;
+    card.querySelector('[data-progress-value]').textContent=progress+'%';
+    card.querySelector('.progress-track').setAttribute('aria-valuenow',String(progress));
+    card.querySelector('[data-progress-fill]').style.width=progress+'%';
+    checks.forEach(input=>input.disabled=true);
+    try{await updateMyProject(card.dataset.savedProject,checks.map(input=>input.checked));}
+    catch{checkbox.checked=!checkbox.checked;const restored=checks.filter(input=>input.checked).length,value=Math.round(restored/checks.length*100);card.querySelector('[data-progress-label]').textContent=`${restored} із ${checks.length} компонентів підготовлено`;card.querySelector('[data-progress-value]').textContent=value+'%';card.querySelector('.progress-track').setAttribute('aria-valuenow',String(value));card.querySelector('[data-progress-fill]').style.width=value+'%';toast('Не вдалося зберегти прогрес. Перевір з’єднання та спробуй ще раз.');}
+    finally{checks.forEach(input=>input.disabled=false);}
+  });
+  root.addEventListener('click',async event=>{
+    if(event.target.closest('[data-project-retry]')){await draw();return;}
+    const button=event.target.closest('[data-project-remove]');
+    if(!button)return;
+    const card=button.closest('[data-saved-project]');button.disabled=true;
+    try{await deleteMyProject(card.dataset.savedProject);toast('Проєкт прибрано з майстерні.');await draw();}
+    catch{button.disabled=false;toast('Не вдалося прибрати проєкт. Спробуй ще раз.');}
+  });
+  await draw();
 }

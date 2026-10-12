@@ -1,26 +1,45 @@
 // Демонстраційний каталог українською; сторінки отримують його через productService.js.
 export const products = [
-  {id:'esp32-devkit',name:'ESP32 DevKit V1',category:'Мікроконтролери',description:'Компактна плата для IoT-пристроїв і прототипів: Wi-Fi, Bluetooth та роз’єми для сенсорів і модулів.',price:350,oldPrice:null,image:'board',rating:4.8,stock:24,tags:['ESP32','Wi-Fi','Bluetooth'],featured:true},
-  {id:'arduino-uno',name:'Arduino UNO R3',category:'Мікроконтролери',description:'Надійна плата для навчання, швидких прототипів та інтерактивних пристроїв.',price:490,oldPrice:560,image:'arduino',rating:4.9,stock:18,tags:['Arduino','ATmega328P','USB'],featured:true},
-  {id:'raspberry-pi-5',name:'Raspberry Pi 5 · 4 GB',category:'Комп’ютери',description:'Одноплатний комп’ютер для домашнього сервера, медіаплеєра, робота чи настільного проєкту на Linux.',price:3890,oldPrice:null,image:'pi',rating:4.9,stock:7,tags:['Raspberry Pi','4 GB','Linux'],featured:true},
-  {id:'dht22',name:'Датчик температури DHT22',category:'Датчики й модулі',description:'Цифровий датчик температури та вологості для метеостанцій, теплиць і систем розумного дому.',price:145,oldPrice:null,image:'sensor',rating:4.7,stock:32,tags:['Температура','Вологість','1-Wire'],featured:true},
-  {id:'oled-096',name:'OLED-дисплей 0.96″',category:'Датчики й модулі',description:'Монохромний екран 128×64 з інтерфейсом I²C. Чітко показує вимірювання та меню пристрою.',price:185,oldPrice:null,image:'display',rating:4.8,stock:41,tags:['OLED','I²C','128×64'],featured:true},
-  {id:'hc-sr04',name:'Ультразвуковий датчик HC-SR04',category:'Датчики й модулі',description:'Вимірює відстань від 2 см до 4 м. Стане у пригоді для роботів, паркувальних сенсорів та автоматизації.',price:89,oldPrice:null,image:'ultrasonic',rating:4.6,stock:56,tags:['Відстань','5 V','Echo'],featured:true},
-  {id:'rgb-strip',name:'Адресна RGB LED-стрічка · 1 м',category:'Освітлення',description:'Стрічка з керованими RGB-світлодіодами для підсвічування та світлових інсталяцій.',price:320,oldPrice:null,image:'strip',rating:4.7,stock:14,tags:['RGB','WS2812B','5 V'],featured:false},
-  {id:'usb-c-power',name:'Модуль живлення USB-C',category:'Живлення',description:'Зручний модуль для живлення прототипів із роз’ємом USB-C, захистом і виходами 5 V та 3,3 V.',price:120,oldPrice:null,image:'power',rating:4.8,stock:29,tags:['USB-C','5 V','3.3 V'],featured:false},
-  {id:'solder-kit',name:'Стартовий набір для паяння',category:'Інструменти',description:'Паяльник, підставка та витратні матеріали — усе необхідне для домашньої майстерні.',price:790,oldPrice:null,image:'tool',rating:4.5,stock:10,tags:['Паяння','Для початківців'],featured:false},
-  {id:'jumper-wires',name:'Набір дротів Dupont',category:'Кабелі й роз’єми',description:'120 з’єднувальних дротів трьох типів для макетних плат і швидкого складання схем.',price:110,oldPrice:null,image:'cable',rating:4.8,stock:64,tags:['Dupont','Jumper','120 шт.'],featured:false},
-  {id:'breadboard-kit',name:'Набір для прототипування',category:'Набори для проєктів',description:'Макетна плата, дроти й базові компоненти — зручний старт для перших електронних експериментів.',price:430,oldPrice:null,image:'kit',rating:4.6,stock:16,tags:['Макетна плата','Для початківців'],featured:false},
-  {id:'pla-filament',name:'Філамент PLA · 1 кг',category:'3D-друк',description:'Універсальний PLA-пластик для корпусів, тримачів та інших деталей власного проєкту.',price:540,oldPrice:null,image:'filament',rating:4.7,stock:21,tags:['PLA','1.75 мм','1 кг'],featured:false},
-  {id:'resistor-pack',name:'Набір резисторів · 600 шт.',category:'Електронні компоненти',description:'Популярні номінали для створення прототипів і ремонту електронних схем.',price:160,oldPrice:null,image:'components',rating:4.9,stock:38,tags:['Резистори','Набір','600 шт.'],featured:false},
-  {id:'esp32-cam',name:'ESP32-CAM',category:'Мікроконтролери',description:'Плата ESP32 із вбудованою камерою для відеоспостереження, розпізнавання об’єктів та IoT-пристроїв.',price:420,oldPrice:null,image:'board',rating:4.7,stock:11,tags:['ESP32','Камера','Wi-Fi'],featured:false},
-  {id:'esp32-oled',name:'Плата ESP32 з OLED-дисплеєм',category:'Мікроконтролери',description:'Компактна плата ESP32 із вбудованим OLED-екраном для автономних індикаторів і прототипів.',price:620,oldPrice:null,image:'display',rating:4.8,stock:0,tags:['ESP32','OLED','Wi-Fi'],featured:false},
-  {id:'esp32-relay',name:'Релейний модуль ESP32 · 2 канали',category:'Мікроконтролери',description:'Двоканальний Wi-Fi-контролер із реле для керування побутовими пристроями та автоматизацією.',price:560,oldPrice:null,image:'power',rating:4.6,stock:8,tags:['ESP32','Реле','Розумний дім'],featured:false}
+  {id:'esp32-devkit',name:'ESP32 DevKit V1',category:'Мікроконтролери',description:'Компактна плата для IoT-пристроїв і прототипів: Wi-Fi, Bluetooth та роз’єми для сенсорів і модулів.',price:350,oldPrice:null,image:'board',stock:24,tags:['ESP32','Wi-Fi','Bluetooth'],featured:true},
+  {id:'arduino-uno',name:'Arduino UNO R3',category:'Мікроконтролери',description:'Надійна плата для навчання, швидких прототипів та інтерактивних пристроїв.',price:490,oldPrice:560,image:'arduino',stock:18,tags:['Arduino','ATmega328P','USB'],featured:true},
+  {id:'raspberry-pi-5',name:'Raspberry Pi 5 · 4 GB',category:'Комп’ютери',description:'Одноплатний комп’ютер для домашнього сервера, медіаплеєра, робота чи настільного проєкту на Linux.',price:3890,oldPrice:null,image:'pi',stock:7,tags:['Raspberry Pi','4 GB','Linux'],featured:true},
+  {id:'dht22',name:'Датчик температури DHT22',category:'Датчики й модулі',description:'Цифровий датчик температури та вологості для метеостанцій, теплиць і систем розумного дому.',price:145,oldPrice:null,image:'sensor',stock:32,tags:['Температура','Вологість','1-Wire'],featured:true},
+  {id:'oled-096',name:'OLED-дисплей 0.96″',category:'Датчики й модулі',description:'Монохромний екран 128×64 з інтерфейсом I²C. Чітко показує вимірювання та меню пристрою.',price:185,oldPrice:null,image:'display',stock:41,tags:['OLED','I²C','128×64'],featured:true},
+  {id:'hc-sr04',name:'Ультразвуковий датчик HC-SR04',category:'Датчики й модулі',description:'Вимірює відстань від 2 см до 4 м. Стане у пригоді для роботів, паркувальних сенсорів та автоматизації.',price:89,oldPrice:null,image:'ultrasonic',stock:56,tags:['Відстань','5 V','Echo'],featured:true},
+  {id:'rgb-strip',name:'Адресна RGB LED-стрічка · 1 м',category:'Освітлення',description:'Стрічка з керованими RGB-світлодіодами для підсвічування та світлових інсталяцій.',price:320,oldPrice:null,image:'strip',stock:14,tags:['RGB','WS2812B','5 V'],featured:false},
+  {id:'usb-c-power',name:'Модуль живлення USB-C',category:'Живлення',description:'Зручний модуль для живлення прототипів із роз’ємом USB-C, захистом і виходами 5 V та 3,3 V.',price:120,oldPrice:null,image:'power',stock:29,tags:['USB-C','5 V','3.3 V'],featured:false},
+  {id:'solder-kit',name:'Стартовий набір для паяння',category:'Інструменти',description:'Паяльник, підставка та витратні матеріали — усе необхідне для домашньої майстерні.',price:790,oldPrice:null,image:'tool',stock:10,tags:['Паяння','Для початківців'],featured:false},
+  {id:'jumper-wires',name:'Набір дротів Dupont',category:'Кабелі й роз’єми',description:'120 з’єднувальних дротів трьох типів для макетних плат і швидкого складання схем.',price:110,oldPrice:null,image:'cable',stock:64,tags:['Dupont','Jumper','120 шт.'],featured:false},
+  {id:'breadboard-kit',name:'Набір для прототипування',category:'Набори для проєктів',description:'Макетна плата, дроти й базові компоненти — зручний старт для перших електронних експериментів.',price:430,oldPrice:null,image:'kit',stock:16,tags:['Макетна плата','Для початківців'],featured:false},
+  {id:'pla-filament',name:'Філамент PLA · 1 кг',category:'3D-друк',description:'Універсальний PLA-пластик для корпусів, тримачів та інших деталей власного проєкту.',price:540,oldPrice:null,image:'filament',stock:21,tags:['PLA','1.75 мм','1 кг'],featured:false},
+  {id:'resistor-pack',name:'Набір резисторів · 600 шт.',category:'Електронні компоненти',description:'Популярні номінали для створення прототипів і ремонту електронних схем.',price:160,oldPrice:null,image:'components',stock:38,tags:['Резистори','Набір','600 шт.'],featured:false},
+  {id:'esp32-cam',name:'ESP32-CAM',category:'Мікроконтролери',description:'Плата ESP32 із вбудованою камерою для відеоспостереження, розпізнавання об’єктів та IoT-пристроїв.',price:420,oldPrice:null,image:'board',stock:11,tags:['ESP32','Камера','Wi-Fi'],featured:false},
+  {id:'esp32-oled',name:'Плата ESP32 з OLED-дисплеєм',category:'Мікроконтролери',description:'Компактна плата ESP32 із вбудованим OLED-екраном для автономних індикаторів і прототипів.',price:620,oldPrice:null,image:'display',stock:0,tags:['ESP32','OLED','Wi-Fi'],featured:false},
+  {id:'esp32-relay',name:'Релейний модуль ESP32 · 2 канали',category:'Мікроконтролери',description:'Двоканальний Wi-Fi-контролер із реле для керування побутовими пристроями та автоматизацією.',price:560,oldPrice:null,image:'power',stock:8,tags:['ESP32','Реле','Розумний дім'],featured:false}
 ];
 
-// Дополняем карточки полями каталога; формат совпадает с будущей моделью REST API.
+// Локальні фото з карток виробників/продавців. Пояснення про репрезентативний характер показуємо в інтерфейсі.
+export const productPhotos = {
+  'esp32-devkit':['assets/images/esp32-devkit.jpg'],
+  'arduino-uno':['assets/images/arduino-uno-front.jpg','assets/images/arduino-uno-back.jpg'],
+  'raspberry-pi-5':['assets/images/raspberry-pi-5.png'],
+  'dht22':['assets/images/dht22.jpg'],
+  'oled-096':['assets/images/oled-096.jpg'],
+  'hc-sr04':['assets/images/hc-sr04.jpg'],
+  'rgb-strip':['assets/images/rgb-strip.jpg'],
+  'usb-c-power':['assets/images/usb-c-power.jpg'],
+  'solder-kit':['assets/images/solder-kit.jpg'],
+  'jumper-wires':['assets/images/jumper-wires.jpg'],
+  'breadboard-kit':['assets/images/breadboard-kit.jpg'],
+  'pla-filament':['assets/images/pla-filament.jpg'],
+  'resistor-pack':['assets/images/resistor-pack.png'],
+  'esp32-cam':['assets/images/ai-thinker-esp32-cam.jpg'],
+  'esp32-oled':['assets/images/esp32-oled.jpg'],
+  'esp32-relay':['assets/images/esp32-relay.jpg']
+};
+// Catalog metadata.
 const details = {
-  'esp32-devkit': ['Espressif','Плати ESP32','ESP32-WROOM-32',{'Живлення':'5 V через USB','Wi-Fi':'802.11 b/g/n','Bluetooth':'4.2','Частота':'240 МГц'}],
+  'esp32-devkit': ['Generic','Плати ESP32','ESP32-WROOM-32',{'Живлення':'5 V через USB','Wi-Fi':'802.11 b/g/n','Bluetooth':'4.2','Частота':'240 МГц'}],
   'arduino-uno': ['Arduino','Плати Arduino','ATmega328P',{'Живлення':'5 V','Пам’ять':'32 КБ','Частота':'16 МГц','Інтерфейс':'USB-B'}],
   'raspberry-pi-5': ['Raspberry Pi','Одноплатні комп’ютери','Broadcom BCM2712',{'Пам’ять':'4 ГБ','Wi-Fi':'802.11ac','Bluetooth':'5.0','USB':'2 × USB 3.0'}],
   'dht22': ['Aosong','Датчики температури й вологості','AM2302',{'Живлення':'3,3–5 V','Температура':'−40…80 °C','Вологість':'0–100%','Інтерфейс':'Цифровий'}],
@@ -33,14 +52,14 @@ const details = {
   'breadboard-kit': ['NEXLAB','Набори для прототипування','Макетний набір',{'Плата':'830 контактів','Дроти':'65 шт.','Живлення':'3,3 V / 5 V'}],
   'pla-filament': ['NEXLAB','Матеріали для 3D-друку','PLA',{'Діаметр':'1,75 мм','Вага':'1 кг','Температура друку':'190–220 °C'}],
   'resistor-pack': ['NEXLAB','Резистори','Набір номіналів',{'Кількість':'600 шт.','Допуск':'±5%','Потужність':'0,25 Вт'}],
-  'esp32-cam': ['Espressif','Камери й IoT-плати','ESP32-S',{'Живлення':'5 V','Wi-Fi':'802.11 b/g/n','Камера':'OV2640','Bluetooth':'4.2'}],
-  'esp32-oled': ['Heltec','Плати з дисплеями','ESP32 + SSD1306',{'Живлення':'5 V','Wi-Fi':'802.11 b/g/n','Bluetooth':'4.2','Дисплей':'0.96″ OLED'}],
+  'esp32-cam': ['AI-Thinker','Камери й IoT-плати','ESP32-CAM',{'Живлення':'5 V','Wi-Fi':'802.11 b/g/n','Камера':'OV2640','Bluetooth':'4.2'}],
+  'esp32-oled': ['Generic','Плати з дисплеями','ESP32 + SSD1306',{'Живлення':'5 V','Wi-Fi':'802.11 b/g/n','Bluetooth':'4.2','Дисплей':'0.96″ OLED'}],
   'esp32-relay': ['NEXLAB','Релейні модулі','ESP32',{'Живлення':'5 V','Кількість каналів':'2','Wi-Fi':'802.11 b/g/n','Контакти':'10 A / 250 V'}]
 };
 
 products.forEach((product, index) => {
   const [brand, subcategory, sku, specifications] = details[product.id];
-  Object.assign(product, {brand, subcategory, sku, specifications, shortDescription:product.description.split(/[.!?]/)[0], images:[product.image, product.image, product.image], reviewsCount:12 + index * 7, isNew:index > 9, discount:product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : 0});
+  Object.assign(product, {brand, subcategory, sku, specifications, shortDescription:product.description.split(/[.!?]/)[0], images:productPhotos[product.id] || [], reviewsCount:0, rating:0, isNew:index > 9, discount:product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : 0});
 });
 
 export const categories = [
@@ -63,10 +82,13 @@ export const projects = [
   {id:'smart-home',name:'Контролер розумного дому',description:'Почни автоматизацію з керування реле та показників сенсорів.',difficulty:'Просунутий',estimatedPrice:1640,image:'power',components:[{productId:'esp32-relay',quantity:1},{productId:'dht22',quantity:1},{productId:'jumper-wires',quantity:1}]},
   {id:'mini-weather',name:'Міні метеостанція',description:'Компактний екран показує поточну температуру й вологість.',difficulty:'Легкий',estimatedPrice:760,image:'display',components:[{productId:'esp32-oled',quantity:1},{productId:'dht22',quantity:1}]},
   {id:'iot-controller',name:'Універсальний IoT-контролер',description:'Збери універсальний пульт для своїх пристроїв і сценаріїв автоматизації.',difficulty:'Середній',estimatedPrice:1420,image:'board',components:[{productId:'esp32-devkit',quantity:1},{productId:'oled-096',quantity:1},{productId:'breadboard-kit',quantity:1}]}
-].map(project => ({...project,parts:project.components.map(item => products.find(product => product.id === item.productId)?.name).join(' + '),count:project.components.reduce((sum,item)=>sum+item.quantity,0),cost:project.estimatedPrice,desc:project.description}));
+].map(project => ({...project,parts:project.components.map(item => products.find(product => product.id === item.productId)?.name).join(' + '),count:project.components.reduce((sum,item)=>sum+item.quantity,0),estimatedPrice:project.components.reduce((sum,item)=>sum+(products.find(p=>p.id===item.productId)?.price||0)*item.quantity,0),cost:project.components.reduce((sum,item)=>sum+(products.find(p=>p.id===item.productId)?.price||0)*item.quantity,0),desc:project.description}));
 
 // Общая лаконичная иллюстрация помогает держать карточки цельными, пока не добавлены фото товаров.
 export function productArt(product, large = false, view = 0) {
+  const photo=product.images?.[view] || product.images?.[0];
+  const safe=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  if(photo && (/^assets\/images\/[\w.-]+\.(jpg|jpeg|png|webp)$/i.test(photo)||/^https:\/\//i.test(photo)))return `<div class="product-art product-photo"><span class="product-tag">${product.stock>0?'Є В НАЯВНОСТІ':'НЕМАЄ В НАЯВНОСТІ'}</span><span class="photo-source-label">Фото для ознайомлення</span><img src="${safe(photo)}" alt="${safe(product.name)} — фото для ознайомлення" loading="lazy" decoding="async"></div>`;
   const shapes = {
     board:'<rect x="66" y="38" width="128" height="94" rx="9" class="art-board"/><rect x="105" y="59" width="49" height="51" rx="4" class="art-chip"/><path d="M80 31v8m16-8v8m16-8v8m16-8v8m16-8v8m16-8v8m16-8v8M80 132v8m16-8v8m16-8v8m16-8v8m16-8v8m16-8v8m16-8v8" class="art-line"/><circle cx="85" cy="54" r="4" class="art-light"/><path d="M72 77h28m60 20h39m-139 3h25" class="art-line"/>',
     arduino:'<rect x="57" y="43" width="145" height="87" rx="9" class="art-board"/><rect x="105" y="67" width="55" height="36" rx="4" class="art-chip"/><rect x="65" y="64" width="23" height="43" rx="3" class="art-metal"/><path d="M99 39v8m18-8v8m18-8v8m18-8v8m18-8v8M99 130v8m18-8v8m18-8v8m18-8v8m18-8v8" class="art-line"/>',
@@ -83,5 +105,5 @@ export function productArt(product, large = false, view = 0) {
     components:'<rect x="68" y="50" width="125" height="78" rx="8" class="art-board"/><path d="M86 70v38m17-38v38m17-38v38m17-38v38m17-38v38m17-38v38" stroke="#c9b888" stroke-width="7"/><path d="M82 64h100m-100 50h100" class="art-line"/>'
   };
   const transform = large ? `transform="scale(${1.13 - view * 0.06}) rotate(${view * 3}deg)"` : '';
-  return `<div class="product-art" style="--art-glow:${product.image === 'strip' ? '#493544' : '#465846'}"><span class="product-tag">${product.stock === 0 ? 'ПІД ЗАМОВЛЕННЯ' : 'Є В НАЯВНОСТІ'}</span><svg viewBox="0 0 260 180" fill="none" aria-hidden="true" ${transform}>${shapes[product.image] || shapes.board}</svg></div>`;
+  return `<div class="product-art" style="--art-glow:${product.image === 'strip' ? '#493544' : '#465846'}"><span class="product-tag">${product.stock === 0 ? 'НЕМАЄ В НАЯВНОСТІ' : 'Є В НАЯВНОСТІ'}</span><svg viewBox="0 0 260 180" fill="none" aria-hidden="true" ${transform}>${shapes[product.image] || shapes.board}</svg><span class="illustration-note">Ілюстрація · фото готується</span></div>`;
 }

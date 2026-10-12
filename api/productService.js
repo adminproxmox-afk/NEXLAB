@@ -1,6 +1,17 @@
-// Static adapter for the product catalog. Replace with fetch('/api/products') in a backend stage.
-export { products, categories } from '../js/products.js';
 import { products, categories } from '../js/products.js';
-export async function getProducts() { return products; }
-export async function getProductById(id) { return products.find(product => product.id === id) || null; }
-export async function getCategories() { return categories; }
+import { request } from './client.js';
+export {products,categories};
+let pending;
+export async function refreshProducts() {
+  if (!pending) pending=request('products').then(result=>{
+    products.splice(0,products.length,...result.products);
+    return products;
+  }).catch(error=>{
+    if(error.message==='BACKEND_UNAVAILABLE')return products;
+    throw error;
+  }).finally(()=>pending=null);
+  return pending;
+}
+export async function getProducts() {return refreshProducts();}
+export async function getProductById(id) {return (await getProducts()).find(product=>product.id===id) || null;}
+export async function getCategories() {return categories;}

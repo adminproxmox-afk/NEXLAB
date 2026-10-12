@@ -2,8 +2,8 @@ import { getProducts, getCategories, getProductById } from './productService.js'
 import { productCard } from './product-card.js';
 import { initializeCatalog } from './catalog.js';
 import { initializeProductPage } from './product-page.js';
-import { renderHomeProjects, initializeProjectPage } from './projects-page.js';
-import { addToCart, renderCartPage, bindCartPage } from './cart.js';
+import { renderHomeProjects, initializeProjectPage, initializeProjectsDirectory } from './projects-page.js';
+import { addToCart, renderCartPage, bindCartPage, reconcileCart } from './cart.js';
 import { toggleFavorite } from './favorites.js';
 import { renderSharedLayout, bindLayoutEvents, toast, updateHeaderCounts } from './ui.js';
 import { initializeUsers } from './users.js';
@@ -13,6 +13,9 @@ import { initializeProfile } from './profile.js';
 import { initializeOrdersPage } from './orders.js';
 import { initializeMyProjects } from './projects.js';
 import { getCurrentUser } from './session.js';
+import { initializeCheckout } from './checkout.js';
+import { initializeInfoPage } from './info-page.js';
+import { initializeAdmin } from './admin.js';
 
 const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
@@ -33,7 +36,7 @@ function bindProductButtons() {
       const saved = toggleFavorite(favoriteButton.dataset.favorite);
       document.querySelectorAll('[data-favorite]').forEach(button => {
         if (button.dataset.favorite !== favoriteButton.dataset.favorite) return;
-        button.classList.toggle('is-favorite',saved); button.setAttribute('aria-pressed',String(saved)); button.textContent=saved?'♥':'♡';
+        button.classList.toggle('is-favorite',saved); button.setAttribute('aria-pressed',String(saved)); button.setAttribute('aria-label',saved?'Прибрати з обраного':'Додати до обраного'); button.textContent=saved?'♥':'♡';
       });
       toast(saved ? 'Додано до обраного' : 'Прибрано з обраного');
     }
@@ -45,6 +48,7 @@ async function start() {
   renderSharedLayout();
   bindLayoutEvents();
   initializeAuthForms();
+  initializeInfoPage();
   if (!protectCurrentPage()) return;
   bindProductButtons();
   bindCartPage();
@@ -53,10 +57,11 @@ async function start() {
     if(welcome) welcome.textContent=`Вітаємо, ${getCurrentUser()?.name || 'Адміністратор'}`;
   }
   const [products,categories] = await Promise.all([getProducts(),getCategories()]);
+  reconcileCart();
   renderHomeCategories(categories);
   const featured = document.querySelector('[data-products="featured"]');
   if (featured) featured.innerHTML = products.filter(product => product.featured).slice(0,4).map(productCard).join('');
-  await Promise.all([initializeCatalog(),initializeProductPage(),initializeProjectPage(),renderHomeProjects(),initializeProfile(),initializeOrdersPage(),initializeMyProjects()]);
+  await Promise.all([initializeCatalog(),initializeProductPage(),initializeProjectPage(),initializeProjectsDirectory(),renderHomeProjects(),initializeProfile(),initializeOrdersPage(),initializeMyProjects(),initializeCheckout(),initializeAdmin()]);
   renderCartPage();
   window.addEventListener('nexlab:cart-updated',renderCartPage);
   window.addEventListener('nexlab:favorites-updated',updateHeaderCounts);
@@ -66,4 +71,8 @@ async function start() {
   });
 }
 
-start();
+start().catch(error => {
+  console.error(error);
+  const main=document.querySelector('main');
+  if(main)main.insertAdjacentHTML('afterbegin','<p class="service-error" role="alert">Не вдалося з’єднатися з магазином. Запусти сервер NEXLAB і онови сторінку.</p>');
+});

@@ -1,35 +1,30 @@
-import { getUserById } from './users.js';
-
-const SESSION_KEY = 'nexlab_session';
-
-export function login(user) {
-  localStorage.setItem(SESSION_KEY, JSON.stringify({userId:user.id}));
+import { request, setCsrfToken } from '../api/client.js';
+let currentUser = null;
+export function setSession({user,csrf}) {
+  currentUser = user;
+  if (csrf !== undefined) setCsrfToken(csrf);
   window.dispatchEvent(new Event('nexlab:auth-updated'));
+  return user;
 }
-
-export function logout() {
-  localStorage.removeItem(SESSION_KEY);
-  window.dispatchEvent(new Event('nexlab:auth-updated'));
+export async function initializeSession() {
+  localStorage.removeItem('nexlab_users');
+  localStorage.removeItem('nexlab_session');
+  try { return setSession(await request('session')); }
+  catch(error) {
+    if(error.message!=='BACKEND_UNAVAILABLE')throw error;
+    setCsrfToken('');
+    return setSession({user:null});
+  }
 }
-
-export function getCurrentUser() {
-  try {
-    const session = JSON.parse(localStorage.getItem(SESSION_KEY));
-    return session?.userId ? getUserById(session.userId) : null;
-  } catch { return null; }
-}
-
-export const isAuthenticated = () => Boolean(getCurrentUser());
-// This role check is only demo UI logic; the server must verify every privileged request.
-export const isAdmin = () => getCurrentUser()?.role === 'admin';
-
+export async function logout() {setSession(await request('auth/logout',{method:'POST',body:{}}));}
+export const getCurrentUser = () => currentUser;
+export const isAuthenticated = () => Boolean(currentUser);
+export const isAdmin = () => currentUser?.role === 'admin';
 export function requireAuth() {
   if (isAuthenticated()) return true;
   const inAdmin = location.pathname.toLowerCase().includes('/admin/');
-  const current = `${inAdmin ? 'admin/index.html' : location.pathname.split('/').pop()}${location.search}${location.hash}`;
-  const redirect = current || 'profile.html';
-  location.href = `${inAdmin ? '../' : ''}login.html?redirect=${encodeURIComponent(redirect)}`;
+  const current = (inAdmin ? 'admin/index.html' : location.pathname.split('/').pop()) + location.search + location.hash;
+  location.href = (inAdmin ? '../' : '') + 'login.html?redirect=' + encodeURIComponent(current || 'profile.html');
   return false;
 }
-
-export function requireAdmin() { return requireAuth() && isAdmin(); }
+export function requireAdmin() {return requireAuth() && isAdmin();}

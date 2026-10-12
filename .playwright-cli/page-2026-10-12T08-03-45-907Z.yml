@@ -1,0 +1,278 @@
+- generic [active] [ref=f1e1]:
+  - banner [ref=f1e3]:
+    - generic [ref=f1e4]:
+      - link "NEXLAB — головна сторінка" [ref=f1e5] [cursor=pointer]:
+        - /url: index.html
+        - generic [ref=f1e6]: "N"
+        - text: NEXLAB
+      - navigation "Головна навігація" [ref=f1e7]:
+        - link "Головна" [ref=f1e8] [cursor=pointer]:
+          - /url: index.html
+        - link "Каталог" [ref=f1e9] [cursor=pointer]:
+          - /url: catalog.html
+        - link "Проєкти" [ref=f1e10] [cursor=pointer]:
+          - /url: projects.html
+        - link "Акції" [ref=f1e11] [cursor=pointer]:
+          - /url: catalog.html?tag=sale
+      - generic [ref=f1e12]:
+        - search [ref=f1e14]:
+          - generic [aria-hidden] [ref=f1e15]: ⌕
+          - searchbox "Пошук товарів" [ref=f1e16]
+        - link "Обране" [ref=f1e17] [cursor=pointer]:
+          - /url: favorites.html
+          - text: ♡
+        - link "Кошик" [ref=f1e18] [cursor=pointer]:
+          - /url: cart.html
+          - text: ▣
+        - generic [ref=f1e20]:
+          - link "Увійти" [ref=f1e21] [cursor=pointer]:
+            - /url: login.html
+          - link "Реєстрація" [ref=f1e22] [cursor=pointer]:
+            - /url: register.html
+  - main [ref=f1e23]:
+    - generic [ref=f1e24]:
+      - link "Головна" [ref=f1e25] [cursor=pointer]:
+        - /url: index.html
+      - generic [ref=f1e26]: /
+      - link "Проєкти" [ref=f1e27] [cursor=pointer]:
+        - /url: projects.html
+      - generic [ref=f1e28]: /
+      - generic [ref=f1e29]: Розумна метеостанція
+    - generic [ref=f1e30]:
+      - generic [ref=f1e31]:
+        - generic [aria-hidden] [ref=f1e32]:
+          - generic [ref=f1e36]: NXL / WEATHER-STATION
+          - generic [ref=f1e37]: 4 позиції
+        - link "Перейти до схеми" [ref=f1e38] [cursor=pointer]:
+          - /url: "#build-guide"
+          - text: Перейти до схеми
+          - generic [aria-hidden] [ref=f1e39]: ↓
+      - generic [ref=f1e40]:
+        - paragraph [ref=f1e41]: Майстерня NEXLAB / Середній
+        - heading "Розумна метеостанція" [level=1] [ref=f1e42]
+        - paragraph [ref=f1e43]: Вимірюй температуру й вологість у кімнаті та виводь показники на компактний екран.
+        - generic [ref=f1e44]:
+          - generic [ref=f1e45]:
+            - strong [ref=f1e46]: "4"
+            - generic [ref=f1e47]: компонентів у наборі
+          - generic [ref=f1e48]:
+            - strong [ref=f1e49]: 4/4
+            - generic [ref=f1e50]: позицій доступно
+          - generic [ref=f1e51]:
+            - strong [ref=f1e52]: Так
+            - generic [ref=f1e53]: повний набір зараз
+        - generic [ref=f1e54]:
+          - generic [ref=f1e55]:
+            - generic [ref=f1e56]: Повний комплект
+            - strong [ref=f1e57]: ≈ 790 ₴
+          - generic [ref=f1e58]:
+            - generic [ref=f1e59]: Доступні позиції
+            - strong [ref=f1e60]: 790 ₴
+        - generic [ref=f1e61]:
+          - button "Додати комплект" [ref=f1e62] [cursor=pointer]:
+            - text: Додати комплект
+            - generic [aria-hidden] [ref=f1e63]: ＋
+          - button "Зберегти в майстерню ♡" [ref=f1e64] [cursor=pointer]
+        - paragraph [ref=f1e65]: Ціни та залишки демонстраційні. Перед складанням перевір сумісність компонентів.
+    - generic [ref=f1e66]:
+      - generic [ref=f1e67]:
+        - generic [ref=f1e68]:
+          - paragraph [ref=f1e69]: Склад набору
+          - heading "Що знадобиться 4" [level=2] [ref=f1e70]
+        - link "Увесь каталог ↗" [ref=f1e71] [cursor=pointer]:
+          - /url: catalog.html
+          - text: Увесь каталог
+          - generic [ref=f1e72]: ↗
+      - generic [ref=f1e73]:
+        - article [ref=f1e74]:
+          - link "Є В НАЯВНОСТІ Фото для ознайомлення ESP32 DevKit V1 — фото для ознайомлення" [ref=f1e75] [cursor=pointer]:
+            - /url: product.html?id=esp32-devkit
+            - generic [ref=f1e76]:
+              - generic [ref=f1e77]: Є В НАЯВНОСТІ
+              - generic [ref=f1e78]: Фото для ознайомлення
+              - img "ESP32 DevKit V1 — фото для ознайомлення" [ref=f1e79]
+          - generic [ref=f1e80]:
+            - text: Мікроконтролери
+            - heading [level=3] [ref=f1e81]:
+              - link "ESP32 DevKit V1" [ref=f1e82] [cursor=pointer]:
+                - /url: product.html?id=esp32-devkit
+            - generic [ref=f1e83]:
+              - generic [ref=f1e84]: 1 шт.
+              - strong [ref=f1e85]: 350 ₴
+            - generic [ref=f1e86]: Є в наявності · 24 шт.
+            - link "Деталі товару ↗" [ref=f1e87] [cursor=pointer]:
+              - /url: product.html?id=esp32-devkit
+        - article [ref=f1e88]:
+          - link "Є В НАЯВНОСТІ Фото для ознайомлення Датчик температури DHT22 — фото для ознайомлення" [ref=f1e89] [cursor=pointer]:
+            - /url: product.html?id=dht22
+            - generic [ref=f1e90]:
+              - generic [ref=f1e91]: Є В НАЯВНОСТІ
+              - generic [ref=f1e92]: Фото для ознайомлення
+              - img "Датчик температури DHT22 — фото для ознайомлення" [ref=f1e93]
+          - generic [ref=f1e94]:
+            - text: Датчики й модулі
+            - heading [level=3] [ref=f1e95]:
+              - link "Датчик температури DHT22" [ref=f1e96] [cursor=pointer]:
+                - /url: product.html?id=dht22
+            - generic [ref=f1e97]:
+              - generic [ref=f1e98]: 1 шт.
+              - strong [ref=f1e99]: 145 ₴
+            - generic [ref=f1e100]: Є в наявності · 32 шт.
+            - link "Деталі товару ↗" [ref=f1e101] [cursor=pointer]:
+              - /url: product.html?id=dht22
+        - article [ref=f1e102]:
+          - link "Є В НАЯВНОСТІ Фото для ознайомлення OLED-дисплей 0.96″ — фото для ознайомлення" [ref=f1e103] [cursor=pointer]:
+            - /url: product.html?id=oled-096
+            - generic [ref=f1e104]:
+              - generic [ref=f1e105]: Є В НАЯВНОСТІ
+              - generic [ref=f1e106]: Фото для ознайомлення
+              - img "OLED-дисплей 0.96″ — фото для ознайомлення" [ref=f1e107]
+          - generic [ref=f1e108]:
+            - text: Датчики й модулі
+            - heading [level=3] [ref=f1e109]:
+              - link "OLED-дисплей 0.96″" [ref=f1e110] [cursor=pointer]:
+                - /url: product.html?id=oled-096
+            - generic [ref=f1e111]:
+              - generic [ref=f1e112]: 1 шт.
+              - strong [ref=f1e113]: 185 ₴
+            - generic [ref=f1e114]: Є в наявності · 41 шт.
+            - link "Деталі товару ↗" [ref=f1e115] [cursor=pointer]:
+              - /url: product.html?id=oled-096
+        - article [ref=f1e116]:
+          - link "Є В НАЯВНОСТІ Фото для ознайомлення Набір дротів Dupont — фото для ознайомлення" [ref=f1e117] [cursor=pointer]:
+            - /url: product.html?id=jumper-wires
+            - generic [ref=f1e118]:
+              - generic [ref=f1e119]: Є В НАЯВНОСТІ
+              - generic [ref=f1e120]: Фото для ознайомлення
+              - img "Набір дротів Dupont — фото для ознайомлення" [ref=f1e121]
+          - generic [ref=f1e122]:
+            - text: Кабелі й роз’єми
+            - heading [level=3] [ref=f1e123]:
+              - link "Набір дротів Dupont" [ref=f1e124] [cursor=pointer]:
+                - /url: product.html?id=jumper-wires
+            - generic [ref=f1e125]:
+              - generic [ref=f1e126]: 1 шт.
+              - strong [ref=f1e127]: 110 ₴
+            - generic [ref=f1e128]: Є в наявності · 64 шт.
+            - link "Деталі товару ↗" [ref=f1e129] [cursor=pointer]:
+              - /url: product.html?id=jumper-wires
+    - generic [ref=f1e130]:
+      - generic [ref=f1e132]:
+        - paragraph [ref=f1e133]: Від компонентів до першого запуску
+        - heading "Збери й перевір" [level=2] [ref=f1e134]
+      - paragraph [ref=f1e135]: Для DHT22 без готового модуля потрібен резистор 10 кОм між DATA та 3V3. USB-кабель і макетна плата не входять у цей перелік. OLED має бути I²C, адреса в прикладі — 0x3C.
+      - generic [ref=f1e136]:
+        - generic [ref=f1e137]:
+          - heading "Схема з’єднань" [level=3] [ref=f1e138]
+          - img "Схема з’єднань ESP32 DevKit (WROOM-32)" [ref=f1e139]:
+            - generic [ref=f1e141]: Плата → компонент
+            - generic [ref=f1e144]: 3V3
+            - generic [ref=f1e145]: DHT22 VCC
+            - generic [ref=f1e148]: GND
+            - generic [ref=f1e149]: DHT22 GND
+            - generic [ref=f1e152]: GPIO17
+            - generic [ref=f1e153]: DHT22 DATA
+            - generic [ref=f1e156]: 3V3
+            - generic [ref=f1e157]: OLED VCC
+            - generic [ref=f1e160]: GND
+            - generic [ref=f1e161]: OLED GND
+            - generic [ref=f1e164]: GPIO21
+            - generic [ref=f1e165]: OLED SDA
+            - generic [ref=f1e168]: GPIO22
+            - generic [ref=f1e169]: OLED SCL
+          - table [ref=f1e170]:
+            - rowgroup [ref=f1e171]:
+              - row [ref=f1e172]:
+                - columnheader "ESP32 DevKit (WROOM-32)" [ref=f1e173]
+                - columnheader "Компонент" [ref=f1e174]
+            - rowgroup [ref=f1e175]:
+              - row [ref=f1e176]:
+                - cell "3V3" [ref=f1e177]
+                - cell "DHT22 VCC" [ref=f1e178]
+              - row [ref=f1e179]:
+                - cell "GND" [ref=f1e180]
+                - cell "DHT22 GND" [ref=f1e181]
+              - row [ref=f1e182]:
+                - cell "GPIO17" [ref=f1e183]
+                - cell "DHT22 DATA" [ref=f1e184]
+              - row [ref=f1e185]:
+                - cell "3V3" [ref=f1e186]
+                - cell "OLED VCC" [ref=f1e187]
+              - row [ref=f1e188]:
+                - cell "GND" [ref=f1e189]
+                - cell "OLED GND" [ref=f1e190]
+              - row [ref=f1e191]:
+                - cell "GPIO21" [ref=f1e192]
+                - cell "OLED SDA" [ref=f1e193]
+              - row [ref=f1e194]:
+                - cell "GPIO22" [ref=f1e195]
+                - cell "OLED SCL" [ref=f1e196]
+        - generic [ref=f1e197]:
+          - heading "Кроки складання" [level=3] [ref=f1e198]
+          - list [ref=f1e199]:
+            - listitem [ref=f1e200]: Вимкни ESP32 та переконайся, що OLED має інтерфейс I²C і адресу 0x3C.
+            - listitem [ref=f1e201]: Підключи DHT22 до 3V3, GND та GPIO17; підключи OLED до 3V3, GND, GPIO21 (SDA) і GPIO22 (SCL).
+            - listitem [ref=f1e202]: Для датчика без готової плати постав резистор 10 кОм між DATA та 3V3.
+            - listitem [ref=f1e203]: "В Arduino IDE встанови перелічені бібліотеки, вибери ESP32 Dev Module і відкрий `weather-station.ino`."
+            - listitem [ref=f1e204]: Завантаж код. Якщо покази відсутні, перевір адресу OLED і з’єднання DATA датчика.
+          - paragraph [ref=f1e205]:
+            - strong [ref=f1e206]: "Бібліотеки:"
+            - text: DHT sensor library, Adafruit Unified Sensor, Adafruit SSD1306, Adafruit GFX Library
+          - paragraph [ref=f1e207]:
+            - strong [ref=f1e208]: "Очікуваний результат:"
+            - text: Температура й вологість на OLED; оновлення приблизно раз на 2 секунди.
+          - heading "Стартовий код" [level=3] [ref=f1e209]
+          - link "Завантажити .ino ↓" [ref=f1e210] [cursor=pointer]:
+            - /url: guides/weather-station.ino
+          - group [ref=f1e211]:
+            - generic "Переглянути код" [ref=f1e212] [cursor=pointer]
+          - paragraph [ref=f1e213]:
+            - text: "Документація:"
+            - 'link "DHT22: підключення та підтягувальний резистор" [ref=f1e214] [cursor=pointer]':
+              - /url: https://learn.adafruit.com/dht/connecting-to-a-dhtxx-sensor
+            - text: ·
+            - 'link "SSD1306: бібліотеки та приклади" [ref=f1e215] [cursor=pointer]':
+              - /url: https://learn.adafruit.com/monochrome-oled-breakouts/arduino-library-and-examples
+  - contentinfo [ref=f1e217]:
+    - generic [ref=f1e218]:
+      - generic [ref=f1e219]:
+        - link "N NEXLAB" [ref=f1e220] [cursor=pointer]:
+          - /url: index.html
+          - generic [ref=f1e221]: "N"
+          - text: NEXLAB
+        - paragraph [ref=f1e222]: Електроніка й інструменти для тих, хто перетворює ідеї на пристрої.
+        - link "Зв’язатися з командою" [ref=f1e223] [cursor=pointer]:
+          - /url: contacts.html
+      - generic [ref=f1e224]:
+        - strong [ref=f1e225]: Каталог
+        - link "Електронні компоненти" [ref=f1e226] [cursor=pointer]:
+          - /url: catalog.html?category=Електронні%20компоненти
+        - link "Мікроконтролери" [ref=f1e227] [cursor=pointer]:
+          - /url: catalog.html?category=Мікроконтролери
+        - link "Інструменти" [ref=f1e228] [cursor=pointer]:
+          - /url: catalog.html?category=Інструменти
+        - link "Комп’ютери" [ref=f1e229] [cursor=pointer]:
+          - /url: catalog.html?category=Комп’ютери
+        - link "3D-друк" [ref=f1e230] [cursor=pointer]:
+          - /url: catalog.html?category=3D-друк
+      - generic [ref=f1e231]:
+        - strong [ref=f1e232]: Покупцям
+        - link "Доставка" [ref=f1e233] [cursor=pointer]:
+          - /url: delivery.html
+        - link "Оплата" [ref=f1e234] [cursor=pointer]:
+          - /url: payment.html
+        - link "Гарантія" [ref=f1e235] [cursor=pointer]:
+          - /url: warranty.html
+        - link "Повернення" [ref=f1e236] [cursor=pointer]:
+          - /url: returns.html
+      - generic [ref=f1e237]:
+        - strong [ref=f1e238]: Компанія
+        - link "Про нас" [ref=f1e239] [cursor=pointer]:
+          - /url: about.html
+        - link "Контакти" [ref=f1e240] [cursor=pointer]:
+          - /url: contacts.html
+        - link "Конфіденційність" [ref=f1e241] [cursor=pointer]:
+          - /url: privacy.html
+    - generic [ref=f1e242]:
+      - generic [ref=f1e243]: © 2026 NEXLAB
+      - generic [ref=f1e244]: Збирай. Перевіряй. Запускай.

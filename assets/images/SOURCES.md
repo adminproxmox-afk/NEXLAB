@@ -1,0 +1,24 @@
+# Джерела фото товарів
+
+Усі фото локально збережені й позначені на сайті як «Фото для ознайомлення». Фото показують приклади виробів із карток виробників або продавців, а не підтверджують фактичний товар, постачальника чи наявність NEXLAB.
+
+| Файл | Товар | Джерело |
+| --- | --- | --- |
+| `ai-thinker-esp32-cam.jpg` | ESP32-CAM | [AI-Thinker](https://en.ai-thinker.com/pro_view-24.html) |
+| `arduino-uno-front.jpg`, `arduino-uno-back.jpg` | Arduino UNO R3 | [Arduino Store](https://store.arduino.cc/products/arduino-uno-rev3/) |
+| `breadboard-kit.jpg` | Набір для прототипування | [Keyestudio](https://www.keyestudio.com/products/mb102-830-holes-breadboard-65-jumper-wires-power-supply-module-140pcs-jumper-wires-for-arduino-diy-starter-experiment). У картці продавця є додатковий набір дротів; комплектацію NEXLAB не підтверджено. |
+| `dht22.jpg` | DHT22 / AM2302 | [TradeIndia](https://www.tradeindia.com/products/digital-thermal-sensor-9315968.html). Фото показує сенсор на платі; тип монтажу для NEXLAB не підтверджено. |
+| `esp32-devkit.jpg` | ESP32 DevKit V1 | [Allegro](https://allegro.cz/produkt/esp-32s-esp-wroom-32-esp32-wifi-bluetooth-nodemcu-30pinovy-iot-devkit-c97f875d-b37d-49af-984d-0bfd2d9391fc). Ілюстрація сумісної плати ESP-WROOM-32, ревізію й кількість контактів не підтверджено. |
+| `esp32-oled.jpg` | ESP32 з OLED | [ElectronicsComp](https://www.electronicscomp.com/esp32-oled-module-for-wifi-and-bluetooth). Сумісний приклад плати; виробника NEXLAB не підтверджено. |
+| `esp32-relay.jpg` | ESP32-реле, 2 канали | [NewNestShop](https://newnestshop.com/products/2-channel-5v-relay-module-esp-32-4m-byte-flash-large-capacity-programmable-relay-board-for-secondary-development-learning-dc5-60v). Фото прикладу двоканальної плати; конкретну схему живлення та модель NEXLAB не підтверджено. |
+| `hc-sr04.jpg` | HC-SR04 | [Adafruit](https://www.adafruit.com/product/3942). Фото продавця, не підтвердження постачальника NEXLAB. |
+| `jumper-wires.jpg` | Дроти Dupont, 120 шт. | [Besomi](https://besomi.com/ae_en/premium-dupont-wire-kit-for-arduino-and-diy-projects-120pcs-20cm-multicolored.html) |
+| `oled-096.jpg` | OLED 0.96″ SSD1306 | [Kuongshun](https://kuongshun.com/products/blue-i2c-iic-oled-lcd-module) |
+| `pla-filament.jpg` | PLA-філамент, 1 кг, 1.75 мм | [Sunhokey / Made-in-China](https://sunhokey.en.made-in-china.com/product/XZgQWlJrOmki/China-3D-Printer-Filament-PLA-ABS-TPU-PETG-Wood-HIPS-Nylon-PC-3D-Printing-Filament-OEM-ODM-33-Colors-3D-Filament.html). Колір і маркування на фото не є вибором кольору в каталозі. |
+| `raspberry-pi-5.png` | Raspberry Pi 5 | [Raspberry Pi](https://www.raspberrypi.com/products/raspberry-pi-5/). Обсяг RAM у конкретній комплектації фото не визначає. |
+| `resistor-pack.png` | Набір резисторів, 600 шт. | [Sklep msalamon](https://sklep.msalamon.pl/produkt/zestaw-rezystorow-1-4w-5-600-sztuk/) — 600 шт., 1/4 Вт, ±5%. |
+| `rgb-strip.jpg` | Адресна стрічка WS2812B, 1 м, 60 LED/м | [Daraz](https://www.daraz.lk/products/ws2812b-addressable-rgb-led-strip-1meter60led-i185114437.html) |
+| `solder-kit.jpg` | Стартовий набір для паяння, 60 Вт | [Plusivo](https://www.plusivo.com/soldering-iron-kit-7/164-soldering-iron-kit-electronics-adjustable-temperature-soldering-iron-60w-solder-wire-solder-paste-mini-stand.html). Фото сумісного прикладу набору; маркування, вилка й повна комплектація NEXLAB не підтверджені. |
+| `usb-c-power.jpg` | Модуль живлення макетної плати USB-C, 3.3/5 В | [Electrokit](https://www.electrokit.com/en/stromforsorjning-for-kopplingsdack-3.3/5v-usb-c) |
+
+Перед реальним запуском продажів магазин має звірити кожне фото з фактичним товаром і комплектацією, отримати право на комерційне використання зображень та замінити приклади на власні фото або дозволені матеріали постачальника.

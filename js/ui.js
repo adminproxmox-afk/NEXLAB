@@ -18,7 +18,7 @@ export function renderSharedLayout() {
       <nav class="main-nav" data-mobile-nav aria-label="Головна навігація">
         <a href="${prefix}index.html" ${path === 'index.html' ? 'aria-current="page"' : ''}>Головна</a>
         <a href="${prefix}catalog.html" ${path === 'catalog.html' ? 'aria-current="page"' : ''}>Каталог</a>
-        <a href="${prefix}index.html#projects">Проєкти</a><a href="${prefix}catalog.html?tag=sale">Акції</a>
+        <a href="${prefix}projects.html">Проєкти</a><a href="${prefix}catalog.html?tag=sale">Акції</a>
       </nav>
       <div class="header-tools">
         <div class="header-search-wrap"><form class="header-search" data-header-search role="search"><span aria-hidden="true">⌕</span><input type="search" placeholder="Шукати товар" aria-label="Пошук товарів"></form><div class="header-search-results" data-header-search-results hidden></div></div>
@@ -31,12 +31,12 @@ export function renderSharedLayout() {
   }
   const footer = document.querySelector('[data-site-footer]');
   if (footer) footer.innerHTML = `<footer class="site-footer"><div class="footer-main wrap">
-    <div class="footer-brand"><a class="brand" href="${prefix}index.html"><span class="brand-mark">N</span>NEXLAB</a><p>Електроніка й інструменти для тих, хто перетворює ідеї на пристрої.</p><a class="footer-contact" href="mailto:hello@nexlab.ua">hello@nexlab.ua</a></div>
+    <div class="footer-brand"><a class="brand" href="${prefix}index.html"><span class="brand-mark">N</span>NEXLAB</a><p>Електроніка й інструменти для тих, хто перетворює ідеї на пристрої.</p><a class="footer-contact" href="${prefix}contacts.html">Зв’язатися з командою</a></div>
     <div class="footer-column"><strong>Каталог</strong><a href="${prefix}catalog.html?category=Електронні%20компоненти">Електронні компоненти</a><a href="${prefix}catalog.html?category=Мікроконтролери">Мікроконтролери</a><a href="${prefix}catalog.html?category=Інструменти">Інструменти</a><a href="${prefix}catalog.html?category=Комп’ютери">Комп’ютери</a><a href="${prefix}catalog.html?category=3D-друк">3D-друк</a></div>
-    <div class="footer-column"><strong>Покупцям</strong><a href="mailto:hello@nexlab.ua?subject=Доставка">Доставка</a><a href="mailto:hello@nexlab.ua?subject=Оплата">Оплата</a><a href="mailto:hello@nexlab.ua?subject=Гарантія">Гарантія</a><a href="mailto:hello@nexlab.ua?subject=Повернення">Повернення</a></div>
-    <div class="footer-column"><strong>Компанія</strong><a href="mailto:hello@nexlab.ua?subject=Про%20NEXLAB">Про нас</a><a href="mailto:hello@nexlab.ua">Контакти</a>${isAdmin()?`<a href="${prefix}admin/index.html">Для команди</a>`:''}</div>
+    <div class="footer-column"><strong>Покупцям</strong><a href="${prefix}delivery.html">Доставка</a><a href="${prefix}payment.html">Оплата</a><a href="${prefix}warranty.html">Гарантія</a><a href="${prefix}returns.html">Повернення</a></div>
+    <div class="footer-column"><strong>Компанія</strong><a href="${prefix}about.html">Про нас</a><a href="${prefix}contacts.html">Контакти</a><a href="${prefix}privacy.html">Конфіденційність</a>${isAdmin()?`<a href="${prefix}admin/index.html">Для команди</a>`:''}</div>
   </div><div class="footer-bottom wrap"><span>© 2026 NEXLAB</span><span>Збирай. Перевіряй. Запускай.</span></div></footer>`;
-  if (!document.querySelector('[data-auth-gate]')) document.body.insertAdjacentHTML('beforeend',`<dialog class="auth-gate" data-auth-gate aria-labelledby="auth-gate-title"><button class="auth-gate-close" type="button" data-auth-gate-close aria-label="Закрити">×</button><span class="empty-mark">⌁</span><p class="eyebrow">ОБЛІКОВИЙ ЗАПИС NEXLAB</p><h2 id="auth-gate-title">Для цієї дії потрібно увійти</h2><p>Увійди або створи обліковий запис — кошик і обране залишаться з тобою.</p><div class="auth-gate-actions"><a class="button button-primary" data-gate-login href="${prefix}login.html">Увійти</a><a class="button button-quiet" data-gate-register href="${prefix}register.html">Створити обліковий запис</a></div></dialog>`);
+  if (!document.querySelector('[data-auth-gate]')) document.body.insertAdjacentHTML('beforeend',`<dialog class="auth-gate" data-auth-gate aria-labelledby="auth-gate-title"><button class="auth-gate-close" type="button" data-auth-gate-close aria-label="Закрити">×</button><span class="empty-mark">⌁</span><p class="eyebrow">ОБЛІКОВИЙ ЗАПИС NEXLAB</p><h2 id="auth-gate-title">Для цієї дії потрібно увійти</h2><p>Збережені проєкти прив’язані до облікового запису. Кошик і обране зберігаються в цьому браузері.</p><div class="auth-gate-actions"><a class="button button-primary" data-gate-login href="${prefix}login.html">Увійти</a><a class="button button-quiet" data-gate-register href="${prefix}register.html">Створити обліковий запис</a></div></dialog>`);
   renderHeaderAccount();
   updateHeaderCounts();
 }
@@ -98,11 +98,11 @@ export function bindLayoutEvents() {
   window.addEventListener('nexlab:favorites-updated', updateHeaderCounts);
   window.addEventListener('nexlab:auth-updated',()=>{renderHeaderAccount();updateHeaderCounts();});
   window.addEventListener('storage',()=>{renderHeaderAccount();updateHeaderCounts();});
-  document.addEventListener('click',event=>{
+  document.addEventListener('click',async event=>{
     const toggle=event.target.closest('[data-account-toggle]');
     if(toggle){const menu=document.querySelector('[data-account-dropdown]');const open=menu.hidden;menu.hidden=!open;toggle.setAttribute('aria-expanded',String(open));return;}
     if(!event.target.closest('.account-control')){const menu=document.querySelector('[data-account-dropdown]');if(menu)menu.hidden=true;}
-    if(event.target.closest('[data-header-logout]')){logout();location.href=`${prefix}index.html`;}
+    if(event.target.closest('[data-header-logout]')){await logout();location.href=`${prefix}index.html`;}
     if(event.target.closest('[data-auth-gate-close]'))document.querySelector('[data-auth-gate]')?.close();
   });
   const dialog=document.querySelector('[data-auth-gate]');
