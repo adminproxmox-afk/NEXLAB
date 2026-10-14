@@ -86,11 +86,13 @@ function bindProductButtons() {
 }
 
 async function start() {
-  await initializeUsers();
+  try {
+    await initializeUsers();
+  } catch (error) {
+    console.error("NEXLAB session initialization failed", error);
+  }
   const settings = await loadShopSettings();
   renderSharedLayout(settings);
-  const homeNotice = document.querySelector(".hero .demo-notice");
-  if (homeNotice) homeNotice.textContent = settings.demoNotice;
   bindLayoutEvents();
   initializeAuthForms();
   initializeInfoPage(settings);

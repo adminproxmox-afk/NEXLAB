@@ -1093,6 +1093,7 @@ export async function createApp({
         relative = decoded === "/" ? "index.html" : decoded.replace(/^\//, "");
       const permitted =
         /^[^/]+\.html$/.test(relative) ||
+        /^(favicon\.(svg|ico)|apple-touch-icon\.png)$/.test(relative) ||
         /^admin\/index\.html$/.test(relative) ||
         /^(js|api|css|assets|guides)\/[\w./-]+\.(js|css|jpg|jpeg|png|webp|svg|ino)$/.test(
           relative,
@@ -1115,6 +1116,7 @@ export async function createApp({
         ".png": "image/png",
         ".webp": "image/webp",
         ".svg": "image/svg+xml",
+        ".ico": "image/x-icon",
         ".ino": "text/plain; charset=utf-8",
       };
       res.writeHead(200, {

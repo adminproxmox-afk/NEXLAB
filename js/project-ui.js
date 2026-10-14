@@ -17,6 +17,9 @@ export const componentLabel = (count) =>
     many: "компонентів",
     other: "компонента",
   }[new Intl.PluralRules("uk-UA").select(count)];
+export const projectDuration = (project) =>
+  project.estimatedHours ||
+  ({ Легкий: 1, Середній: 2, Просунутий: 3 }[project.difficulty] || 2);
 
 export function projectInventory(project, products) {
   const items = project.components.map((component) => ({
@@ -56,5 +59,5 @@ export function projectCover(project, products) {
 export function projectCard(project, products) {
   const { ready, total } = projectInventory(project, products);
   const url = "project.html?id=" + encodeURIComponent(project.id);
-  return `<article class="project-card">${projectCover(project, products)}<div class="project-card-body"><div class="project-card-kicker"><span>${safe(project.difficulty)}</span><span>${ready}/${total} позицій у наявності</span></div><h3><a href="${url}">${safe(project.name)}</a></h3><p>${safe(project.description)}</p><div class="project-card-meta"><span>${componentLabel(total)}</span><strong>≈ ${money(project.estimatedPrice)}</strong></div><a class="project-card-open" href="${url}">Відкрити проєкт <span aria-hidden="true">↗</span></a></div></article>`;
+  return `<article class="project-card">${projectCover(project, products)}<div class="project-card-body"><div class="project-card-kicker"><span>${safe(project.difficulty)}</span><span>${ready}/${total} позицій у наявності</span></div><h3><a href="${url}">${safe(project.name)}</a></h3><p>${safe(project.description)}</p><div class="project-card-meta"><span>${componentLabel(total)} · ~${projectDuration(project)} год.</span><strong>≈ ${money(project.estimatedPrice)}</strong></div><a class="project-card-open" href="${url}">Відкрити проєкт <span aria-hidden="true">↗</span></a></div></article>`;
 }
