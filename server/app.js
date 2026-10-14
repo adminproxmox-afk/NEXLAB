@@ -31,6 +31,18 @@ const productImages = new Set([
   "kit",
   "filament",
   "components",
+  "esp8266",
+  "nano",
+  "bme280",
+  "pir",
+  "probe",
+  "soil",
+  "servo",
+  "motor-driver",
+  "relay4",
+  "level-shifter",
+  "sd-module",
+  "buzzer",
 ]);
 const hash = (value) => createHash("sha256").update(value).digest("hex");
 const publicUser = (user) =>

@@ -1,4 +1,6 @@
 // Демонстраційний каталог українською; сторінки отримують його через productService.js.
+import { catalogExpansion } from "./catalog-expansion.js";
+
 export const products = [
   {
     id: "esp32-devkit",
@@ -208,6 +210,162 @@ export const products = [
     tags: ["ESP32", "Реле", "Розумний дім"],
     featured: false,
   },
+  {
+    id: "esp8266-nodemcu",
+    name: "Плата ESP8266 NodeMCU",
+    category: "Мікроконтролери",
+    description:
+      "Компактна Wi-Fi-плата для IoT-пристроїв, вебкерування та домашніх автоматизацій.",
+    price: 185,
+    oldPrice: null,
+    image: "esp8266",
+    stock: 22,
+    tags: ["ESP8266", "NodeMCU", "Wi-Fi", "IoT"],
+    featured: false,
+  },
+  {
+    id: "arduino-nano",
+    name: "Arduino Nano сумісна плата",
+    category: "Мікроконтролери",
+    description:
+      "Мала плата формату Nano для компактних пристроїв, макетування та навчальних схем.",
+    price: 230,
+    oldPrice: null,
+    image: "nano",
+    stock: 19,
+    tags: ["Arduino", "Nano", "ATmega328P", "USB"],
+    featured: false,
+  },
+  {
+    id: "bme280",
+    name: "Датчик BME280 · температура, вологість, тиск",
+    category: "Датчики й модулі",
+    description:
+      "Комбінований цифровий сенсор для метеостанцій і моніторингу мікроклімату в приміщенні.",
+    price: 145,
+    oldPrice: null,
+    image: "bme280",
+    stock: 17,
+    tags: ["BME280", "Температура", "Вологість", "Тиск", "I²C"],
+    featured: false,
+  },
+  {
+    id: "pir-hc-sr501",
+    name: "PIR-датчик руху HC-SR501",
+    category: "Датчики й модулі",
+    description:
+      "Інфрачервоний датчик руху для сигналізації, автоматичного освітлення та DIY-проєктів.",
+    price: 65,
+    oldPrice: null,
+    image: "pir",
+    stock: 28,
+    tags: ["PIR", "HC-SR501", "Рух", "5 V"],
+    featured: false,
+  },
+  {
+    id: "ds18b20-probe",
+    name: "Водонепроникний датчик DS18B20",
+    category: "Датчики й модулі",
+    description:
+      "Цифровий температурний сенсор у металевому корпусі для рідин, теплиць і зовнішніх вимірювань.",
+    price: 75,
+    oldPrice: null,
+    image: "probe",
+    stock: 24,
+    tags: ["DS18B20", "Температура", "1-Wire", "Водонепроникний"],
+    featured: false,
+  },
+  {
+    id: "soil-moisture",
+    name: "Ємнісний датчик вологості ґрунту",
+    category: "Датчики й модулі",
+    description:
+      "Сенсор для автоматичного поливу, теплиць та навчальних проєктів із догляду за рослинами.",
+    price: 95,
+    oldPrice: null,
+    image: "soil",
+    stock: 16,
+    tags: ["Вологість ґрунту", "Ємнісний", "Полив", "Аналоговий"],
+    featured: false,
+  },
+  {
+    id: "sg90-servo",
+    name: "Мікросерво SG90",
+    category: "Датчики й модулі",
+    description:
+      "Легкий сервопривід для рухомих моделей, роботів і механізмів із керуванням кутом.",
+    price: 95,
+    oldPrice: null,
+    image: "servo",
+    stock: 21,
+    tags: ["SG90", "Серво", "Робототехніка", "PWM"],
+    featured: false,
+  },
+  {
+    id: "l298n-driver",
+    name: "Драйвер двигунів L298N",
+    category: "Електронні компоненти",
+    description:
+      "Двоканальний драйвер для керування напрямком і швидкістю двигунів у робототехнічних моделях.",
+    price: 125,
+    oldPrice: null,
+    image: "motor-driver",
+    stock: 14,
+    tags: ["L298N", "Драйвер двигуна", "Робот", "H-міст"],
+    featured: false,
+  },
+  {
+    id: "relay-4ch",
+    name: "Релейний модуль · 4 канали",
+    category: "Датчики й модулі",
+    description:
+      "Чотири керовані канали для навчальних стендів та низьковольтної автоматизації.",
+    price: 175,
+    oldPrice: null,
+    image: "relay4",
+    stock: 12,
+    tags: ["Реле", "4 канали", "Модуль керування"],
+    featured: false,
+  },
+  {
+    id: "logic-level-converter",
+    name: "Перетворювач логічних рівнів 4 канали",
+    category: "Електронні компоненти",
+    description:
+      "Допомагає з’єднати модулі з логічними рівнями 3,3 V та 5 V у цифрових схемах.",
+    price: 45,
+    oldPrice: null,
+    image: "level-shifter",
+    stock: 35,
+    tags: ["3.3 V", "5 V", "I²C", "Перетворювач рівнів"],
+    featured: false,
+  },
+  {
+    id: "micro-sd-module",
+    name: "Модуль зчитування microSD",
+    category: "Електронні компоненти",
+    description:
+      "Додає збереження даних на карту пам’яті для реєстраторів, метеостанцій і автономних пристроїв.",
+    price: 55,
+    oldPrice: null,
+    image: "sd-module",
+    stock: 18,
+    tags: ["microSD", "SPI", "Збереження даних"],
+    featured: false,
+  },
+  {
+    id: "active-buzzer-module",
+    name: "Активний бузер-модуль",
+    category: "Електронні компоненти",
+    description:
+      "Компактний звуковий індикатор для сповіщень, таймерів і навчальних електронних схем.",
+    price: 35,
+    oldPrice: null,
+    image: "buzzer",
+    stock: 42,
+    tags: ["Бузер", "Звуковий сигнал", "Індикатор"],
+    featured: false,
+  },
 ];
 
 // Локальні фото з карток виробників/продавців. Пояснення про репрезентативний характер показуємо в інтерфейсі.
@@ -388,10 +546,88 @@ const details = {
       Контакти: "10 A / 250 V",
     },
   ],
+  "esp8266-nodemcu": [
+    "Generic",
+    "Плати ESP8266",
+    "NodeMCU ESP-12E",
+    { "Wi-Fi": "802.11 b/g/n", Живлення: "5 V через USB", GPIO: "Цифрові й аналогові", Інтерфейс: "Micro-USB" },
+  ],
+  "arduino-nano": [
+    "Сумісна плата",
+    "Плати Arduino",
+    "Nano · ATmega328P",
+    { Мікроконтролер: "ATmega328P", Живлення: "5 V", Частота: "16 МГц", Інтерфейс: "USB" },
+  ],
+  bme280: [
+    "Generic",
+    "Датчики температури й вологості",
+    "BME280",
+    { Параметри: "Температура, вологість, тиск", Інтерфейс: "I²C / SPI", Живлення: "3,3 V", Призначення: "Метеостанції" },
+  ],
+  "pir-hc-sr501": [
+    "Generic",
+    "Датчики руху",
+    "HC-SR501",
+    { Тип: "PIR, інфрачервоний", Живлення: "5–12 V", Вихід: "Цифровий", Налаштування: "Чутливість і затримка" },
+  ],
+  "ds18b20-probe": [
+    "Generic",
+    "Датчики температури й вологості",
+    "DS18B20 · зонд",
+    { Діапазон: "−55…125 °C", Інтерфейс: "1-Wire", Кабель: "Приблизно 1 м", Корпус: "Металевий зонд" },
+  ],
+  "soil-moisture": [
+    "Generic",
+    "Датчики вологості ґрунту",
+    "Ємнісний сенсор",
+    { Тип: "Ємнісний", Вихід: "Аналоговий", Живлення: "3,3–5 V", Призначення: "Контроль ґрунту" },
+  ],
+  "sg90-servo": [
+    "Generic",
+    "Сервоприводи",
+    "SG90",
+    { Тип: "Мікросерво", Керування: "PWM", Живлення: "4,8–6 V", Застосування: "Моделі й робототехніка" },
+  ],
+  "l298n-driver": [
+    "Generic",
+    "Драйвери двигунів",
+    "L298N",
+    { Канали: "2", Тип: "H-міст", "Живлення двигунів": "За специфікацією модуля", Керування: "PWM" },
+  ],
+  "relay-4ch": [
+    "Generic",
+    "Релейні модулі",
+    "4-канальний модуль",
+    { Канали: "4", Керування: "Цифрові входи", Живлення: "Залежить від ревізії", Застосування: "Навчальні стенди" },
+  ],
+  "logic-level-converter": [
+    "Generic",
+    "Перетворювачі логічних рівнів",
+    "4-канальний перетворювач",
+    { Канали: "4", Рівні: "3,3 V ↔ 5 V", Тип: "Двонапрямний", Інтерфейси: "I²C та цифрові сигнали" },
+  ],
+  "micro-sd-module": [
+    "Generic",
+    "Модулі пам’яті",
+    "microSD · SPI",
+    { Інтерфейс: "SPI", Носій: "Карта microSD", Живлення: "Залежить від ревізії", Застосування: "Запис даних" },
+  ],
+  "active-buzzer-module": [
+    "Generic",
+    "Звукові модулі",
+    "Активний бузер",
+    { Тип: "Активний зумер", Керування: "Цифровий сигнал", Призначення: "Звукові сповіщення", Формат: "Модуль" },
+  ],
 };
 
+products.push(...catalogExpansion);
 products.forEach((product, index) => {
-  const [brand, subcategory, sku, specifications] = details[product.id];
+  const [brand, subcategory, sku, specifications] = details[product.id] || [
+    product.brand,
+    product.subcategory,
+    product.sku,
+    product.specifications,
+  ];
   Object.assign(product, {
     brand,
     subcategory,
@@ -427,6 +663,11 @@ export const categories = [
     desc: "Усе необхідне в одній коробці",
     icon: "◈",
   },
+  { name: "Дисплеї", desc: "Екрани та індикатори для проєктів", icon: "▤" },
+  { name: "Бездротовий зв’язок", desc: "Радіо, Bluetooth та ІЧ-модулі", icon: "⌁" },
+  { name: "Мотори й робототехніка", desc: "Двигуни, драйвери та шасі", icon: "⚙" },
+  { name: "Акумулятори й заряджання", desc: "Тримачі та модулі живлення", icon: "ϟ" },
+  { name: "Вимірювальні прилади", desc: "Інструменти для майстерні", icon: "⌖" },
 ];
 
 export const projects = [
@@ -582,6 +823,30 @@ export function productArt(product, large = false, view = 0) {
       '<circle cx="130" cy="89" r="56" fill="none" stroke="#57cdb3" stroke-width="12"/><circle cx="130" cy="89" r="38" fill="none" stroke="#8be4d0" stroke-width="4"/><path d="M77 48c31-22 76-21 105 2m-95 83c31 22 70 20 96-1" stroke="#b8eadd" stroke-width="3" fill="none"/>',
     components:
       '<rect x="68" y="50" width="125" height="78" rx="8" class="art-board"/><path d="M86 70v38m17-38v38m17-38v38m17-38v38m17-38v38m17-38v38" stroke="#78cbb0" stroke-width="7"/><path d="M82 64h100m-100 50h100" class="art-line"/>',
+    esp8266:
+      '<rect x="67" y="36" width="126" height="108" rx="10" class="art-board"/><rect x="106" y="66" width="54" height="43" rx="5" class="art-chip"/><rect x="110" y="37" width="44" height="11" rx="3" class="art-metal"/><path d="M80 50v10m16-10v10m16 54v19m16-19v19m16-19v19m16-19v19m16-19v19" class="art-line"/><circle cx="174" cy="55" r="5" class="art-light"/>',
+    nano:
+      '<rect x="80" y="35" width="100" height="111" rx="8" class="art-board"/><rect x="112" y="72" width="39" height="34" rx="4" class="art-chip"/><rect x="115" y="39" width="32" height="10" rx="3" class="art-metal"/><path d="M93 39v10m16-10v10m16-10v10m16-10v10m16-10v10m-64 87v-10m16 10v-10m16 10v-10m16 10v-10m16 10v-10" class="art-line"/>',
+    bme280:
+      '<rect x="81" y="48" width="98" height="83" rx="9" class="art-board"/><rect x="105" y="68" width="50" height="43" rx="6" class="art-chip"/><circle cx="166" cy="61" r="5" class="art-light"/><path d="M92 48v-9m18 9v-9m18 9v-9m18 9v-9m18 9v-9M99 131v10m18-10v10m18-10v10m18-10v10" class="art-line"/>',
+    pir:
+      '<path d="M73 119h115l-9-42a49 49 0 0 0-97 0z" class="art-board"/><path d="M97 80a34 34 0 0 1 67 0l6 27H91z" class="art-metal"/><path d="M103 92h55m-52 10h49" stroke="#899789" stroke-width="2"/><path d="M102 120v15m28-15v15m28-15v15" class="art-line"/>',
+    probe:
+      '<path d="M93 45h74v75a37 37 0 0 1-74 0z" class="art-metal"/><path d="M130 119v31" stroke="#c3c8b7" stroke-width="6" stroke-linecap="round"/><path d="M130 150c0 13 34 8 34 22m-34-22c0 13-34 8-34 22" stroke="#57cdb3" stroke-width="5" fill="none"/><path d="M107 62h46" class="art-line"/>',
+    soil:
+      '<rect x="91" y="43" width="78" height="92" rx="9" class="art-board"/><path d="M106 91v58m48-58v58" stroke="#b9c8b4" stroke-width="8" stroke-linecap="round"/><rect x="108" y="58" width="44" height="25" rx="5" class="art-chip"/><circle cx="157" cy="54" r="5" class="art-light"/>',
+    servo:
+      '<rect x="78" y="62" width="102" height="73" rx="12" class="art-metal"/><rect x="99" y="79" width="55" height="39" rx="5" class="art-board"/><circle cx="130" cy="59" r="13" class="art-metal"/><path d="M130 59V35m-21 24h42" stroke="#b9d08e" stroke-width="5" stroke-linecap="round"/><path d="M98 135v12m63-12v12" class="art-line"/>',
+    "motor-driver":
+      '<rect x="65" y="45" width="130" height="89" rx="8" class="art-board"/><rect x="103" y="66" width="53" height="45" rx="5" class="art-chip"/><rect x="72" y="56" width="20" height="19" rx="3" class="art-metal"/><rect x="169" y="56" width="18" height="19" rx="3" class="art-metal"/><path d="M82 134v9m20-9v9m20-9v9m20-9v9m20-9v9m20-9v9" class="art-line"/>',
+    relay4:
+      '<rect x="62" y="48" width="136" height="85" rx="8" class="art-board"/><rect x="73" y="63" width="23" height="49" rx="4" class="art-metal"/><rect x="103" y="63" width="23" height="49" rx="4" class="art-metal"/><rect x="133" y="63" width="23" height="49" rx="4" class="art-metal"/><rect x="163" y="63" width="23" height="49" rx="4" class="art-metal"/><path d="M81 55v-8m30 8v-8m30 8v-8m30 8v-8" class="art-line"/>',
+    "level-shifter":
+      '<rect x="76" y="49" width="108" height="82" rx="8" class="art-board"/><rect x="94" y="72" width="16" height="33" rx="3" class="art-chip"/><rect x="150" y="72" width="16" height="33" rx="3" class="art-chip"/><path d="M83 58v-9m18 9v-9m18 9v-9m18 9v-9m18 9v-9m18 9v-9M83 131v9m18-9v9m18-9v9m18-9v9m18-9v9m18-9v9" class="art-line"/><path d="M113 89h33" stroke="#b9d08e" stroke-width="3"/>',
+    "sd-module":
+      '<rect x="76" y="48" width="108" height="84" rx="8" class="art-board"/><path d="M103 65h53v43h-53z" fill="#46594c" stroke="#b9d08e" stroke-width="3"/><path d="m113 65 8 13h18l8-13" fill="#151a17"/><path d="M90 54v-8m18 8v-8m18 8v-8m18 8v-8m18 8v-8m18 8v-8" class="art-line"/><circle cx="167" cy="118" r="4" class="art-light"/>',
+    buzzer:
+      '<circle cx="130" cy="91" r="48" class="art-board"/><circle cx="130" cy="91" r="32" fill="#202922" stroke="#899789" stroke-width="4"/><circle cx="130" cy="91" r="7" fill="#57cdb3"/><path d="M130 38v-9m-49 62h-9m107 0h-9m-40 48v9" class="art-line"/>',
   };
   const transform = large
     ? `transform="scale(${1.13 - view * 0.06}) rotate(${view * 3}deg)"`

@@ -85,6 +85,18 @@ const imageKinds = [
   ["kit", "Набір"],
   ["filament", "Філамент"],
   ["components", "Компоненти"],
+  ["esp8266", "Плата ESP8266"],
+  ["nano", "Arduino Nano"],
+  ["bme280", "Модуль BME280"],
+  ["pir", "PIR-датчик руху"],
+  ["probe", "Температурний зонд"],
+  ["soil", "Датчик вологості ґрунту"],
+  ["servo", "Сервопривід"],
+  ["motor-driver", "Драйвер двигуна"],
+  ["relay4", "Чотириканальне реле"],
+  ["level-shifter", "Перетворювач рівнів"],
+  ["sd-module", "Модуль microSD"],
+  ["buzzer", "Бузер-модуль"],
 ];
 const specsText = (specifications) =>
   Object.entries(specifications || {})
