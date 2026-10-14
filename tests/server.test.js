@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createApp } from "../server/app.js";
+import { createApp } from "../backend/server/app.js";
 
 async function fixture(options = {}) {
   const app = await createApp(options);
@@ -90,7 +90,7 @@ test("static pages, scripts and assets work; private files are inaccessible", as
       "/js/main.js",
       "/api/client.js",
       "/guides/weather-station.ino",
-      "/assets/images/arduino-uno-front.jpg",
+      "/assets/images/products/arduino-uno-front.jpg",
     ])
       assert.equal((await fetch(f.origin + path)).status, 200, path);
     for (const path of [

@@ -1,7 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
-import { products, projects, productPhotos } from "../js/products.js";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { products, projects, productPhotos } from "../frontend/js/products.js";
+const frontend = fileURLToPath(new URL("../frontend/", import.meta.url));
 const storage = new Map();
 globalThis.localStorage = {
   getItem: (key) => storage.get(key) ?? null,
@@ -10,7 +13,7 @@ globalThis.localStorage = {
 };
 globalThis.window = { dispatchEvent: () => {} };
 globalThis.document = { querySelector: () => null };
-const cart = await import("../js/cart.js");
+const cart = await import("../frontend/js/cart.js");
 test("cart uses current prices and clamps quantities to current stock", () => {
   const p = products[0],
     original = { price: p.price, stock: p.stock };
@@ -75,11 +78,13 @@ test("project costs equal the component totals; real galleries have distinct exi
     );
   for (const images of Object.values(productPhotos)) {
     assert.equal(new Set(images).size, images.length);
-    for (const image of images) assert.ok(existsSync(image));
+    for (const image of images) assert.ok(existsSync(resolve(frontend, image)));
   }
   for (const project of projects)
     assert.ok(
-      existsSync("guides/" + project.id + ".ino") ||
-        existsSync(`guides/${project.id}/${project.id}.ino`),
+      existsSync(resolve(frontend, "guides", project.id + ".ino")) ||
+        existsSync(
+          resolve(frontend, "guides", project.id, project.id + ".ino"),
+        ),
     );
 });

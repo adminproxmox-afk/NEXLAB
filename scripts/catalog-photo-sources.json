@@ -1,0 +1,583 @@
+[
+  {
+    "id": "arduino-mega-2560",
+    "q": "Mega 2560 · ATmega2560 Arduino Mega 2560 сумісна плата product photo electronics",
+    "title": "MEGA 2560 R3 ATmega2560-16AU MEGA2560 Development Board USB Cable (https://www.flyrobo.in/arduino-uno-r3-compatible-board-plus-cable-for-arduino-uno)",
+    "image": "https://www.flyrobo.in/image/cache/catalog/product2/arduino-mega-r3-atmega2560-16au-development-board-550x550w.jpg",
+    "page": "https://www.flyrobo.in/arduino-uno-r3-compatible-board-plus-cable-for-arduino-uno"
+  },
+  {
+    "id": "arduino-pro-mini",
+    "q": "Pro Mini · ATmega328P Arduino Pro Mini сумісна плата product photo electronics",
+    "title": "Arduino Pro Mini 328 - 3.3V/8MHz — BerryBase",
+    "image": "https://www.berrybase.ch/media/90/3a/70/1729579094/ArduinoProMini32833V8MHz-130617.webp?ts=1750865388",
+    "page": "https://www.berrybase.ch/en/arduino-pro-mini-328-3.3v-8mhz"
+  },
+  {
+    "id": "esp32-s3-devkit",
+    "q": "ESP32-S3 Плата ESP32-S3 DevKit product photo electronics",
+    "title": "PŁYTKA ROZWOJOWA ESP32-S3 38PIN WIFI BLUETOOTH 240MHZ USB TYPU C, 628472049299 • Cena • Opinie - Allegro (https://allegro.pl/oferta/plytka-rozwojowa-esp32-s3-38pin-wifi-bluetooth-240mhz-usb-typu-c-17925341419)",
+    "image": "https://a.allegroimg.com/original/11a91f/a310537943f49412dde73b705401/PLYTKA-ROZWOJOWA-ESP32-S3-38PIN-WIFI-BLUETOOTH-240MHZ-USB-TYPU-C",
+    "page": "https://allegro.pl/oferta/plytka-rozwojowa-esp32-s3-38pin-wifi-bluetooth-240mhz-usb-typu-c-17925341419"
+  },
+  {
+    "id": "esp32-c3-supermini",
+    "q": "ESP32-C3 Компактна плата ESP32-C3 product photo electronics",
+    "title": "ESP32-C3 Supermini - Alphatronic (https://alphatronic.lk/product/esp32-c3-supermini/)",
+    "image": "https://ik.imagekit.io/ulxd3enf7/wp-content/uploads/2023/10/ESP32-C3-Supermini1.png",
+    "page": "https://alphatronic.lk/product/esp32-c3-supermini/"
+  },
+  {
+    "id": "raspberry-pi-pico",
+    "q": "RP2040 · Pico Raspberry Pi Pico сумісна плата product photo electronics",
+    "title": "TARJETA RASPBERRY PI PICO RP2040 USB TIPO C MODULO (https://ssdielect.com/raspberry-pi/5565-rp2040-type-c.html)",
+    "image": "https://ssdielect.com/23746-large_default/rp2040-type-c.jpg",
+    "page": "https://ssdielect.com/raspberry-pi/5565-rp2040-type-c.html"
+  },
+  {
+    "id": "stm32-blue-pill",
+    "q": "STM32F103C8T6 Плата STM32 Blue Pill product photo electronics",
+    "title": "STM32F103C8T6 Blue Pill Development Board",
+    "image": "https://static.insales-cdn.com/images/products/1/4239/696324239/large_%D0%A1%D0%BA%D1%80%D0%B8%D0%BD%D1%88%D0%BE%D1%82_10-05-2023_103046.png",
+    "page": "https://www.yourduino.ru/product/otladochnaya-plata-stm32f103c8t6-blue-pill"
+  },
+  {
+    "id": "attiny85-module",
+    "q": "ATtiny85 Модуль ATtiny85 USB product photo electronics",
+    "title": "Iodool❃citeHigh Quality AU ATTINY85 Digispark Kickstarter Mini ATTINY85 Module for Arduino IIC I2C USB | Shopee Philippines (https://shopee.ph/Iodool%E2%9D%83%E3%80%90High-Quality%E3%80%91-AU-ATTINY85-Digispark-Kickstarter-Mini-ATTINY85-Module-for-Arduino-IIC-I2C-USB-i.102296333.28733363112)",
+    "image": "https://down-ph.img.susercontent.com/file/sg-11134201-7req6-m8k7cuov1tndca",
+    "page": "https://shopee.ph/Iodool%E2%9D%83%E3%80%90High-Quality%E3%80%91-AU-ATTINY85-Digispark-Kickstarter-Mini-ATTINY85-Module-for-Arduino-IIC-I2C-USB-i.102296333.28733363112"
+  },
+  {
+    "id": "arduino-uno-shield",
+    "q": "Sensor Shield V5 Плата розширення для Arduino UNO product photo electronics",
+    "title": "Arduino плата розширення Sensor Shield V5.0 (Сенсор шилд підключення датчиків): продажа, цена в Украине. Набори та компоненти для самостійного збирання електроніки от \"ArduinoKit навчальні набори робототехніки\" - 1139483803 (https://arduinokit.com.ua/ua/p1139483803-arduino-plata-rasshireniya.html)",
+    "image": "https://images.prom.ua/2262369946_w1280_h640_2262369946.jpg",
+    "page": "https://arduinokit.com.ua/ua/p1139483803-arduino-plata-rasshireniya.html"
+  },
+  {
+    "id": "bmp280",
+    "q": "BMP280 Датчик атмосферного тиску BMP280 product photo electronics",
+    "title": "Adafruit BMP280 I2C or SPI Barometric Pressure & Altitude Sensor (https://www.dhm-online.com/adafruit/2613-adafruit-bmp280-i2c-or-spi-barometric-pressure-altitude-sensor.html)",
+    "image": "https://www.dhm-online.com/4840263-large_default/adafruit-bmp280-i2c-or-spi-barometric-pressure-altitude-sensor.jpg",
+    "page": "https://www.dhm-online.com/adafruit/2613-adafruit-bmp280-i2c-or-spi-barometric-pressure-altitude-sensor.html"
+  },
+  {
+    "id": "mpu6050",
+    "q": "MPU-6050 Інерційний модуль MPU-6050 product photo electronics",
+    "title": "Модуль MPU-6050 3-осевой гироскоп и акселерометр Arduino: продажа, цена в Украине. Наборы и компоненты для самостоятельной сборки электроники от \"ArduinoKit навчальні набори робототехники\" - 2278732795 (https://arduinokit.com.ua/p2278732795-modul-mpu-6050.html)",
+    "image": "https://images.prom.ua/6064273603_modul-mpu-6050-3-osevoj.jpg",
+    "page": "https://arduinokit.com.ua/p2278732795-modul-mpu-6050.html"
+  },
+  {
+    "id": "bh1750",
+    "q": "BH1750 Датчик освітленості BH1750 product photo electronics",
+    "title": "Dijital Işık Şiddet Sensörü - BH1750FVI Modül | Komponentci (https://www.komponentci.net/dijital-isik-siddet-sensoru-bh1750fvi-modul-pmu12081)",
+    "image": "https://platincdn.com/3106/pictures/HQDDB231723_RB-328-1.jpg",
+    "page": "https://www.komponentci.net/dijital-isik-siddet-sensoru-bh1750fvi-modul-pmu12081"
+  },
+  {
+    "id": "tcs34725",
+    "q": "TCS34725 Датчик кольору TCS34725 product photo electronics",
+    "title": "TCS34725 RGB Color Sensor Module – I2C, STM32 Support (https://kitsguru.com/products/tcs34725-color-recognition-sensor-light-sensor-module-rgb-iic-supports-stm32-duble-hole-version?srsltid=AfmBOoqL1OiG_Fu1UsawjCq8Viz9T-lVd1Vecwu6_oRSTlCwa2g-dUvV)",
+    "image": "https://kitsguru.com/cdn/shop/files/TCS34725colorrecognitionsensorlightsensormoduleRGBIICsupportsSTM32dubleholeVersion.jpg?v=1741682694",
+    "page": "https://kitsguru.com/products/tcs34725-color-recognition-sensor-light-sensor-module-rgb-iic-supports-stm32-duble-hole-version?srsltid=AfmBOoqL1OiG_Fu1UsawjCq8Viz9T-lVd1Vecwu6_oRSTlCwa2g-dUvV"
+  },
+  {
+    "id": "max6675-thermocouple",
+    "q": "MAX6675 · K-type Модуль термопари MAX6675 product photo electronics",
+    "title": "MAX6675 K-Tipi Termokupl Sensör | Robolink (https://www.robolinkmarket.com/max6675-k-tipi-termokupl-sensor)",
+    "image": "https://witcdn.robolinkmarket.com/max6675-k-tipi-termokupl-sensor-robolink-market-14733-79-B.jpg",
+    "page": "https://www.robolinkmarket.com/max6675-k-tipi-termokupl-sensor"
+  },
+  {
+    "id": "hx711-load-cell",
+    "q": "HX711 Модуль зважування HX711 product photo electronics",
+    "title": "Módulo Célula De Carga 24 Bits Hx711 - Balança - PISCALED | Arduino | Componentes eletrônicos | Motor de passo | Sensores (https://www.piscaled.com.br/modulo-celula-de-carga-24-bits-hx711-balanca)",
+    "image": "https://cdn.awsli.com.br/2500x2500/710/710156/produto/121773498/eca1791636.jpg",
+    "page": "https://www.piscaled.com.br/modulo-celula-de-carga-24-bits-hx711-balanca"
+  },
+  {
+    "id": "rain-sensor",
+    "q": "Rain Sensor Модуль датчика дощу product photo electronics",
+    "title": "Rain sensor for Arduino with detection plate — Mectronica",
+    "image": "https://store.mectronica.it/682-medium_default/rain-sensor-for-arduino-and-embedded-with-detection-plate-and-transducer.jpg",
+    "page": "https://store.mectronica.it/en/rain/517-rain-sensor-for-arduino-and-embedded-with-detection-plate-and-transducer.html"
+  },
+  {
+    "id": "mq2-gas-sensor",
+    "q": "MQ-2 Датчик газу MQ-2 product photo electronics",
+    "title": "MQ-2 Gas Sensor Module (https://makershop.ie/MQ-2)",
+    "image": "https://makershop.ie/image/cache/catalog/p/00095/000-1100x1100.png",
+    "page": "https://makershop.ie/MQ-2"
+  },
+  {
+    "id": "flame-sensor",
+    "q": "Flame Sensor Інфрачервоний датчик полум’я product photo electronics",
+    "title": "Arduino Compatible IR Infrared Flame Sensor Module",
+    "image": "https://rees52.com/cdn/shop/products/17664.jpg?v=1728980687&width=1920",
+    "page": ""
+  },
+  {
+    "id": "ir-obstacle-sensor",
+    "q": "IR Obstacle Sensor ІЧ-датчик перешкоди product photo electronics",
+    "title": "Купить Инфракрасный датчик обнаружения препятствий YL-63 (FC-51) Arduino/ESP/Raspberry Pi (Доставка РФ,СНГ) (https://iarduino.ru/shop/Sensory-Datchiki/infrakrasnyy-datchik-obnaruzheniya-prepyatstviy.html)",
+    "image": "https://iarduino.ru/img/catalog/451226cad6ebc1ef5801ca08fe6b28ea.jpg",
+    "page": "https://iarduino.ru/shop/Sensory-Datchiki/infrakrasnyy-datchik-obnaruzheniya-prepyatstviy.html"
+  },
+  {
+    "id": "rotary-encoder-module",
+    "q": "KY-040 Модуль енкодера з кнопкою product photo electronics",
+    "title": "KY-040 Rotary Encoder Module 360 Degree with Push Button | Shopee Malaysia (https://shopee.com.my/KY-040-Rotary-Encoder-Module-360-Degree-with-Push-Button-i.5999476.42462199589)",
+    "image": "https://down-my.img.susercontent.com/file/my-11134207-7rasb-md92qsm1jprj7d",
+    "page": "https://shopee.com.my/KY-040-Rotary-Encoder-Module-360-Degree-with-Push-Button-i.5999476.42462199589"
+  },
+  {
+    "id": "touch-sensor-ttp223",
+    "q": "TTP223 Сенсорна кнопка TTP223 product photo electronics",
+    "title": "TTP223 Capacitive Touch Sensor Module",
+    "image": "https://bizweb.dktcdn.net/thumb/1024x1024/100/131/827/products/mach-phim-cam-ung-dien-dung-1-kenh-ttp223-1.jpg?v=1728010869123",
+    "page": "https://www.dientudat.com/mach-phim-cam-ung-dien-dung-1-kenh-ttp223"
+  },
+  {
+    "id": "reed-switch-module",
+    "q": "Reed Switch Модуль геркона product photo electronics",
+    "title": "Módulo Sensor Magnético Reed Switch - AutoCore Robótica - Arduino em Fortaleza, você encontra aqui! (https://www.autocorerobotica.com.br/modulo-sensor-magnetico-reed-switch)",
+    "image": "https://cdn.awsli.com.br/600x1000/78/78150/produto/24289325/7223d71510.jpg",
+    "page": "https://www.autocorerobotica.com.br/modulo-sensor-magnetico-reed-switch"
+  },
+  {
+    "id": "lcd1602-i2c",
+    "q": "LCD1602 · I²C LCD-дисплей 1602 з I²C-модулем product photo electronics",
+    "title": "I2C 1602 LCD Display Module 16X2 Character Serial Blue Backlight LCD Module for Raspberry Pi Arduino STM32 DIY Maker Project Nanopi BPI Tinker board Electrical IoT Internet of Things | Daraz.com.bd (https://www.daraz.com.bd/products/i2c-1602-lcd-display-module-16x2-character-serial-blue-backlight-lcd-module-for-raspberry-pi-arduino-stm32-diy-maker-project-nanopi-bpi-tinker-board-electrical-iot-internet-of-things-i522477358.html)",
+    "image": "https://static-01.daraz.com.bd/p/7551af7f19b7d4e2bf21fcadf0d7b36b.jpg",
+    "page": "https://www.daraz.com.bd/products/i2c-1602-lcd-display-module-16x2-character-serial-blue-backlight-lcd-module-for-raspberry-pi-arduino-stm32-diy-maker-project-nanopi-bpi-tinker-board-electrical-iot-internet-of-things-i522477358.html"
+  },
+  {
+    "id": "oled-13",
+    "q": "OLED 1.3″ · SH1106 OLED-дисплей 1.3″ product photo electronics",
+    "title": "Замовити Дисплей OLED 128 X 64 LCD екран 1.3\" I2C IIC SH1106 White з доставкою по Україні. Кращі ціни на ProductCategory.caption у магазині RadioStore (https://radiostore.com.ua/ua/p2151059827-displej-oled-128.html)",
+    "image": "https://images.prom.ua/5606815763_displej-oled-128.jpg",
+    "page": "https://radiostore.com.ua/ua/p2151059827-displej-oled-128.html"
+  },
+  {
+    "id": "tft-18-spi",
+    "q": "TFT 1.8″ · SPI Кольоровий TFT-дисплей 1.8″ product photo electronics",
+    "title": "1.8 inch IPS Display SPI HD 65K Full Color LCD TFT Module ST7735S 128*160 (https://www.elecrow.com/1-8-inch-ips-display-spi-hd-65k-full-color-lcd-tft-module-st7735s-128-160.html)",
+    "image": "https://www.elecrow.com/media/catalog/product/cache/9e67447b006ee4d9559353b91d12add5/d/s/dsi18452o_03_1.jpg",
+    "page": "https://www.elecrow.com/1-8-inch-ips-display-spi-hd-65k-full-color-lcd-tft-module-st7735s-128-160.html"
+  },
+  {
+    "id": "max7219-matrix",
+    "q": "MAX7219 · 8×8 Матричний дисплей 8×8 MAX7219 product photo electronics",
+    "title": "MAX7219 8x8 Dot Matrix Module MCU LED Display Control Module 5V with Interface | Shopee Philippines (https://shopee.ph/MAX7219-8x8-Dot-Matrix-Module-MCU-LED-Display-Control-Module-5V-with-Interface-i.182110920.25687517603)",
+    "image": "https://down-ph.img.susercontent.com/file/sg-11134201-7renx-m1qksiiuvkpz5d",
+    "page": "https://shopee.ph/MAX7219-8x8-Dot-Matrix-Module-MCU-LED-Display-Control-Module-5V-with-Interface-i.182110920.25687517603"
+  },
+  {
+    "id": "tm1637-display",
+    "q": "TM1637 · 4 digit Чотиризначний індикатор TM1637 product photo electronics",
+    "title": "TM1637 4 Bits Digital Tube LED Display Module With Clock Display for Arduino - (https://www.flyrobo.in/tm1637-4-bits-digital-tube-led-display-module-with-clock-display-for-arduino)",
+    "image": "https://www.flyrobo.in/image/cache/catalog/tm1637-4-bits-digital-tube-led-display-module-with-clock-display-for-arduino/tm1637-4-bits-digital-tube-led-display-module-with-clock-display-for-arduino2-550x550w.jpg",
+    "page": "https://www.flyrobo.in/tm1637-4-bits-digital-tube-led-display-module-with-clock-display-for-arduino"
+  },
+  {
+    "id": "nrf24l01-module",
+    "q": "nRF24L01+ Радіомодуль nRF24L01+ product photo electronics",
+    "title": "NRF24L01+ 2.4GHz Wireless Transceiver Module with External Antenna",
+    "image": "https://down-id.img.susercontent.com/file/302d62c48cb01703e8f5fb57a7e2a573",
+    "page": "https://shopee.co.id/NRF24L01-Antena-2.4GHz-Modul-Wireless-Transceiver-Module-for-Arduino-i.26071365.7148876850"
+  },
+  {
+    "id": "hc05-bluetooth",
+    "q": "HC-05 Bluetooth-модуль HC-05 product photo electronics",
+    "title": "HC-06 Bluetooth serial module — Electrocomponentes",
+    "image": "https://www.electrocomponentes.es/18872-large_default/hc-06-modulo-bluetooth-esclavo-hc06-serial-transceiver-slave-rs232.jpg",
+    "page": "https://www.electrocomponentes.es/inalambricos/1553-hc-06-modulo-bluetooth-esclavo-hc06-serial-transceiver-slave-rs232.html"
+  },
+  {
+    "id": "ir-receiver-module",
+    "q": "IR Receiver 38 kHz ІЧ-приймач для пульта product photo electronics",
+    "title": "High quality IR 38KHz Remote Receiver led 38KHz 30m 3-Pin TSOP1738 (https://circuit.pk/product/417)",
+    "image": "https://circuit.pk/product_images/87hrCYgHFguDbuNoM04F3tgKKFwOe59xrgTksCai.jpeg",
+    "page": "https://circuit.pk/product/417"
+  },
+  {
+    "id": "rf433-transmitter-receiver",
+    "q": "RF 433 MHz pair Комплект радіомодулів 433 МГц product photo electronics",
+    "title": "433 MHz transmitter and receiver module set",
+    "image": "https://michiel.vanderwulp.be/domotica/Modules/RF-433Mhz-transmitter-receiver/1_the_module_set.png",
+    "page": "https://michiel.vanderwulp.be/domotica/Modules/RF-433Mhz-transmitter-receiver/"
+  },
+  {
+    "id": "nema17-stepper",
+    "q": "NEMA 17 Кроковий двигун NEMA 17 product photo electronics",
+    "title": "Silnik NEMA 17 1.8º 5.5 kg/cm - 76oz-in - Sklep V-Slot OpenBuilds Polska (https://www.v-slot.pl/pl/p/Silnik-NEMA-17-1.8-5.5-kgcm-76oz-in/232)",
+    "image": "https://www.v-slot.pl/environment/cache/images/productGfx_16800_500_500/Silnik-NEMA-17-1.8-5.5-kgcm---76oz-in.png",
+    "page": "https://www.v-slot.pl/pl/p/Silnik-NEMA-17-1.8-5.5-kgcm-76oz-in/232"
+  },
+  {
+    "id": "mg996r-servo",
+    "q": "MG996R Сервопривід MG996R product photo electronics",
+    "title": "Mg996R Servo Motor 180 Derece Metal Dişli Yüksek Tork Pwm Rc Robot Tekne Futaba Robotik Kol Direksiyon Araba Kamera Pan Tilt Hareket (https://robiz.net/mg996r)",
+    "image": "https://robiz.net/image/cache/data/motor/servo/mg996/MG996_05-1010x1010.jpg",
+    "page": "https://robiz.net/mg996r"
+  },
+  {
+    "id": "stepper-28byj48-kit",
+    "q": "28BYJ-48 · ULN2003 Кроковий двигун 28BYJ-48 з драйвером product photo electronics",
+    "title": "Motor de Passo 28BYJ-48 com Driver ULN2003 Para Arduino | Shopee Brasil (https://shopee.com.br/Motor-de-Passo-28BYJ-48-com-Driver-ULN2003-Para-Arduino-i.992479881.22495647626)",
+    "image": "https://down-br.img.susercontent.com/file/br-11134207-7qukw-lggznqvffxhif3",
+    "page": "https://shopee.com.br/Motor-de-Passo-28BYJ-48-com-Driver-ULN2003-Para-Arduino-i.992479881.22495647626"
+  },
+  {
+    "id": "dc-gearmotor",
+    "q": "DC Gear Motor Мотор-редуктор постійного струму product photo electronics",
+    "title": "TRU Components IG320005-SY9489 Gleichstrom-Getriebemotor 12V 530mA 0.029 Nm 995 U/min Wellen-Durchmesser: 6mm | » Freue dich auf voelkner (https://www.voelkner.de/products/1030357/TRU-Components-IG320005-SY9489-Gleichstrom-Getriebemotor-12V-530mA-0.029-Nm-995-U-min-Wellen-Durchmesser-6mm.html)",
+    "image": "https://asset.re-in.de/isa/160267/c1/-/de/001601519PI00/TRU-Components-IG320005-SY9489-Gleichstrom-Getriebemotor-12V-530mA-0.029-Nm-995-U-min-Wellen-Durchmesser-6mm.jpg?align=center&ex=500&ey=500&quality=95&x=500&y=500",
+    "page": "https://www.voelkner.de/products/1030357/TRU-Components-IG320005-SY9489-Gleichstrom-Getriebemotor-12V-530mA-0.029-Nm-995-U-min-Wellen-Durchmesser-6mm.html"
+  },
+  {
+    "id": "l9110s-driver",
+    "q": "L9110S Драйвер двигунів L9110S product photo electronics",
+    "title": "L9110S 0.8A Dual DC Motor Driver Module | Shopee Malaysia (https://shopee.com.my/L9110S-0.8A-Dual-DC-Motor-Driver-Module-i.357303067.20936756101)",
+    "image": "https://down-my.img.susercontent.com/file/4376c4009cb7e81e6dbb9fa7e7857984",
+    "page": "https://shopee.com.my/L9110S-0.8A-Dual-DC-Motor-Driver-Module-i.357303067.20936756101"
+  },
+  {
+    "id": "joystick-module",
+    "q": "XY Joystick Двовісний джойстик-модуль product photo electronics",
+    "title": "Jual Modul Joy Stick Module Joystick Dual-axis XY Arduino | Shopee Indonesia (https://shopee.co.id/Modul-Joy-Stick-Module-Joystick-Dual-axis-XY-Arduino-i.26071365.6448880571)",
+    "image": "https://down-id.img.susercontent.com/file/dbeef7780257f7fd9473ea65f0335f00",
+    "page": "https://shopee.co.id/Modul-Joy-Stick-Module-Joystick-Dual-axis-XY-Arduino-i.26071365.6448880571"
+  },
+  {
+    "id": "robot-wheel-pair",
+    "q": "Robot Wheel Pair Пара коліс для міні-робота product photo electronics",
+    "title": "Shopee Philippines | Shop Online with Promos and Vouchers (https://shopee.ph/Rubber-Wheels-Robot-Following-Line-Accessories-Smart-Car-Tires-Chassis-Wheels-40g-i.1631418691.26192335763)",
+    "image": "https://down-ph.img.susercontent.com/file/sg-11134202-824i0-mf62h5rf2ebwb5",
+    "page": "https://shopee.ph/Rubber-Wheels-Robot-Following-Line-Accessories-Smart-Car-Tires-Chassis-Wheels-40g-i.1631418691.26192335763"
+  },
+  {
+    "id": "robot-chassis-2wd",
+    "q": "2WD Chassis Шасі робота 2WD product photo electronics",
+    "title": "Автомобільне шасі для Ардуїно 2WD: продажа, цена в Украине. Набори та компоненти для самостійного збирання електроніки от \"ArduinoKit навчальні набори робототехніки\" - 1333010895 (https://arduinokit.com.ua/ua/p1333010895-avtomobilnoe-shassi-dlya.html)",
+    "image": "https://images.prom.ua/2852807727_w1280_h640_2852807727.jpg",
+    "page": "https://arduinokit.com.ua/ua/p1333010895-avtomobilnoe-shassi-dlya.html"
+  },
+  {
+    "id": "breadboard-power-module",
+    "q": "MB102 Модуль живлення макетної плати product photo electronics",
+    "title": "AOKIN Power Supply Module Breadboard Dual Channel 3.3/5V - MB102 - Black (https://www.jakartanotebook.com/p/aokin-power-supply-module-breadboard-dual-channel-3.3-or-5v-mb102-black)",
+    "image": "https://upload.jaknot.com/2025/12/images/products/2b5dd8/original/aokin-power-supply-module-breadboard-dual-channel-335v-mb102.jpg",
+    "page": "https://www.jakartanotebook.com/p/aokin-power-supply-module-breadboard-dual-channel-3.3-or-5v-mb102-black"
+  },
+  {
+    "id": "lm2596-buck",
+    "q": "LM2596 Понижувальний DC-DC модуль LM2596 product photo electronics",
+    "title": "Перетворювач напруги DC-DC LM2596 регульований, Step-Down, до 3A, для електронних проектів, ціна 67 ₴: купити на Prom.ua | Україна (https://prom.ua/ua/p2619706219-preobrazovatel-napryazheniya-lm2596.html)",
+    "image": "https://images.prom.ua/6662654096_w700_h500_preobrazovatel-napryazheniya-dc-dc.jpg",
+    "page": "https://prom.ua/ua/p2619706219-preobrazovatel-napryazheniya-lm2596.html"
+  },
+  {
+    "id": "mt3608-boost",
+    "q": "MT3608 Підвищувальний DC-DC модуль MT3608 product photo electronics",
+    "title": "Step up converter Boost converter DC 2A Adjustable Voltage MT3608 | Daraz.lk (https://www.daraz.lk/products/step-up-converter-boost-converter-dc-2a-adjustable-voltage-mt3608-i138676349.html)",
+    "image": "https://static-01.daraz.lk/p/9fd7f0b9069fe1e20973121228922289.jpg",
+    "page": "https://www.daraz.lk/products/step-up-converter-boost-converter-dc-2a-adjustable-voltage-mt3608-i138676349.html"
+  },
+  {
+    "id": "tp4056-usbc",
+    "q": "TP4056 · USB-C Зарядний модуль TP4056 USB-C product photo electronics",
+    "title": "TP4056 USB-C Lithium Battery Charging Module",
+    "image": "https://cf.shopee.co.id/file/ff74c1d36390c27a5d93526b7957a55a",
+    "page": "https://shopee.co.id/TP4056-5V-USB-TYPE-C-1A-LITHIUM-BATTERY-CHARGING-PROTECTION-MODULE-i.5622377.12524937014"
+  },
+  {
+    "id": "18650-holder-1",
+    "q": "18650 · 1 cell Тримач для одного акумулятора 18650 product photo electronics",
+    "title": "1/5 Pcs 18650 Battery Holder - Durable Li-ion 3.7V Single Cell Case for DIY, Robotics & Power Banks by Electrica | Daraz.pk (https://www.daraz.pk/products/15-pcs-18650-battery-holder-durable-li-ion-37v-single-cell-case-for-diy-robotics-power-banks-by-electrica-i153762547.html)",
+    "image": "https://img.drz.lazcdn.com/static/pk/p/c9febb2cd96d74848706e53e4899f085.png_960x960q80.png_.webp",
+    "page": "https://www.daraz.pk/products/15-pcs-18650-battery-holder-durable-li-ion-37v-single-cell-case-for-diy-robotics-power-banks-by-electrica-i153762547.html"
+  },
+  {
+    "id": "18650-holder-2",
+    "q": "18650 · 2 cells Тримач для двох акумуляторів 18650 product photo electronics",
+    "title": "2-Slot 18650 Battery Compartment / Battery Holder - Bastelgarage Electronics Online Store (https://www.bastelgarage.ch/2-slot-18650-battery-compartment-battery-holder)",
+    "image": "https://www.bastelgarage.ch/image/cache/catalog/Artikel/420721-420730/420727-92083-500x500.jpg",
+    "page": "https://www.bastelgarage.ch/2-slot-18650-battery-compartment-battery-holder"
+  },
+  {
+    "id": "battery-clip-9v",
+    "q": "9V Battery Clip Кабель-затискач для батареї 9 V product photo electronics",
+    "title": "9V Battery Snap DC Plug 2.1mm Hard Case – MakerHub Malaysia: Robotic and Electronic Supplies (https://makerhub.my/shop/electrical/9v-battery-snap-dc-plug-2-1mm-hard-case/)",
+    "image": "https://makerhub.my/assets/uploads/9VBCLIH0988DC24.png",
+    "page": "https://makerhub.my/shop/electrical/9v-battery-snap-dc-plug-2-1mm-hard-case/"
+  },
+  {
+    "id": "ina219-module",
+    "q": "INA219 Модуль вимірювання струму INA219 product photo electronics",
+    "title": "INA219 High Side DC Current Sensor Breakout (https://my.cytron.io/p-ina219-high-side-dc-current-sensor-breakout)",
+    "image": "https://static.cytron.io/image/cache/catalog/products/SN-INA219-MOD/photo_2019-10-09_16-35-00-800x800.jpg",
+    "page": "https://my.cytron.io/p-ina219-high-side-dc-current-sensor-breakout"
+  },
+  {
+    "id": "ams1117-33-module",
+    "q": "AMS1117-3.3 Стабілізатор живлення 3.3 V AMS1117 product photo electronics",
+    "title": "Stabilizator nieregulowany AMS AMS1117-3.3V AMS1117-3.3 • Cena • Opinie - Allegro (https://allegro.pl/oferta/2x-stabilizator-napiecia-3-3v-uklad-ams-ams1117-3-3v-sot-223-ams1117-3-3-14823433667)",
+    "image": "https://a.allegroimg.com/original/1101b7/39476b9b4d42aa59a8d950a3aa26/2x-Stabilizator-napiecia-3-3V-uklad-AMS-AMS1117-3-3V-SOT-223-AMS1117-3-3",
+    "page": "https://allegro.pl/oferta/2x-stabilizator-napiecia-3-3v-uklad-ams-ams1117-3-3v-sot-223-ams1117-3-3-14823433667"
+  },
+  {
+    "id": "led-assortment",
+    "q": "LED 5 mm assortment Набір світлодіодів 5 мм · 5 кольорів product photo electronics",
+    "title": "GTIWUNG 500Pcs 5mm Led Diodes, Light Emitting Diode, Diodes Resistor Kit, Diffused 2pin Round Head Light Emitting Diodes Assorted Color White/Red/Yellow/Green/Blue Kit Box - BigaMart (https://bigamart.com/product/gtiwung-500pcs-5mm-led-diodes-light-emitting-diode-diodes-resistor-kit-diffused-2pin-round-head-light-emitting-diodes-assorted-color-white-red-yellow-green-blue-kit-box/)",
+    "image": "https://bigamartusax.s3-accelerate.amazonaws.com/2020/06/61LfKMbWhFL._AC_SL1000_.jpg",
+    "page": "https://bigamart.com/product/gtiwung-500pcs-5mm-led-diodes-light-emitting-diode-diodes-resistor-kit-diffused-2pin-round-head-light-emitting-diodes-assorted-color-white-red-yellow-green-blue-kit-box/"
+  },
+  {
+    "id": "diode-assortment",
+    "q": "1N400x assortment Набір випрямних діодів product photo electronics",
+    "title": "Diody prostownicze i schottky'ego zestaw diod XL 20 x 10 typów 200szt (https://elektroweb.pl/pl/diody-prostownicze/1641-diody-prostownicze-i-schottky-ego-zestaw-diod-xl-20-x-10-typow-200szt.html)",
+    "image": "https://elektroweb.pl/8727-large_default2x/diody-prostownicze-i-schottky-ego-zestaw-diod-xl-20-x-10-typow-200szt.jpg",
+    "page": "https://elektroweb.pl/pl/diody-prostownicze/1641-diody-prostownicze-i-schottky-ego-zestaw-diod-xl-20-x-10-typow-200szt.html"
+  },
+  {
+    "id": "capacitor-kit",
+    "q": "Ceramic Capacitor Kit Набір керамічних конденсаторів product photo electronics",
+    "title": "Конденсатор керамічний 2пФ-100нФ 50В, 960шт, 24 види, набір – фото, відгуки, характеристики в інтернет-магазині ROZETKA від продавця: TechEyes (https://rozetka.com.ua/ua/400059660/p400059660/)",
+    "image": "https://content.rozetka.com.ua/goods/images/big/372713271.jpg",
+    "page": "https://rozetka.com.ua/ua/400059660/p400059660/"
+  },
+  {
+    "id": "electrolytic-capacitor-kit",
+    "q": "Electrolytic Capacitor Kit Набір електролітичних конденсаторів product photo electronics",
+    "title": "Elektrolytic Capacitor Set - 200 pieces - 0.1uF-220uF - ELCOSET-15-200PCS (https://www.tinytronics.nl/en/components/capacitors/elektrolytic-capacitor-set-200-pieces-0.1uf-220uf)",
+    "image": "https://www.tinytronics.nl/image/cache/data/product-3352/elektrolytic-capacitor-set-15-values-200-pieces-0.1uf-220uf-inside-3601x3577.jpg",
+    "page": "https://www.tinytronics.nl/en/components/capacitors/elektrolytic-capacitor-set-200-pieces-0.1uf-220uf"
+  },
+  {
+    "id": "transistor-kit",
+    "q": "NPN Transistor Kit Набір малопотужних транзисторів product photo electronics",
+    "title": "Transistor Assortment Kit",
+    "image": "https://media.s-bol.com/rDqnAOBpPmW6/76VmEB8/550x495.jpg",
+    "page": "https://www.bol.com/nl/nl/p/transistors-assortment-kit-current-amplification-pnp-transistor-high-dielectric-strength-for-noncontacting-switch-for-controling-current/9300000240873174/"
+  },
+  {
+    "id": "mosfet-module",
+    "q": "MOSFET Switch Module MOSFET-модуль керування навантаженням product photo electronics",
+    "title": "Moduł wykonawczy MOSFET IRF520 24V/5A - Iduino ST1168 Sklep Botland (https://botland.com.pl/przelaczniki-elektroniczne-i-cyfrowe/8236-modul-wykonawczy-mosfet-irf520-24v-5a-iduino-st1168-5903351241212.html)",
+    "image": "https://cdn3.botland.com.pl/57420-large_default/modul-wykonawczy-mosfet-irf520-24v-5a-iduino-st1168.jpg",
+    "page": "https://botland.com.pl/przelaczniki-elektroniczne-i-cyfrowe/8236-modul-wykonawczy-mosfet-irf520-24v-5a-iduino-st1168-5903351241212.html"
+  },
+  {
+    "id": "74hc595-register",
+    "q": "74HC595 Зсувний регістр 74HC595 product photo electronics",
+    "title": "74HC595N shift register8 bit serial to parallel IC dip 16",
+    "image": "https://quartzcomponents.com/cdn/shop/products/74HC595N-IC.jpg?v=1669107700",
+    "page": ""
+  },
+  {
+    "id": "tactile-button-kit",
+    "q": "Tactile Switch Kit Набір тактових кнопок product photo electronics",
+    "title": "Buy PulsEvo Tactile Push Button Kit (200pcs) - SunRobotics (https://www.sunrobotics.in/products/tactile-push-button-switch-kit-200pcs)",
+    "image": "https://www.sunrobotics.in/cdn/shop/files/PulsEvoTactilePushButtonSwitchKit.jpg?v=1735283993",
+    "page": "https://www.sunrobotics.in/products/tactile-push-button-switch-kit-200pcs"
+  },
+  {
+    "id": "perfboard-kit",
+    "q": "Perfboard Kit Набір монтажних плат product photo electronics",
+    "title": "147-Piece PCB Circuit Board Prototype Kit with Headers 6 Sizes Perf Board | eBay (https://www.ebay.com/itm/157177882442)",
+    "image": "https://m.media-amazon.com/images/I/813AQknF7tL.jpg",
+    "page": "https://www.ebay.com/itm/157177882442"
+  },
+  {
+    "id": "pin-header-kit",
+    "q": "Pin Header 2.54 mm Набір гребінок 2.54 мм product photo electronics",
+    "title": "Verified Supplier 2x5 Pin Connector Right Angle Design & Customizable Options | Alibaba.com (https://www.alibaba.com/showroom/2x5-pin-connector.html)",
+    "image": "https://s.alicdn.com/%40sc04/kf/H5ef7841825f84e61822888fdf6e763b9X/2.54-mm-Pin-Header-2-5pin-Pin-Header-Male-10P-Vertical-254-Pitch-2x5pin-Double-Rows-10-Pin-Headers-Connector.jpg",
+    "page": "https://www.alibaba.com/showroom/2x5-pin-connector.html"
+  },
+  {
+    "id": "usb-c-cable",
+    "q": "USB-A to USB-C Кабель USB-A — USB-C product photo electronics",
+    "title": "StarTech.com StarTech 6.6ft (2m) USB-A USB2AC2M | PC-Canada (https://www.pc-canada.com/item/startech-com-usb-c-to-usb-cable/usb2ac2m)",
+    "image": "https://content.etilize.com/enhanced-overview/en_us/183332/FJtT7vD3TK6ahnkEXSfE_TV86DbU8KEJxhNj",
+    "page": "https://www.pc-canada.com/item/startech-com-usb-c-to-usb-cable/usb2ac2m"
+  },
+  {
+    "id": "micro-usb-cable",
+    "q": "USB-A to Micro-USB Кабель USB-A — Micro-USB product photo electronics",
+    "title": "Micro-USB | USB Cables | Cables | Multitronic (https://www.multitronic.fi/cables/usb-cables/micro-usb?srsltid=AfmBOopL1Kos1lvCP679psV69PR5PWVee4Oj3AIW8Tl783UXuNpZRKm0)",
+    "image": "https://cdn.multitronic.fi/images/prod/8/7/USB-299S-1.webp",
+    "page": "https://www.multitronic.fi/cables/usb-cables/micro-usb?srsltid=AfmBOopL1Kos1lvCP679psV69PR5PWVee4Oj3AIW8Tl783UXuNpZRKm0"
+  },
+  {
+    "id": "dupont-female-female",
+    "q": "Dupont F-F Набір дротів Dupont мама–мама product photo electronics",
+    "title": "Jual 400pcs 30cm Dupont line female to female Jump wire Dupont cable F-F Dupont line 1P-1P Spacing | Shopee Indonesia (https://shopee.co.id/400pcs-30cm-Dupont-line-female-to-female-Jump-wire-Dupont-cable-F-F-Dupont-line-1P-1P-Spacing-i.144063460.7915257851)",
+    "image": "https://down-id.img.susercontent.com/file/4622c0b60c510a321e5c6fd6d9761be6",
+    "page": "https://shopee.co.id/400pcs-30cm-Dupont-line-female-to-female-Jump-wire-Dupont-cable-F-F-Dupont-line-1P-1P-Spacing-i.144063460.7915257851"
+  },
+  {
+    "id": "dupont-male-female",
+    "q": "Dupont M-F Набір дротів Dupont тато–мама product photo electronics",
+    "title": "40x Dupont Jumper Wire Set M-F M-M F-F Great for Breadboarding Arduino and More – 38-3D (https://38-3d.co.uk/products/40x-dupont-jumper-wire)",
+    "image": "https://38-3d.co.uk/cdn/shop/files/40x-Dupont-Jumper-Wire.webp?v=1732525509",
+    "page": "https://38-3d.co.uk/products/40x-dupont-jumper-wire"
+  },
+  {
+    "id": "solder-wire",
+    "q": "Solder Wire Припій для електроніки product photo electronics",
+    "title": "Order Online Solder Wire Price In 1kg Flux Rosin Core | Alibaba.com (https://www.alibaba.com/showroom/solder-wire-price-in-1kg.html)",
+    "image": "https://s.alicdn.com/%40sc04/kf/Hbf8582eb13764cd4836d30ee414d5b74z/1kg-Customizable-63-37-0.6mm-0.8mm-Tin-Lead-Soldering-Wire-with-Flux-Cored-Tin-for-Welding-OEM-Supported.jpeg",
+    "page": "https://www.alibaba.com/showroom/solder-wire-price-in-1kg.html"
+  },
+  {
+    "id": "solder-flux",
+    "q": "Solder Flux Флюс для паяння product photo electronics",
+    "title": "Флюс ФКСП (30 мл) (спиртоканифоль) - купить Харьков Украина 3v3.com.ua (https://3v3.com.ua/product_4015.html)",
+    "image": "https://3v3.com.ua/data/big/fksp-1.jpg",
+    "page": "https://3v3.com.ua/product_4015.html"
+  },
+  {
+    "id": "desoldering-braid",
+    "q": "Desoldering Braid Мідна стрічка для випаювання product photo electronics",
+    "title": "solder wick braid 10ft Length Desoldering Wick Braid Remover Tool Solder...  | eBay (https://www.ebay.com/itm/235999832718)",
+    "image": "https://i.ebayimg.com/images/g/LH0AAeSw~5ln0HTW/s-l1200.jpg",
+    "page": "https://www.ebay.com/itm/235999832718"
+  },
+  {
+    "id": "wire-stripper",
+    "q": "Wire Stripper Інструмент для зняття ізоляції product photo electronics",
+    "title": "Зачистка ізоляції 8PK-371 Pro'sKit  за ціною від 645.00 грн - РКС Компоненти - РАДІОМАГ (https://www.rcscomponents.kiev.ua/product/zachystka-izoliatsii-8pk-371_28448.html)",
+    "image": "https://www.rcscomponents.kiev.ua/img/8pk-371.jpg",
+    "page": "https://www.rcscomponents.kiev.ua/product/zachystka-izoliatsii-8pk-371_28448.html"
+  },
+  {
+    "id": "multimeter-basic",
+    "q": "Digital Multimeter Цифровий мультиметр для навчання product photo electronics",
+    "title": "XL830L Digital Multimeter Probes Electronics Prototyping Debug – Flux Workshop (https://fluxworkshop.com/products/fbaa100044-xl830l-digital-multimeter-black-yellow)",
+    "image": "https://fluxworkshop.com/cdn/shop/products/3cfd52dd-155c-407c-99c1-1f849f7a725a_grande.jpg?v=1611601125",
+    "page": "https://fluxworkshop.com/products/fbaa100044-xl830l-digital-multimeter-black-yellow"
+  },
+  {
+    "id": "heat-shrink-kit",
+    "q": "Heat Shrink Kit Набір термоусаджувальних трубок product photo electronics",
+    "title": "HSK163 Heat Shrink Kit - Multi Colour Box Of 163, Heat Shrink | Wagner Online Electronic Stores (https://www.wagneronline.com.au/product/heat-shrink-kit-multi-colour-box-of-163-973606?sku=hsk163)",
+    "image": "https://cdn.wes.com.au/prodimages/section8_images/prolink_images_1024/hsk163.jpg",
+    "page": "https://www.wagneronline.com.au/product/heat-shrink-kit-multi-colour-box-of-163-973606?sku=hsk163"
+  },
+  {
+    "id": "petg-filament",
+    "q": "PETG 1.75 mm Філамент PETG · 1 кг product photo electronics",
+    "title": "Comprar filamento PETG Filkemp para impresora 3D | Tienda SICNOVA (https://tienda.sicnova3d.com/filkemp-consumibles/13695-filamento-petg-filkemp-para-impresora-3d)",
+    "image": "https://tienda.sicnova3d.com/8439-thickbox_default/filamento-petg-filkemp-para-impresora-3d.jpg",
+    "page": "https://tienda.sicnova3d.com/filkemp-consumibles/13695-filamento-petg-filkemp-para-impresora-3d"
+  },
+  {
+    "id": "tpu-filament",
+    "q": "TPU 1.75 mm Гнучкий філамент TPU · 1 кг product photo electronics",
+    "title": "TPU filament spool 1kg — Tavares 3D Print",
+    "image": "https://acdn-us.mitiendanube.com/stores/002/688/138/products/tpu_preto-7aa23cc33088fa39b817376555417850-640-0.webp",
+    "page": "https://www.tavares3dprint.com.br/produtos/filamento-tpu-preto-1kg-master-print-1-75mm/"
+  },
+  {
+    "id": "nozzle-04",
+    "q": "Nozzle 0.4 mm Сопло для 3D-принтера 0.4 мм product photo electronics",
+    "title": "Olsson brass nozzle 0.4 mm",
+    "image": "https://www.voxelfactory.com/cdn/shop/products/TheOlsson-ORIGINAL-BRASS-040mm_1400x.jpg?v=1739809965",
+    "page": "https://www.voxelfactory.com/products/original-olsson-brass-nozzle"
+  },
+  {
+    "id": "digital-caliper",
+    "q": "Digital Caliper Цифровий штангенциркуль product photo electronics",
+    "title": "Купити Штангенциркуль електронний China в магазині Татушечка по кращій ціні (https://taty.com.ua/dlya-brovej-i-resnic/brovi/aksessuary-i-instrumenty-dlya-brovej/shtangentsirkul-elektronnyj-150-mm.html)",
+    "image": "https://taty.com.ua/image/cache/webp/import_files/0a/0ad324a0-44d3-11ec-80e6-000c29253ca1-1200x1200.webp",
+    "page": "https://taty.com.ua/dlya-brovej-i-resnic/brovi/aksessuary-i-instrumenty-dlya-brovej/shtangentsirkul-elektronnyj-150-mm.html"
+  },
+  {
+    "id": "esp8266-nodemcu",
+    "q": "ESP8266 NodeMCU development board product image",
+    "title": "NodeMCU ESP8266 IoT WiFi Development Board — Probots",
+    "image": "https://probots.co.in/pub/media/catalog/product/cache/d8ddd0f9b0cd008b57085cd218b48832/n/o/nodemcuesp8266_lrg.jpg",
+    "page": "https://probots.co.in/nodemcu-iot-wifi-development-board-esp8266-with-cp2102.html"
+  },
+  {
+    "id": "arduino-nano",
+    "q": "Arduino Nano V3 product photo",
+    "title": "Arduino Nano — Arduino Official Store",
+    "image": "https://cdn.shopify.com/s/files/1/0438/4735/2471/files/A000005_03.front_934x700.jpg?v=1777476619",
+    "page": "https://store.arduino.cc/products/arduino-nano"
+  },
+  {
+    "id": "bme280",
+    "q": "BME280 sensor module product photo",
+    "title": "GY-BME280 Sensor Breakout Board — Wish",
+    "image": "https://canary.contestimg.wish.com/api/webimage/5a26cd20484560279dcdc638-large.jpg?cache_buster=1938da84c91a373bafc58e25b5af79bf",
+    "page": "https://www.wish.com/product/gy-bmp280-33-atmospheric-pressure-temperature-sensor-breakout-arduino-5a26cd20484560279dcdc638"
+  },
+  {
+    "id": "pir-hc-sr501",
+    "q": "HC-SR501 PIR motion sensor product photo",
+    "title": "PIR Motion Sensor HC-SR501 Module — ModuleMore",
+    "image": "https://inwfile.com/s-dw/6v9n3u.jpg",
+    "page": "https://www.modulemore.com/en/product/810/เซ็นเซอร์ตรวจจับความเคลื่อนไหว-pir-motion-sensor-detector-module-hc-sr501-ตัวสีฟ้า"
+  },
+  {
+    "id": "ds18b20-probe",
+    "q": "DS18B20 waterproof temperature probe product photo",
+    "title": "DS18B20 Waterproof Temperature Sensor Probe — Novatech",
+    "image": "https://res.cloudinary.com/dqmu88gym/image/upload/v1727174164/qwf9ouqcpe7kxta7p0h3.webp",
+    "page": "https://novatech.co.ke/shop/product/ds18b20-temperature-sensor-module-kit-waterproof-1-2-3-meter-stainless-temperature-sensor-probe/161"
+  },
+  {
+    "id": "soil-moisture",
+    "q": "capacitive soil moisture sensor v1.2 product photo",
+    "title": "Capacitive Soil Moisture Sensor V1.2 — Anasa",
+    "image": "https://bizweb.dktcdn.net/100/408/906/products/sp0354-4.jpg?v=1632734240517",
+    "page": "https://anasa.vn/cam-bien-do-am-dat-dien-dung-arduino-v1-2"
+  },
+  {
+    "id": "sg90-servo",
+    "q": "SG90 micro servo product photo",
+    "title": "SG90 Mini Servo Motor 9g — Probots",
+    "image": "https://probots.co.in/pub/media/catalog/product/cache/ca2cd736c0c15942c77daffc8cf27b66/m/i/mini_servo_motor_sg90_for_arduino_rc_planes_9g_9_gram_1.jpg",
+    "page": "https://probots.co.in/mini-servo-motor-sg90-for-arduino-rc-planes-9g-9-gram.html"
+  },
+  {
+    "id": "l298n-driver",
+    "q": "L298N dual motor driver module product photo",
+    "title": "L298N Dual H-Bridge Motor Driver Module — Harish Projects",
+    "image": "https://harishprojects.com/cdn/shop/files/MotorDriver_L2982ADualMotor_harishprojects_91.webp?v=1743923982&width=1445",
+    "page": "https://harishprojects.com/products/motor-driver-l298-2a-dual-motor"
+  },
+  {
+    "id": "relay-4ch",
+    "q": "4 channel relay module 5V product photo",
+    "title": "5V 4-Channel Relay Module — Cartup",
+    "image": "https://sl-dev-s3.s3.amazonaws.com/product/3f718dbaed6f6e0070b8504bfe1706ca-1775015452293.webp",
+    "page": "https://cartup.com/product/5v-4-channel-relay-module-low-level-trigger-with-optocoupler-relay-output-4-way-relay-module-for-arduino-1775041036225-2ov2"
+  },
+  {
+    "id": "logic-level-converter",
+    "q": "4 channel logic level converter module product photo",
+    "title": "4-Channel Bidirectional Logic Level Converter Module — Voltaj",
+    "image": "https://platincdn.com/4420/pictures/UCCCI105528_komponentci-lojik-gerilim-seviye-donus.jpg",
+    "page": "https://www.voltaj.net/4-kanal-lojik-gerilim-seviye-donusturucu-33v-5v-pmu1313"
+  },
+  {
+    "id": "micro-sd-module",
+    "q": "microSD card reader module product photo",
+    "title": "microSD Card Reader Module for Arduino and STM32 — Elektroweb",
+    "image": "https://www.elektroweb.pl/img/p/7/4/4/3/7443-large_default.jpg",
+    "page": "https://elektroweb.pl/pl/czytniki-kart-pamieci/1370-czytnik-kart-pamieci-microsd-arduino-stm32-modul-spi-33v.html"
+  },
+  {
+    "id": "active-buzzer-module",
+    "q": "active buzzer module 5V product photo",
+    "title": "Active Buzzer Module — MCU City",
+    "image": "https://inwfile.com/s-j/q792v8.jpg",
+    "page": "https://www.mcucity.com/product/2495/active-buzzer-module"
+  }
+]
