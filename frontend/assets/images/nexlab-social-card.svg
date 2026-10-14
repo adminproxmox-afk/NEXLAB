@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="58" y1="45" x2="1112" y2="618" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#101814"/>
+      <stop offset="1" stop-color="#102B28"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="728" y1="94" x2="1078" y2="521" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8BE4D0"/>
+      <stop offset="1" stop-color="#42B99E"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" stroke="#8BE4D0" stroke-opacity=".055"/>
+    </pattern>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="24"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" rx="30" fill="url(#bg)"/>
+  <rect width="1200" height="630" rx="30" fill="url(#grid)"/>
+  <circle cx="912" cy="311" r="193" fill="#42B99E" fill-opacity=".13" filter="url(#glow)"/>
+  <path d="M627 0v92h105v59h60m408 286h-106v-68h-59m-62-369v73h-59v45m-43 512v-88h-64v-58" stroke="#74D9C2" stroke-opacity=".36" stroke-width="2"/>
+  <circle cx="732" cy="92" r="5" fill="#8BE4D0"/><circle cx="1094" cy="437" r="5" fill="#8BE4D0"/><circle cx="1033" cy="73" r="5" fill="#8BE4D0"/><circle cx="755" cy="542" r="5" fill="#8BE4D0"/>
+
+  <rect x="72" y="66" width="54" height="54" rx="15" fill="url(#accent)"/>
+  <path d="M88 106V80h7.5l12.5 16V80h7v26h-7.5L95 90v16h-7Z" fill="#10211C"/>
+  <text x="145" y="105" fill="#F0F7F3" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" letter-spacing="5">NEXLAB</text>
+  <text x="74" y="250" fill="#F3F8F5" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="700">Електроніка</text>
+  <text x="74" y="324" fill="#F3F8F5" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="700">для твоїх ідей</text>
+  <text x="78" y="383" fill="#B9D6CC" font-family="Arial, Helvetica, sans-serif" font-size="25">Компоненти · DIY-проєкти · майстерня</text>
+  <path d="M78 436h276" stroke="url(#accent)" stroke-width="4" stroke-linecap="round"/>
+  <text x="78" y="485" fill="#8BE4D0" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700" letter-spacing="3">ЗБИРАЙ  /  СТВОРЮЙ  /  ДОСЛІДЖУЙ</text>
+
+  <g transform="rotate(-8 914 314)">
+    <rect x="765" y="159" width="300" height="304" rx="30" fill="#07100D" fill-opacity=".42"/>
+    <rect x="779" y="145" width="300" height="304" rx="30" fill="#183B32" stroke="url(#accent)" stroke-width="3"/>
+    <rect x="847" y="225" width="164" height="143" rx="18" fill="#11231E" stroke="#75D9C2" stroke-opacity=".76" stroke-width="2"/>
+    <rect x="886" y="261" width="86" height="72" rx="10" fill="#245D4E" stroke="#A2EBD8" stroke-width="2"/>
+    <path d="M903 279h52v36h-52zM914 270v-9m30 9v-9m-30 81v-9m30 9v-9m-52-42h-10m10 25h-10m104-25h-10m10 25h-10" stroke="#B8F0E1" stroke-width="4" stroke-linecap="round"/>
+    <path d="M808 183v31h39m183 0h-39m-183 190v-31h39m183 0h-39m-87-228v35m0 215v-35" stroke="#67CBB2" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="847" cy="214" r="6" fill="#8BE4D0"/><circle cx="1030" cy="214" r="6" fill="#8BE4D0"/><circle cx="847" cy="383" r="6" fill="#8BE4D0"/><circle cx="1030" cy="383" r="6" fill="#8BE4D0"/>
+    <circle cx="1008" cy="179" r="7" fill="#8BE4D0"/><circle cx="1034" cy="179" r="7" fill="#48C5A6"/>
+    <text x="929" y="414" text-anchor="middle" fill="#B9D6CC" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" letter-spacing="3">BUILD SOMETHING</text>
+  </g>
+
+  <text x="74" y="576" fill="#77988C" font-family="Arial, Helvetica, sans-serif" font-size="16" letter-spacing="2">NEXLAB · ЕЛЕКТРОНІКА ТА ТВОРЧІСТЬ</text>
+</svg>
