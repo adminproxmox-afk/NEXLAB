@@ -4,6 +4,7 @@
 @import url("./account.css");
 @import url("./experience.css");
 @import url("./fixes.css");
+@import url("./theme.css");
 
 :root {
   color-scheme: dark;

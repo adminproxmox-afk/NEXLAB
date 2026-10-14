@@ -1,0 +1,280 @@
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f4f7f5;
+  --surface: #ffffff;
+  --surface-2: #edf3ef;
+  --surface-3: #e5ede7;
+  --text: #1c2a22;
+  --muted: #53645a;
+  --faint: #77867d;
+  --line: #d5e0d8;
+  --accent: #16816a;
+  --accent-bright: #116d59;
+  --green: #367a40;
+  --surface-raised: #ffffff;
+  --shadow-soft: 0 18px 46px #183d2912;
+  --focus: #08745e;
+}
+
+:root[data-theme="light"] body {
+  background:
+    radial-gradient(900px 500px at 92% -12%, #16816a0d, transparent 58%),
+    var(--bg);
+  color: var(--text);
+}
+
+:root[data-theme="light"] body * {
+  color: #33483b;
+}
+
+:root[data-theme="light"] :is(
+  .site-header,
+  .site-footer,
+  .section-muted,
+  .category-card,
+  .product-card,
+  .project-card,
+  .profile-panel,
+  .cart-summary,
+  .cart-row,
+  .order-card,
+  .search-field,
+  .filter-chip,
+  .sort-select,
+  .catalog-filters,
+  .header-search,
+  .header-search-results,
+  .account-toggle,
+  .account-dropdown,
+  .auth-card,
+  .auth-gate,
+  .profile-nav,
+  .review-card,
+  .my-project-card,
+  .project-part,
+  .guide-panel,
+  .checkout-form,
+  .admin-section,
+  .admin-metrics article,
+  .admin-record,
+  .admin-product-editor,
+  .admin-project-editor,
+  .admin-order,
+  .admin-workspace,
+  .admin-section-nav,
+  .admin-sidebar,
+  .admin-content,
+  .project-detail-hero,
+  .detail-specs div,
+  .profile-facts div,
+  .review-form fieldset,
+  .forgot-form,
+  .demo-credentials,
+  .terms-copy,
+  .detail-tags span
+) {
+  border-color: var(--line);
+  background: #ffffff;
+}
+
+:root[data-theme="light"] :is(.site-header, .site-footer) {
+  background: #ffffffed;
+}
+:root[data-theme="light"] .main-nav.is-open {
+  border-color: var(--line);
+  background: #ffffff;
+}
+:root[data-theme="light"] .section-muted {
+  background: linear-gradient(110deg, #f0f5f1, #f8faf8 55%, #f0f5f1);
+}
+:root[data-theme="light"] .discovery-band {
+  border-color: var(--line);
+  background: var(--line);
+}
+:root[data-theme="light"] .discovery-band > :is(div, a),
+:root[data-theme="light"] .discovery-band > div:first-child {
+  background: #ffffff;
+}
+:root[data-theme="light"] :is(
+  .benefit-icon,
+  .project-symbol,
+  .empty-mark,
+  .account-avatar,
+  .profile-avatar,
+  .demo-credentials code,
+  .header-search-results .search-all,
+  .catalog-quick-filters button:hover,
+  .catalog-quick-filters button.is-active,
+  .profile-nav a.is-active,
+  .project-card-open
+) {
+  border-color: #c6e4d7;
+  background: #e7f4ee;
+  color: var(--accent-bright);
+}
+:root[data-theme="light"] :is(
+  .header-search,
+  .search-field,
+  .sort-select,
+  .catalog-filters input,
+  .catalog-filters select,
+  .auth-card input,
+  .checkout-form input,
+  .checkout-form select,
+  .profile-form input,
+  .review-form textarea,
+  .admin-product-form input,
+  .admin-product-form select,
+  .admin-product-form textarea,
+  .admin-project-form input,
+  .admin-project-form select,
+  .admin-project-form textarea,
+  .admin-order-form select
+) {
+  border-color: #c7d4cb;
+  background: #ffffff;
+  color: var(--text);
+}
+:root[data-theme="light"] :is(input, textarea, select)::placeholder {
+  color: #77867d;
+}
+:root[data-theme="light"] :is(
+  .header-search-results > a:not(.search-all),
+  .admin-project-form,
+  .admin-order-form,
+  .profile-form,
+  .footer-bottom
+) {
+  border-color: var(--line);
+}
+:root[data-theme="light"] :is(
+  .button-quiet,
+  .tool-link:hover,
+  .filter-chip,
+  .catalog-quick-filters button,
+  .quantity-control button,
+  .detail-quantity button,
+  .remove-button,
+  .logout-button
+) {
+  border-color: var(--line);
+  background: #f2f6f3;
+  color: #304439;
+}
+:root[data-theme="light"] .theme-toggle {
+  border-color: var(--line);
+  background: #f2f6f3;
+  color: var(--accent-bright);
+}
+:root[data-theme="light"] :is(
+  .eyebrow,
+  .text-link span,
+  .footer-contact,
+  .info-links a,
+  .auth-switch a,
+  .auth-inline-links a,
+  .auth-inline-links button,
+  .terms-check a,
+  .auth-gate .empty-mark,
+  .product-category,
+  .product-rating span,
+  .detail-rating span,
+  .detail-stock,
+  .project-available,
+  .progress-meta strong,
+  .project-card-kicker,
+  .project-total strong,
+  .guide-panel a,
+  .admin-section-nav a[aria-current="page"]
+) {
+  color: var(--accent-bright);
+}
+:root[data-theme="light"] :is(.product-tag, .photo-source-label) {
+  color: #f3f3ed;
+}
+:root[data-theme="light"] .announcement-bar {
+  border-color: #c3e3d7;
+  background: #e3f5ee;
+  color: #1c4d40;
+}
+:root[data-theme="light"] .announcement-bar button {
+  color: #1c4d40;
+}
+:root[data-theme="light"] :is(.demo-notice, .guide-notice, .cart-assurance) {
+  border-color: #c6e4d7;
+  background: #eef8f2;
+}
+:root[data-theme="light"] .cart-assurance span {
+  color: #367a40;
+}
+:root[data-theme="light"] :is(.service-error, .checkout-message) {
+  border-color: #e7b8bc;
+  background: #fff0f1;
+  color: #a13a45;
+}
+:root[data-theme="light"] :is(
+  .field-error:not(:empty),
+  .stock-out,
+  .detail-out,
+  .status-cancelled,
+  .discount-badge,
+  .favorite-button.is-favorite
+) {
+  color: #a13a45;
+}
+:root[data-theme="light"] :is(.hero-art, .hero-art *, .product-art:not(.product-photo), .product-art:not(.product-photo) *, .toast, .toast *, .guide-panel pre, .guide-panel pre *) {
+  color: #eef5f0;
+}
+:root[data-theme="light"] :is(.stock, .live-dot, .status-done, .progress-track) {
+  color: var(--green);
+}
+:root[data-theme="light"] .stock::before {
+  background: var(--green);
+}
+:root[data-theme="light"] .stock::before,
+:root[data-theme="light"] .progress-track {
+  background: #dcecdf;
+}
+:root[data-theme="light"] .status-done {
+  background: #e7f3e8;
+}
+:root[data-theme="light"] .status-pending {
+  background: #fff4dc;
+  color: #7a5b13;
+}
+:root[data-theme="light"] .status-cancelled {
+  background: #fff0f1;
+  color: #a13a45;
+}
+:root[data-theme="light"] ::selection {
+  background: #b9e8d9;
+  color: #173c31;
+}
+
+:root[data-theme="light"] :is(.status-done, .status-pending, .status-cancelled) {
+  color: var(--green);
+}
+:root[data-theme="light"] .status-pending {
+  color: #7a5b13;
+}
+:root[data-theme="light"] .status-cancelled {
+  color: #a13a45;
+}
+
+@media (max-width: 480px) {
+  .theme-toggle,
+  .tool-link {
+    width: 28px;
+    height: 28px;
+  }
+}
+@media (max-width: 700px) {
+  :root[data-theme="light"] .header-search input {
+    background: #ffffff;
+  }
+}
+@media (max-width: 360px) {
+  .theme-toggle {
+    font-size: 17px;
+  }
+}

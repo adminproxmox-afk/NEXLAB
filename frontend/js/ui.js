@@ -25,6 +25,7 @@ const safe = (value) =>
 
 export function renderSharedLayout(settings = { name: "NEXLAB" }) {
   const storeName = safe(settings.name || "NEXLAB");
+  const lightTheme = document.documentElement.dataset.theme === "light";
   const notice = document.querySelector("[data-announcement]");
   if (notice) {
     notice.querySelector("span").textContent =
@@ -45,6 +46,7 @@ export function renderSharedLayout(settings = { name: "NEXLAB" }) {
         <div class="header-search-wrap"><form class="header-search" data-header-search role="search"><span aria-hidden="true">⌕</span><input type="search" placeholder="Шукати товар" aria-label="Пошук товарів"></form><div class="header-search-results" data-header-search-results hidden></div></div>
         <a class="tool-link" href="${prefix}favorites.html" aria-label="Обране">♡<span class="tool-count" data-favorite-count hidden>0</span></a>
         <a class="tool-link" href="${prefix}cart.html" aria-label="Кошик">▣<span class="tool-count" data-cart-count hidden>0</span></a>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Перемкнути на ${lightTheme ? "темну" : "світлу"} тему" title="${lightTheme ? "Темна" : "Світла"} тема"><span aria-hidden="true">${lightTheme ? "☾" : "☼"}</span></button>
         <div class="header-account" data-header-account></div>
       </div>
       <button class="menu-toggle" type="button" aria-label="Відкрити меню" aria-expanded="false" data-menu-toggle><span></span><span></span></button>
