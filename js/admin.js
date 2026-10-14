@@ -129,7 +129,7 @@ export async function initializeAdmin() {
   const root = document.querySelector("[data-admin-content]");
   if (!root || !isAdmin()) return;
   root.innerHTML = `<div class="admin-title-row"><div><p class="eyebrow">NEXLAB · КЕРУВАННЯ МАГАЗИНОМ</p><h1>Панель керування</h1><p>Вітаємо, ${safe(getCurrentUser()?.name || "Адміністратор")}. Тут можна стежити за замовленнями, каталогом і клієнтами.</p></div><div class="admin-dashboard-actions"><span data-admin-updated>Дані ще не оновлювалися</span><button class="button button-quiet" type="button" data-admin-refresh><span aria-hidden="true">↻</span> Оновити</button></div></div>
-    <nav class="admin-section-nav" aria-label="Розділи панелі"><a href="#admin-overview">Огляд</a><a href="#admin-orders-section">Замовлення <span data-admin-nav-orders>0</span></a><a href="#admin-products-section">Товари</a><a href="#admin-projects-section">Проєкти</a><a href="#admin-settings-section">Налаштування</a><a href="#admin-reviews-section">Відгуки</a><a href="#admin-users-section">Користувачі</a></nav>
+    <div class="admin-workspace"><nav class="admin-section-nav" aria-label="Розділи панелі"><a href="#admin-overview">Огляд</a><a href="#admin-orders-section">Замовлення <span data-admin-nav-orders>0</span></a><a href="#admin-products-section">Склад і товари</a><a href="#admin-products-section" data-admin-open-product>＋ Додати товар</a><a href="#admin-projects-section">Проєкти</a><a href="#admin-reviews-section">Відгуки</a><a href="#admin-users-section">Користувачі</a><a href="#admin-settings-section">Налаштування</a></nav><div class="admin-workspace-content">
     <p class="service-error" role="alert" data-admin-error hidden></p>
     <section class="admin-overview" id="admin-overview" aria-labelledby="admin-summary-title"><div class="admin-section-heading"><div><p class="eyebrow">ПОТОЧНИЙ СТАН МАГАЗИНУ</p><h2 id="admin-summary-title">Огляд</h2></div></div><div class="admin-metrics" data-admin-metrics></div><div class="admin-attention" data-admin-attention></div></section>
     <section class="admin-section" id="admin-orders-section"><div class="admin-section-heading"><div><p class="eyebrow">ОБСЛУГОВУВАННЯ</p><h2>Замовлення</h2></div><label class="admin-search"><span aria-hidden="true">⌕</span><input type="search" data-order-search-input placeholder="Номер, ім’я, місто" aria-label="Пошук замовлень"></label></div><div class="admin-filter-row"><label>Статус<select data-order-status-filter><option value="all">Усі статуси</option><option value="processing">В обробці</option><option value="delivered">Доставлено</option><option value="cancelled">Скасовано</option><option value="returned">Повернення прийнято</option></select></label><span data-admin-order-count></span></div><div class="admin-order-list" data-admin-orders></div><p class="admin-filter-empty" data-order-empty hidden>За цими умовами замовлень не знайдено.</p></section>
@@ -141,7 +141,24 @@ export async function initializeAdmin() {
       <h3>Інформація для покупців</h3><div class="admin-settings-grid"><label class="admin-wide">Повідомлення про статус магазину<textarea name="demoNotice" rows="3" maxlength="500" required></textarea></label><label class="admin-wide">Інструкція щодо повернення<textarea name="returnInstructions" rows="4" maxlength="2000" required></textarea></label></div><div class="admin-settings-actions"><button class="button button-primary" type="submit">Зберегти налаштування</button><p role="status" data-admin-settings-status></p></div>
     </form></section>
     <section class="admin-section" id="admin-reviews-section"><div class="admin-section-heading"><div><p class="eyebrow">ЗВОРОТНИЙ ЗВ’ЯЗОК</p><h2>Відгуки</h2></div><label class="admin-search"><span aria-hidden="true">⌕</span><input type="search" data-review-search-input placeholder="Товар, ім’я або текст" aria-label="Пошук відгуків"></label></div><div class="admin-reviews" data-admin-reviews></div><p class="admin-filter-empty" data-review-empty hidden>Відгуків за цим запитом не знайдено.</p></section>
-    <section class="admin-section" id="admin-users-section"><div class="admin-section-heading"><div><p class="eyebrow">ОБЛІКОВІ ЗАПИСИ</p><h2>Користувачі</h2></div><label class="admin-search"><span aria-hidden="true">⌕</span><input type="search" data-user-search-input placeholder="Ім’я або електронна пошта" aria-label="Пошук користувачів"></label></div><div class="admin-users" data-admin-users></div><p class="admin-filter-empty" data-user-empty hidden>Користувачів за цим запитом не знайдено.</p></section>`;
+    <section class="admin-section" id="admin-users-section"><div class="admin-section-heading"><div><p class="eyebrow">ОБЛІКОВІ ЗАПИСИ</p><h2>Користувачі</h2></div><label class="admin-search"><span aria-hidden="true">⌕</span><input type="search" data-user-search-input placeholder="Ім’я або електронна пошта" aria-label="Пошук користувачів"></label></div><div class="admin-users" data-admin-users></div><p class="admin-filter-empty" data-user-empty hidden>Користувачів за цим запитом не знайдено.</p></section></div></div>`;
+  const adminSections = [...root.querySelectorAll(".admin-workspace-content > section[id]")];
+  const adminLinks = [...root.querySelectorAll(".admin-section-nav a")];
+  function activateAdminSection() {
+    const requestedId = window.location.hash.slice(1);
+    const activeId = adminSections.some((section) => section.id === requestedId)
+      ? requestedId
+      : "admin-overview";
+    adminSections.forEach((section) => {
+      section.hidden = section.id !== activeId;
+    });
+    adminLinks.forEach((link) => {
+      if (link.hash === `#${activeId}`) link.setAttribute("aria-current", "page");
+      else link.removeAttribute("aria-current");
+    });
+  }
+  window.addEventListener("hashchange", activateAdminSection);
+  activateAdminSection();
   const errorBox = root.querySelector("[data-admin-error]");
   async function load() {
     errorBox.hidden = true;
@@ -302,7 +319,7 @@ export async function initializeAdmin() {
   }
   root.addEventListener("click", async (event) => {
     if (event.target.closest("[data-admin-refresh]")) return load();
-    if (event.target.closest("[data-admin-add-product]")) {
+    if (event.target.closest("[data-admin-add-product], [data-admin-open-product]")) {
       const editor = root.querySelector(".admin-product-editor");
       editor.open = true;
       editor.querySelector("[name=id]").focus();

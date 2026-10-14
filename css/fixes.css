@@ -1560,28 +1560,25 @@
 }
 .admin-section-nav {
   position: sticky;
-  top: 72px;
-  z-index: 8;
-  display: flex;
-  gap: 6px;
-  margin: 0 calc(clamp(20px, 4vw, 34px) * -1) 27px;
-  padding: 10px clamp(20px, 4vw, 34px);
-  overflow-x: auto;
-  border-block: 1px solid #303b33;
-  background: #161d18ed;
-  backdrop-filter: blur(14px);
-  scrollbar-width: thin;
+  top: 94px;
+  display: grid;
+  align-content: start;
+  gap: 5px;
+  padding: 9px;
+  border: 1px solid #303b33;
+  border-radius: 10px;
+  background: #171e19;
 }
 .admin-section-nav a {
-  display: inline-flex;
-  min-height: 40px;
+  display: flex;
+  min-height: 43px;
   align-items: center;
   gap: 8px;
-  padding: 0 13px;
+  padding: 0 12px;
   border: 1px solid transparent;
-  border-radius: 7px;
+  border-radius: 6px;
   color: #aeb9af;
-  font-size: 11px;
+  font-size: 12px;
   white-space: nowrap;
   transition:
     background 0.18s,
@@ -1593,6 +1590,20 @@
   background: #222c24;
   color: #f0f2ea;
 }
+.admin-section-nav a[aria-current="page"] {
+  border-color: #36634d;
+  background: #20372b;
+  color: #d8f2df;
+}
+.admin-section-nav a[data-admin-open-product] {
+  margin-top: 7px;
+  border-color: #365b48;
+  color: #bce6ca;
+}
+.admin-section-nav a[data-admin-open-product]:hover {
+  border-color: #4a8a68;
+  background: #20372b;
+}
 .admin-section-nav a span {
   display: grid;
   min-width: 20px;
@@ -1603,8 +1614,17 @@
   color: #a7d982;
   font: 10px var(--mono);
 }
-.admin-dashboard section {
-  scroll-margin-top: 135px;
+.admin-workspace {
+  display: grid;
+  grid-template-columns: 205px minmax(0, 1fr);
+  align-items: start;
+  gap: 22px;
+}
+.admin-workspace-content {
+  min-width: 0;
+}
+.admin-dashboard section[hidden] {
+  display: none;
 }
 .admin-dashboard .admin-overview {
   padding: 22px;
@@ -1895,8 +1915,20 @@
     justify-content: space-between;
   }
   .admin-section-nav {
-    top: 64px;
-    margin-bottom: 20px;
+    position: static;
+    display: flex;
+    gap: 5px;
+    margin-bottom: 17px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+  .admin-workspace {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .admin-section-nav a {
+    min-height: 39px;
+    padding-inline: 11px;
   }
   .admin-dashboard section {
     scroll-margin-top: 120px;
