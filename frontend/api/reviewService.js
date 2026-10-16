@@ -22,6 +22,7 @@ export async function createReview(input) {
       userName: user.displayName || "Користувач",
       rating: input.rating,
       text: input.text.trim(),
+      imageUrl: input.imageUrl || null,
       date: new Date().toISOString(),
     };
     await firestoreSdk.setDoc(firestoreSdk.doc(db, "reviews", id), review);

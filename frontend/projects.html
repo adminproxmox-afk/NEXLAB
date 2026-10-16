@@ -95,6 +95,13 @@
             </button>
           </div>
         </div>
+        <div class="project-advanced-filters">
+          <label>Бюджет до
+            <span class="project-budget-input"><input type="number" min="0" step="100" data-project-budget aria-label="Максимальний бюджет проєкту"><span>₴</span></span>
+          </label>
+          <label class="project-availability-filter"><input type="checkbox" data-project-in-stock> Лише з повним комплектом у наявності</label>
+          <button class="button button-quiet" type="button" data-project-reset>Скинути фільтри</button>
+        </div>
         <div class="project-results-line">
           <span data-project-count role="status">Завантажуємо проєкти…</span
           ><span>Вартість орієнтовна · наявність оновлюється з каталогом</span>

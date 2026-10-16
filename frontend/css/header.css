@@ -117,6 +117,18 @@
   border-color: #353f37;
   color: var(--accent-bright);
 }
+.language-select {
+  width: 46px;
+  height: 34px;
+  padding: 0 3px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--text);
+  background: var(--surface);
+  font: inherit;
+  font-size: 10px;
+  cursor: pointer;
+}
 .theme-toggle {
   display: grid;
   place-items: center;

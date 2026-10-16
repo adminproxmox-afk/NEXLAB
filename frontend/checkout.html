@@ -91,6 +91,12 @@
               </select></label
             >
           </fieldset>
+          <fieldset class="coupon-fieldset">
+            <legend>Знижки</legend>
+            <label for="checkout-coupon-code">Промокод</label>
+            <div class="coupon-entry"><input id="checkout-coupon-code" name="couponCode" data-coupon-code maxlength="24" autocomplete="off" placeholder="Введи код"><button class="button button-quiet" type="button" data-apply-coupon>Застосувати</button></div>
+            <p class="coupon-message" data-coupon-message role="status" aria-live="polite"></p>
+          </fieldset>
           <p>
             Доставка та комісія за післяплату оплачуються окремо за тарифом
             перевізника.

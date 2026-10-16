@@ -10,11 +10,27 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
+    function hasRole(role) {
+      return signedIn()
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
+    }
+
+    function hasPermission(permission) {
+      return isAdmin()
+        || (permission == 'orders' && hasRole('order_manager'))
+        || (permission == 'catalog' && hasRole('catalog_manager'))
+        || (permission == 'warehouse' && hasRole('warehouse'))
+        || (permission == 'support' && hasRole('support'));
+    }
+
     function validUserProject(projectId) {
       return request.resource.data.projectId == projectId
-        && request.resource.data.keys().hasOnly(['projectId', 'checklist', 'updatedAt'])
+        && request.resource.data.keys().hasOnly(['projectId', 'checklist', 'stepChecklist', 'updatedAt'])
         && request.resource.data.checklist is list
         && request.resource.data.checklist.size() <= 100
+        && (!('stepChecklist' in request.resource.data)
+          || (request.resource.data.stepChecklist is list
+            && request.resource.data.stepChecklist.size() <= 100))
         && request.resource.data.updatedAt is string;
     }
 
@@ -24,23 +40,98 @@ service cloud.firestore {
         && request.resource.data.role == 'user'
         && request.resource.data.keys().hasOnly(['name', 'email', 'role', 'createdAt']);
       allow get: if signedIn() && (request.auth.uid == userId || isAdmin());
-      allow list: if isAdmin();
+      allow list: if isAdmin() || hasPermission('support');
       allow update: if signedIn()
-        && request.auth.uid == userId
-        && request.resource.data.role == resource.data.role
-        && request.resource.data.diff(resource.data).affectedKeys()
-          .hasOnly(['name', 'email', 'updatedAt']);
+        && ((request.auth.uid == userId
+          && request.resource.data.role == resource.data.role
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['name', 'email', 'updatedAt']))
+          || (isAdmin()
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['role'])
+            && request.resource.data.role in ['user', 'order_manager', 'catalog_manager', 'warehouse', 'support']));
       allow delete: if false;
     }
 
     match /products/{productId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create, delete: if hasPermission('catalog');
+      allow update: if hasPermission('catalog')
+        || (hasPermission('warehouse')
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['stock'])
+          && request.resource.data.stock is int
+          && request.resource.data.stock >= 0);
     }
 
     match /projects/{projectId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if hasPermission('catalog');
+    }
+
+    match /community_projects/{projectId} {
+      allow read: if true;
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.keys().hasOnly([
+          'userId', 'userName', 'title', 'description', 'photoUrl', 'schematicUrl', 'codeUrl', 'date'
+        ])
+        && request.resource.data.userName is string
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 120
+        && request.resource.data.description is string
+        && request.resource.data.description.size() > 0
+        && request.resource.data.description.size() <= 2000
+        && request.resource.data.photoUrl is string
+        && request.resource.data.photoUrl.matches('^https://.*')
+        && (!('schematicUrl' in request.resource.data)
+          || request.resource.data.schematicUrl == ''
+          || (request.resource.data.schematicUrl is string
+            && request.resource.data.schematicUrl.matches('^https://.*')))
+        && request.resource.data.codeUrl is string
+        && request.resource.data.codeUrl.matches('^https://.*')
+        && request.resource.data.date is string;
+      allow update: if isAdmin();
+      allow delete: if isAdmin() || (signedIn() && resource.data.userId == request.auth.uid);
+
+      match /comments/{commentId} {
+        allow read: if true;
+        allow create: if signedIn()
+          && request.resource.data.userId == request.auth.uid
+          && request.resource.data.keys().hasOnly(['userId', 'userName', 'rating', 'text', 'date'])
+          && request.resource.data.userName is string
+          && request.resource.data.rating is int
+          && request.resource.data.rating >= 1
+          && request.resource.data.rating <= 5
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 1000
+          && request.resource.data.date is string;
+        allow update: if false;
+        allow delete: if isAdmin() || (signedIn() && resource.data.userId == request.auth.uid);
+      }
+
+      match /questions/{questionId} {
+        allow read: if true;
+        allow create: if signedIn()
+          && request.resource.data.userId == request.auth.uid
+          && request.resource.data.keys().hasOnly(['userId', 'userName', 'text', 'date'])
+          && request.resource.data.userName is string
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 1000
+          && request.resource.data.date is string;
+        allow update: if signedIn()
+          && (get(/databases/$(database)/documents/community_projects/$(projectId)).data.userId == request.auth.uid
+            || hasPermission('support'))
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['answer', 'answeredBy', 'answeredAt'])
+          && request.resource.data.answer is string
+          && request.resource.data.answer.size() > 0
+          && request.resource.data.answer.size() <= 1000
+          && request.resource.data.answeredBy is string
+          && request.resource.data.answeredAt is string;
+        allow delete: if isAdmin() || (signedIn() && resource.data.userId == request.auth.uid);
+      }
     }
 
     match /settings/{settingId} {
@@ -48,12 +139,44 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    match /coupons/{couponCode} {
+      allow get: if true;
+      allow list: if hasPermission('catalog');
+      allow create: if hasPermission('catalog')
+        && request.resource.data.keys().hasOnly(['code', 'percent', 'minTotal', 'maxUses', 'usedCount', 'validUntil', 'active'])
+        && request.resource.data.code == couponCode
+        && request.resource.data.percent is int
+        && request.resource.data.percent >= 1
+        && request.resource.data.percent <= 80
+        && request.resource.data.minTotal is int
+        && request.resource.data.minTotal >= 0
+        && (request.resource.data.maxUses == null || request.resource.data.maxUses is int)
+        && request.resource.data.usedCount == 0
+        && request.resource.data.active is bool;
+      allow update: if (hasPermission('catalog')
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['percent', 'minTotal', 'maxUses', 'validUntil', 'active'])
+          && request.resource.data.percent is int
+          && request.resource.data.percent >= 1
+          && request.resource.data.percent <= 80
+          && request.resource.data.minTotal is int
+          && request.resource.data.minTotal >= 0
+          && (request.resource.data.maxUses == null || request.resource.data.maxUses is int)
+          && request.resource.data.usedCount == resource.data.usedCount
+          && request.resource.data.active is bool)
+        || (signedIn()
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['usedCount'])
+          && resource.data.active == true
+          && request.resource.data.usedCount == resource.data.usedCount + 1
+          && (resource.data.maxUses == null || request.resource.data.usedCount <= resource.data.maxUses));
+      allow delete: if hasPermission('catalog');
+    }
+
     match /reviews/{reviewId} {
       allow read: if true;
       allow create: if signedIn()
         && request.resource.data.userId == request.auth.uid
         && request.resource.data.keys().hasOnly([
-          'productId', 'userId', 'userName', 'rating', 'text', 'date'
+          'productId', 'userId', 'userName', 'rating', 'text', 'date', 'imageUrl'
         ])
         && request.resource.data.productId is string
         && request.resource.data.userName is string
@@ -63,8 +186,13 @@ service cloud.firestore {
         && request.resource.data.text is string
         && request.resource.data.text.size() > 0
         && request.resource.data.text.size() <= 1000
-        && request.resource.data.date is string;
-      allow delete: if isAdmin();
+        && request.resource.data.date is string
+        && (!('imageUrl' in request.resource.data)
+          || request.resource.data.imageUrl == null
+          || (request.resource.data.imageUrl is string
+            && request.resource.data.imageUrl.size() <= 2000
+            && request.resource.data.imageUrl.matches('^https://.*')));
+      allow delete: if hasPermission('support');
     }
 
     match /users/{userId}/userProjects/{projectId} {
@@ -78,12 +206,26 @@ service cloud.firestore {
       allow delete: if signedIn() && request.auth.uid == userId;
     }
 
+    match /users/{userId}/stockAlerts/{productId} {
+      allow get, list: if signedIn() && request.auth.uid == userId;
+      allow create: if signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly(['productId', 'createdAt'])
+        && request.resource.data.productId == productId
+        && request.resource.data.createdAt is string;
+      allow update: if signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['notifiedAt'])
+        && request.resource.data.notifiedAt is string;
+      allow delete: if signedIn() && request.auth.uid == userId;
+    }
+
     match /orders/{orderId} {
       allow get: if signedIn()
         && (!exists(/databases/$(database)/documents/orders/$(orderId))
-          || isAdmin()
+          || hasPermission('orders')
           || resource.data.userId == request.auth.uid);
-      allow list: if isAdmin()
+      allow list: if hasPermission('orders')
         || (signedIn() && resource.data.userId == request.auth.uid);
       allow create: if signedIn()
         && request.resource.data.userId == request.auth.uid
@@ -91,7 +233,7 @@ service cloud.firestore {
         && request.resource.data.status == 'processing'
         && request.resource.data.verificationRequired == true
         && request.resource.data.keys().hasOnly([
-          'id', 'userId', 'date', 'status', 'items', 'total', 'discount', 'delivery', 'verificationRequired'
+          'id', 'userId', 'date', 'status', 'statusHistory', 'items', 'total', 'discount', 'couponCode', 'couponDiscount', 'bundleDiscount', 'bundlePromotions', 'delivery', 'verificationRequired'
         ])
         && request.resource.data.items is list
         && request.resource.data.items.size() > 0
@@ -100,6 +242,16 @@ service cloud.firestore {
         && request.resource.data.total >= 0
         && request.resource.data.discount is number
         && request.resource.data.discount >= 0
+        && request.resource.data.couponCode is string
+        && request.resource.data.couponCode.size() <= 24
+        && request.resource.data.couponDiscount is number
+        && request.resource.data.couponDiscount >= 0
+        && request.resource.data.bundleDiscount is number
+        && request.resource.data.bundleDiscount >= 0
+        && request.resource.data.bundlePromotions is list
+        && request.resource.data.bundlePromotions.size() <= 30
+        && request.resource.data.statusHistory is list
+        && request.resource.data.statusHistory.size() <= 100
         && request.resource.data.date is string
         && request.resource.data.delivery is map
         && request.resource.data.delivery.keys().hasOnly([
@@ -116,10 +268,53 @@ service cloud.firestore {
         && request.resource.data.delivery.address.size() <= 200
         && request.resource.data.delivery.carrier is string
         && request.resource.data.delivery.payment is string;
-      allow update: if isAdmin()
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
-        && request.resource.data.status in ['processing', 'delivered', 'cancelled', 'returned'];
+      allow update: if (signedIn()
+          && resource.data.userId == request.auth.uid
+          && resource.data.status == 'delivered'
+          && (!('returnRequest' in resource.data)
+            || resource.data.returnRequest.status == 'rejected')
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['returnRequest'])
+          && request.resource.data.returnRequest is map
+          && request.resource.data.returnRequest.keys().hasOnly(['status', 'reason', 'requestedAt'])
+          && request.resource.data.returnRequest.status == 'requested'
+          && request.resource.data.returnRequest.reason is string
+          && request.resource.data.returnRequest.reason.size() > 0
+          && request.resource.data.returnRequest.reason.size() <= 1000
+          && request.resource.data.returnRequest.requestedAt is string)
+        || (hasPermission('orders')
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'statusHistory', 'trackingNumber', 'returnRequest'])
+        && request.resource.data.status in ['processing', 'confirmed', 'shipped', 'delivered', 'cancelled', 'returned']
+        && request.resource.data.statusHistory is list
+        && request.resource.data.statusHistory.size() <= 100
+        && (!('trackingNumber' in request.resource.data) || request.resource.data.trackingNumber is string)
+        && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['returnRequest'])
+          || (resource.data.status == 'delivered'
+            && resource.data.returnRequest is map
+            && resource.data.returnRequest.status == 'requested'
+            && request.resource.data.returnRequest is map
+            && request.resource.data.returnRequest.keys().hasOnly([
+              'status', 'reason', 'requestedAt', 'reviewedAt', 'reviewedBy', 'decisionNote'
+            ])
+            && request.resource.data.returnRequest.status in ['accepted', 'rejected']
+            && request.resource.data.returnRequest.reason == resource.data.returnRequest.reason
+            && request.resource.data.returnRequest.requestedAt == resource.data.returnRequest.requestedAt
+            && request.resource.data.returnRequest.reviewedAt is string
+            && request.resource.data.returnRequest.decisionNote is string
+            && request.resource.data.returnRequest.decisionNote.size() <= 300
+            && ((request.resource.data.returnRequest.status == 'accepted'
+                && request.resource.data.status == 'returned')
+              || (request.resource.data.returnRequest.status == 'rejected'
+                && request.resource.data.status == 'delivered'))))
+        && (request.resource.data.status != 'returned'
+          || (request.resource.data.returnRequest is map
+            && request.resource.data.returnRequest.status == 'accepted')));
       allow delete: if isAdmin();
+    }
+
+    match /inventory_movements/{movementId} {
+      allow read: if hasPermission('warehouse');
+      allow create: if hasPermission('warehouse') || hasPermission('catalog');
+      allow update, delete: if isAdmin();
     }
   }
 }

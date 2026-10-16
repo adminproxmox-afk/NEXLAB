@@ -32,6 +32,14 @@ export async function logout() {
 export const getCurrentUser = () => currentUser;
 export const isAuthenticated = () => Boolean(currentUser);
 export const isAdmin = () => currentUser?.role === "admin";
+const rolePermissions = {
+  order_manager: ["orders"],
+  catalog_manager: ["catalog"],
+  warehouse: ["warehouse"],
+  support: ["support"],
+};
+export const hasAdminAccess = () => isAdmin() || Boolean(rolePermissions[currentUser?.role]);
+export const hasAdminPermission = (permission) => isAdmin() || Boolean(rolePermissions[currentUser?.role]?.includes(permission));
 export function requireAuth() {
   if (isAuthenticated()) return true;
   const inAdmin = location.pathname.toLowerCase().includes("/admin/");

@@ -29,27 +29,27 @@ export async function saveMyProject(projectId) {
     const [collection, ownerId, subcollection, id] = path(uid, projectId);
     await firestoreSdk.setDoc(
       firestoreSdk.doc(db, collection, ownerId, subcollection, id),
-      { projectId, checklist: [], updatedAt: new Date().toISOString() },
+      { projectId, checklist: [], stepChecklist: [], updatedAt: new Date().toISOString() },
       { merge: true },
     );
     return { projectId };
   }
   return request("my-projects", { method: "POST", body: { projectId } });
 }
-export async function updateMyProject(projectId, checklist) {
+export async function updateMyProject(projectId, checklist, stepChecklist = []) {
   if (isFirebaseConfigured()) {
     const uid = await currentUid();
     const { db, firestoreSdk } = await getFirebaseServices();
     const [collection, ownerId, subcollection, id] = path(uid, projectId);
     await firestoreSdk.updateDoc(
       firestoreSdk.doc(db, collection, ownerId, subcollection, id),
-      { checklist, updatedAt: new Date().toISOString() },
+      { checklist, stepChecklist, updatedAt: new Date().toISOString() },
     );
     return;
   }
   return request("my-projects", {
     method: "PATCH",
-    body: { projectId, checklist },
+    body: { projectId, checklist, stepChecklist },
   });
 }
 export async function deleteMyProject(projectId) {

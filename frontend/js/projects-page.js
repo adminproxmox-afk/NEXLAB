@@ -40,6 +40,8 @@ export async function initializeProjectsDirectory() {
   const grid = root.querySelector("[data-project-grid]");
   const search = root.querySelector("[data-project-search]");
   const count = root.querySelector("[data-project-count]");
+  const budget = root.querySelector("[data-project-budget]");
+  const inStock = root.querySelector("[data-project-in-stock]");
   const filters = [...root.querySelectorAll("[data-project-filter]")];
   let difficulty = "all";
   function render() {
@@ -58,7 +60,10 @@ export async function initializeProjectsDirectory() {
         `${project.name} ${project.description} ${components}`
           .toLocaleLowerCase("uk-UA")
           .includes(query);
-      return matchesDifficulty && matchesQuery;
+      const inventory = projectInventory(project, products);
+      const matchesBudget = !budget.value || Number(project.estimatedPrice || 0) <= Number(budget.value);
+      const matchesStock = !inStock.checked || inventory.complete;
+      return matchesDifficulty && matchesQuery && matchesBudget && matchesStock;
     });
     const noun = {
       one: "проєкт",
@@ -69,9 +74,11 @@ export async function initializeProjectsDirectory() {
     count.textContent = `${visible.length} ${noun}`;
     grid.innerHTML = visible.length
       ? visible.map((project) => projectCard(project, products)).join("")
-      : '<div class="project-empty"><span aria-hidden="true">⌕</span><h2>Нічого не знайдено</h2><p>Зміни пошук або обери інший рівень складності.</p><button class="button button-quiet" type="button" data-project-reset>Скинути фільтри</button></div>';
+        : '<div class="project-empty"><span aria-hidden="true">⌕</span><h2>Нічого не знайдено</h2><p>Зміни пошук, бюджет або умови наявності.</p><button class="button button-quiet" type="button" data-project-reset>Скинути фільтри</button></div>';
   }
   search.addEventListener("input", render);
+  budget.addEventListener("input", render);
+  inStock.addEventListener("change", render);
   filters.forEach((button) =>
     button.addEventListener("click", () => {
       difficulty = button.dataset.projectFilter;
@@ -83,18 +90,23 @@ export async function initializeProjectsDirectory() {
       render();
     }),
   );
-  grid.addEventListener("click", (event) => {
+  root.addEventListener("click", (event) => {
     if (!event.target.closest("[data-project-reset]")) return;
+    resetFilters();
+    search.focus();
+  });
+  function resetFilters() {
     difficulty = "all";
     search.value = "";
+    budget.value = "";
+    inStock.checked = false;
     filters.forEach((filter, index) => {
       const active = index === 0;
       filter.classList.toggle("is-active", active);
       filter.setAttribute("aria-pressed", String(active));
     });
     render();
-    search.focus();
-  });
+  }
   render();
 }
 
@@ -130,7 +142,7 @@ export async function initializeProjectPage() {
     (record) => record.projectId === project.id,
   );
   root.innerHTML = `<div class="breadcrumbs"><a href="index.html">Головна</a><span>/</span><a href="projects.html">Проєкти</a><span>/</span><span>${safe(project.name)}</span></div>
-    <div class="project-detail-hero"><div class="project-detail-visual">${projectCover(project, products.filter(Boolean))}<a class="project-visual-link" href="#build-guide">${projectGuides[project.id] ? "Перейти до схеми" : "Перейти до кроків"} <span aria-hidden="true">↓</span></a></div><div class="project-detail-copy"><p class="eyebrow">Майстерня NEXLAB / ${safe(project.difficulty)} · ~${projectDuration(project)} год.</p><h1>${safe(project.name)}</h1><p class="project-lead">${safe(project.description)}</p><div class="project-facts"><div><strong>${rows.length}</strong><span>${componentLabel(rows.length)} у наборі</span></div><div><strong>${inventory.ready}/${rows.length}</strong><span>позицій доступно</span></div><div><strong>${inventory.complete ? "Так" : "Частково"}</strong><span>повний набір зараз</span></div></div><div class="project-cost"><div><span>Повний комплект</span><strong>≈ ${money(project.estimatedPrice)}</strong></div><div><span>Доступні позиції</span><strong>${money(inventory.availableValue)}</strong></div></div>${!inventory.complete ? '<p class="project-stock-note">Частини компонентів зараз немає в наявності. Можна додати доступні, а решту відкрити в каталозі.</p>' : ""}<div class="project-actions"><button class="button button-primary" data-project-add ${availableCount === 0 ? "disabled" : ""}>${inventory.complete ? "Додати комплект" : "Додати доступні компоненти"} <span aria-hidden="true">＋</span></button><button class="button button-quiet" data-save-project data-saved="${isSaved}" ${isSaved ? 'aria-label="Відкрити проєкт у моїй майстерні"' : ""}>${isSaved ? "У моїй майстерні ✓" : "Зберегти в майстерню ♡"}</button></div><p class="project-demo-note">Ціни та залишки демонстраційні. Перед складанням перевір сумісність компонентів.</p></div></div>
+    <div class="project-detail-hero"><div class="project-detail-visual">${projectCover(project, products.filter(Boolean))}<a class="project-visual-link" href="#build-guide">${projectGuides[project.id] ? "Перейти до схеми" : "Перейти до кроків"} <span aria-hidden="true">↓</span></a></div><div class="project-detail-copy"><p class="eyebrow">Майстерня NEXLAB / ${safe(project.difficulty)} · ~${projectDuration(project)} год.</p><h1>${safe(project.name)}</h1><p class="project-lead">${safe(project.description)}</p><div class="project-facts"><div><strong>${rows.length}</strong><span>${componentLabel(rows.length)} у наборі</span></div><div><strong>${inventory.ready}/${rows.length}</strong><span>позицій доступно</span></div><div><strong>${inventory.complete ? "Так" : "Частково"}</strong><span>повний набір зараз</span></div></div><div class="project-cost"><div><span>Повний комплект</span><strong>≈ ${money(project.estimatedPrice)}</strong></div>${project.bundleDiscountPercent > 0 ? `<div><span>Знижка на повний комплект</span><strong>−${project.bundleDiscountPercent}% · ≈ ${money(Math.floor(project.estimatedPrice * project.bundleDiscountPercent / 100))}</strong></div>` : ""}<div><span>Доступні позиції</span><strong>${money(inventory.availableValue)}</strong></div></div>${!inventory.complete ? '<p class="project-stock-note">Частини компонентів зараз немає в наявності. Можна додати доступні, а решту відкрити в каталозі.</p>' : ""}<div class="project-actions"><button class="button button-primary" data-project-add ${availableCount === 0 ? "disabled" : ""}>${inventory.complete ? "Додати комплект" : "Додати доступні компоненти"} <span aria-hidden="true">＋</span></button><button class="button button-quiet" data-save-project data-saved="${isSaved}" ${isSaved ? 'aria-label="Відкрити проєкт у моїй майстерні"' : ""}>${isSaved ? "У моїй майстерні ✓" : "Зберегти в майстерню ♡"}</button></div><p class="project-demo-note">Ціни та залишки демонстраційні. Перед складанням перевір сумісність компонентів.</p></div></div>
     <section class="project-components-list" id="components"><div class="section-heading"><div><p class="eyebrow">Склад набору</p><h2>Що знадобиться <span>${rows.length}</span></h2></div><a class="text-link" href="catalog.html">Увесь каталог <span>↗</span></a></div><div class="project-part-grid">${rows.map((row) => (row.product ? `<article class="project-part ${row.product.stock < row.quantity ? "is-unavailable" : ""}"><a class="project-part-image" href="product.html?id=${encodeURIComponent(row.product.id)}">${productArt(row.product)}</a><div class="project-part-copy"><span class="product-category">${safe(row.product.category)}</span><h3><a href="product.html?id=${encodeURIComponent(row.product.id)}">${safe(row.product.name)}</a></h3><div class="project-part-price"><span>${row.quantity} шт.</span><strong>${money(row.product.price * row.quantity)}</strong></div><span class="stock ${row.product.stock < row.quantity ? "stock-out" : ""}">${row.product.stock >= row.quantity ? `Є в наявності · ${row.product.stock} шт.` : row.product.stock ? `Потрібно ${row.quantity}, є ${row.product.stock} шт.` : "Тимчасово немає в наявності"}</span><a class="project-part-link" href="product.html?id=${encodeURIComponent(row.product.id)}">Деталі товару ↗</a></div></article>` : `<article class="project-part is-unavailable"><div class="project-part-copy"><h3>Компонент недоступний</h3><p>Товар більше не представлений у каталозі.</p></div></article>`)).join("")}</div></section>`;
   try {
     await renderProjectGuide(project, root);

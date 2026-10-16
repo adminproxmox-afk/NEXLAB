@@ -346,6 +346,45 @@
 .order-details small {
   color: #9aae8a;
 }
+.order-return-form,
+.order-return-status,
+.admin-return-request {
+  display: grid;
+  gap: 9px;
+  margin-top: 14px;
+  padding: 13px;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+.order-return-form label {
+  display: grid;
+  gap: 7px;
+}
+.order-return-form textarea {
+  width: 100%;
+  min-height: 68px;
+  padding: 10px;
+  border: 1px solid var(--line, #323c34);
+  border-radius: 6px;
+  color: inherit;
+  background: var(--surface, #191f1b);
+  font: inherit;
+}
+.order-return-form [role="status"],
+.admin-return-request small {
+  color: var(--muted, #909b91);
+}
+.order-return-status p,
+.admin-return-request p {
+  margin: 0;
+}
+.admin-return-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
 .demo-note {
   color: #748075;
   font-size: 9px;

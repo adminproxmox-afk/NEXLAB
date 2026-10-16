@@ -38,6 +38,10 @@ import { getCurrentUser } from "./session.js";
 import { initializeCheckout } from "./checkout.js";
 import { initializeInfoPage } from "./info-page.js";
 import { initializeAdmin } from "./admin.js";
+import { toggleComparison } from "../api/comparisonService.js";
+import { initializeComparisonPage } from "./comparison.js";
+import { consumeAvailableStockAlerts } from "../api/stockAlertService.js";
+import { initializeCommunityProjects } from "./community-projects.js";
 
 const escapeHTML = (value) =>
   String(value).replace(
@@ -47,6 +51,44 @@ const escapeHTML = (value) =>
         char
       ],
   );
+
+function initializeConnectionNotice() {
+  if (typeof navigator === "undefined") return;
+  const notice = document.createElement("div");
+  notice.className = "connection-notice";
+  notice.setAttribute("role", "status");
+  notice.setAttribute("aria-live", "polite");
+  notice.hidden = true;
+  document.body.prepend(notice);
+  let wasOffline = !navigator.onLine;
+  const update = () => {
+    if (!navigator.onLine) {
+      wasOffline = true;
+      notice.innerHTML = `<span>Немає з’єднання. Доступні лише збережені сторінки й локальний каталог.</span><a href="${new URL("../offline.html", import.meta.url).href}">Детальніше</a>`;
+      notice.hidden = false;
+    } else if (wasOffline) {
+      notice.innerHTML = '<span>З’єднання відновлено. Онови дані перед оформленням замовлення.</span><button type="button" data-connection-reload>Оновити сторінку</button>';
+      notice.hidden = false;
+    } else {
+      notice.hidden = true;
+    }
+  };
+  notice.addEventListener("click", (event) => {
+    if (event.target.closest("[data-connection-reload]")) location.reload();
+  });
+  window.addEventListener("online", update);
+  window.addEventListener("offline", update);
+  update();
+}
+
+function registerOfflineSupport() {
+  if (!("serviceWorker" in navigator)) return;
+  const worker = new URL("../service-worker.js", import.meta.url);
+  const scope = new URL("../", import.meta.url).pathname;
+  navigator.serviceWorker.register(worker, { scope }).catch((error) => {
+    console.info("Offline cache could not be registered", error);
+  });
+}
 
 function renderHomeCategories(categories) {
   const root = document.querySelector("[data-categories]");
@@ -82,10 +124,33 @@ function bindProductButtons() {
       });
       toast(saved ? "Додано до обраного" : "Прибрано з обраного");
     }
+    const compareButton = event.target.closest("[data-compare]");
+    if (compareButton) {
+      try {
+        const ids = toggleComparison(compareButton.dataset.compare);
+        document.querySelectorAll("[data-compare]").forEach((button) => {
+          const selected = ids.includes(button.dataset.compare);
+          button.setAttribute("aria-pressed", String(selected));
+          button.classList.toggle("is-compared", selected);
+          if (button.classList.contains("compare-toggle")) {
+            button.setAttribute("aria-label", selected ? "Прибрати з порівняння" : "Додати до порівняння");
+          } else {
+            button.textContent = selected ? "Прибрати з порівняння" : "Порівняти";
+          }
+        });
+        updateHeaderCounts();
+        toast(ids.includes(compareButton.dataset.compare) ? "Товар додано до порівняння" : "Товар прибрано з порівняння");
+      } catch (error) {
+        if (error.message === "COMPARISON_LIMIT") toast("Можна порівняти не більше чотирьох товарів.");
+        else throw error;
+      }
+    }
   });
 }
 
 async function start() {
+  initializeConnectionNotice();
+  registerOfflineSupport();
   try {
     await initializeUsers();
   } catch (error) {
@@ -108,6 +173,14 @@ async function start() {
     getProducts(),
     getCategories(),
   ]);
+  try {
+    const availableAlerts = await consumeAvailableStockAlerts(products);
+    if (availableAlerts.length)
+      toast(`Знову в наявності: ${availableAlerts.map((item) => item.name).join(", ")}`);
+  } catch (error) {
+    if (error.message !== "UNAUTHENTICATED" && error.message !== "BACKEND_UNAVAILABLE")
+      console.warn("Restock alerts could not be loaded", error);
+  }
   reconcileCart();
   renderHomeCategories(categories);
   const featured = document.querySelector('[data-products="featured"]');
@@ -128,6 +201,8 @@ async function start() {
     initializeMyProjects(),
     initializeCheckout(settings),
     initializeAdmin(),
+    initializeComparisonPage(),
+    initializeCommunityProjects(),
   ]);
   renderCartPage();
   const dataWarnings = [
@@ -143,6 +218,7 @@ async function start() {
       );
   window.addEventListener("nexlab:cart-updated", renderCartPage);
   window.addEventListener("nexlab:favorites-updated", updateHeaderCounts);
+  window.addEventListener("nexlab:comparison-updated", updateHeaderCounts);
   window.addEventListener("storage", (event) => {
     updateHeaderCounts();
     renderCartPage();

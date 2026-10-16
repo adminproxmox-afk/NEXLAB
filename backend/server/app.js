@@ -207,10 +207,21 @@ function projectInput(input) {
     image: text(input.image, 30),
     components,
     steps: Array.isArray(input.steps) ? input.steps.map((step) => text(step, 500)) : [],
+    bundleDiscountPercent: input.bundleDiscountPercent === undefined ? 0 : Number(input.bundleDiscountPercent),
   };
-  if (result.steps.length > 20 || !['Легкий', 'Середній', 'Просунутий'].includes(result.difficulty) || !productImages.has(result.image))
+  if (result.steps.length > 20 || !['Легкий', 'Середній', 'Просунутий'].includes(result.difficulty) || !productImages.has(result.image) || !Number.isInteger(result.bundleDiscountPercent) || result.bundleDiscountPercent < 0 || result.bundleDiscountPercent > 50)
     fail("INVALID_PROJECT");
   return result;
+}
+function couponInput(input) {
+  if (!input || typeof input !== "object" || Array.isArray(input)) fail("INVALID_COUPON");
+  const code = text(input.code, 24).toUpperCase();
+  if (!/^[A-Z0-9][A-Z0-9-]{2,23}$/.test(code)) fail("INVALID_COUPON");
+  const percent = Number(input.percent), minTotal = Number(input.minTotal || 0);
+  const maxUses = input.maxUses === null || input.maxUses === "" ? null : Number(input.maxUses);
+  const validUntil = input.validUntil ? text(input.validUntil, 40) : null;
+  if (!Number.isInteger(percent) || percent < 1 || percent > 80 || !Number.isInteger(minTotal) || minTotal < 0 || minTotal > 10000000 || (maxUses !== null && (!Number.isInteger(maxUses) || maxUses < 1 || maxUses > 1000000)) || (validUntil !== null && !Number.isFinite(Date.parse(validUntil)))) fail("INVALID_COUPON");
+  return { code, percent, minTotal, maxUses, validUntil, active: input.active !== false };
 }
 async function passwordHash(value) {
   const salt = randomBytes(16).toString("hex");
@@ -238,10 +249,18 @@ export async function createApp({
     CREATE TABLE IF NOT EXISTS inventory(id TEXT PRIMARY KEY,price INTEGER NOT NULL CHECK(price>=0),old_price INTEGER,stock INTEGER NOT NULL CHECK(stock>=0));
     CREATE TABLE IF NOT EXISTS product_data(id TEXT PRIMARY KEY,body TEXT NOT NULL,deleted INTEGER NOT NULL DEFAULT 0 CHECK(deleted IN (0,1)));
     CREATE TABLE IF NOT EXISTS orders(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),request_key TEXT NOT NULL,body TEXT NOT NULL,UNIQUE(user_id,request_key));
-    CREATE TABLE IF NOT EXISTS reviews(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),product_id TEXT NOT NULL,rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),text TEXT NOT NULL,date TEXT NOT NULL);
+    CREATE TABLE IF NOT EXISTS inventory_movements(id TEXT PRIMARY KEY,product_id TEXT NOT NULL,quantity_change INTEGER NOT NULL,reason TEXT NOT NULL,order_id TEXT,created_at TEXT NOT NULL);
+    CREATE TABLE IF NOT EXISTS stock_alerts(user_id TEXT NOT NULL REFERENCES users(id),product_id TEXT NOT NULL,created_at TEXT NOT NULL,notified_at TEXT,PRIMARY KEY(user_id,product_id));
+    CREATE TABLE IF NOT EXISTS reviews(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),product_id TEXT NOT NULL,rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),text TEXT NOT NULL,date TEXT NOT NULL,image_url TEXT);
+    CREATE TABLE IF NOT EXISTS community_projects(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),user_name TEXT NOT NULL,title TEXT NOT NULL,description TEXT NOT NULL,photo_url TEXT NOT NULL,schematic_url TEXT,code_url TEXT NOT NULL,created_at TEXT NOT NULL);
+    CREATE TABLE IF NOT EXISTS community_project_comments(id TEXT PRIMARY KEY,project_id TEXT NOT NULL REFERENCES community_projects(id) ON DELETE CASCADE,user_id TEXT NOT NULL REFERENCES users(id),user_name TEXT NOT NULL,rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),text TEXT NOT NULL,created_at TEXT NOT NULL);
+    CREATE TABLE IF NOT EXISTS community_project_questions(id TEXT PRIMARY KEY,project_id TEXT NOT NULL REFERENCES community_projects(id) ON DELETE CASCADE,user_id TEXT NOT NULL REFERENCES users(id),user_name TEXT NOT NULL,text TEXT NOT NULL,created_at TEXT NOT NULL,answer TEXT,answered_by TEXT,answered_at TEXT);
+    CREATE TABLE IF NOT EXISTS coupons(code TEXT PRIMARY KEY,percent INTEGER NOT NULL,min_total INTEGER NOT NULL DEFAULT 0,max_uses INTEGER,used_count INTEGER NOT NULL DEFAULT 0,valid_until TEXT,active INTEGER NOT NULL DEFAULT 1 CHECK(active IN (0,1)));
     CREATE TABLE IF NOT EXISTS saved_projects(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),project_id TEXT NOT NULL,created_at TEXT NOT NULL,UNIQUE(user_id,project_id));
     CREATE TABLE IF NOT EXISTS shop_settings(id INTEGER PRIMARY KEY CHECK(id=1),body TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS store_projects(id TEXT PRIMARY KEY,body TEXT NOT NULL);`);
+  if (!db.prepare("PRAGMA table_info(reviews)").all().some((column) => column.name === "image_url"))
+    db.exec("ALTER TABLE reviews ADD COLUMN image_url TEXT");
   db.prepare("INSERT OR IGNORE INTO shop_settings(id,body) VALUES(1,?)").run(JSON.stringify(shopConfig));
   const seedProject = db.prepare("INSERT OR IGNORE INTO store_projects(id,body) VALUES(?,?)");
   for (const project of projects) seedProject.run(project.id, JSON.stringify(project));
@@ -256,6 +275,15 @@ export async function createApp({
   )
     db.exec(
       "ALTER TABLE saved_projects ADD COLUMN checklist TEXT NOT NULL DEFAULT '[]'",
+    );
+  if (
+    !db
+      .prepare("PRAGMA table_info(saved_projects)")
+      .all()
+      .some((column) => column.name === "step_checklist")
+  )
+    db.exec(
+      "ALTER TABLE saved_projects ADD COLUMN step_checklist TEXT NOT NULL DEFAULT '[]'",
     );
   if (
     !db
@@ -482,6 +510,18 @@ export async function createApp({
         if (!user) fail("UNAUTHENTICATED", 401);
         return user;
       };
+      const rolePermissions = {
+        order_manager: new Set(["orders"]),
+        catalog_manager: new Set(["catalog"]),
+        warehouse: new Set(["warehouse"]),
+        support: new Set(["support"]),
+      };
+      const requirePermission = (permission) => {
+        const current = requireUser();
+        if (current.role !== "admin" && !rolePermissions[current.role]?.has(permission))
+          fail("FORBIDDEN", 403);
+        return current;
+      };
       if (path.startsWith("/api/") && !path.endsWith(".js")) {
         if (!["GET", "POST", "PUT", "PATCH", "DELETE"].includes(method))
           fail("METHOD_NOT_ALLOWED", 405);
@@ -588,6 +628,14 @@ export async function createApp({
           });
         if (path === "/api/store" && method === "GET")
           return send(res, 200, { settings: currentShopSettings() });
+        if (path === "/api/coupons/validate" && method === "POST") {
+          throttle(req);
+          const input = await body(req), code = text(input.code, 24).toUpperCase();
+          const coupon = db.prepare("SELECT * FROM coupons WHERE code=? AND active=1").get(code);
+          if (!coupon || (coupon.valid_until && Date.parse(coupon.valid_until) < Date.now()) || (coupon.max_uses !== null && coupon.used_count >= coupon.max_uses)) fail("COUPON_INVALID", 404);
+          if (!Number.isInteger(input.subtotal) || input.subtotal < coupon.min_total || !Number.isInteger(input.bundleDiscount || 0) || (input.bundleDiscount || 0) < 0 || (input.bundleDiscount || 0) > input.subtotal) fail("COUPON_MINIMUM_NOT_MET", 422);
+          return send(res, 200, { coupon: { code: coupon.code, percent: coupon.percent, minTotal: coupon.min_total, validUntil: coupon.valid_until, discount: Math.floor((input.subtotal - (input.bundleDiscount || 0)) * coupon.percent / 100) } });
+        }
         if (path === "/api/projects" && method === "GET") {
           const productList = allProducts(), projectList = allProjects();
           return send(res, 200, {
@@ -614,12 +662,35 @@ export async function createApp({
               .map((row) => JSON.parse(row.body)),
           });
         }
+        if (path === "/api/orders/return-request" && method === "POST") {
+          requireUser();
+          throttle(req);
+          const input = await body(req);
+          if (typeof input.orderId !== "string") fail("INVALID_ORDER");
+          const reason = text(input.reason, 1000);
+          db.exec("BEGIN IMMEDIATE");
+          try {
+            const row = db.prepare("SELECT body FROM orders WHERE id=? AND user_id=?").get(input.orderId, user.id);
+            if (!row) fail("ORDER_NOT_FOUND", 404);
+            const order = JSON.parse(row.body);
+            if (order.status !== "delivered") fail("RETURN_NOT_AVAILABLE", 409);
+            if (["requested", "accepted"].includes(order.returnRequest?.status)) fail("RETURN_ALREADY_REQUESTED", 409);
+            order.returnRequest = { status: "requested", reason, requestedAt: new Date().toISOString() };
+            db.prepare("UPDATE orders SET body=? WHERE id=?").run(JSON.stringify(order), order.id);
+            db.exec("COMMIT");
+            return send(res, 201, { returnRequest: order.returnRequest });
+          } catch (error) {
+            db.exec("ROLLBACK");
+            throw error;
+          }
+        }
         if (path === "/api/orders" && method === "POST") {
           requireUser();
           const input = await body(req),
             requestKey = text(req.headers["idempotency-key"], 100);
+          const couponCode = input.couponCode ? text(input.couponCode, 24).toUpperCase() : null;
           const fingerprint = hash(
-            JSON.stringify({ items: input.items, delivery: input.delivery }),
+            JSON.stringify({ items: input.items, delivery: input.delivery, couponCode }),
           );
           const delivery = input.delivery || {},
             customer = {
@@ -692,7 +763,34 @@ export async function createApp({
                 oldPrice: stock.old_price,
               });
             }
-            const total = items.reduce((s, p) => s + p.price * p.quantity, 0),
+            const subtotal = items.reduce((s, p) => s + p.price * p.quantity, 0);
+            let bundleDiscount = 0;
+            const bundlePromotions = [];
+            const remaining = new Map(items.map((item) => [item.id, item.quantity]));
+            const priced = new Map(items.map((item) => [item.id, item.price]));
+            for (const project of allProjects()
+              .filter((item) => Number.isInteger(item.bundleDiscountPercent) && item.bundleDiscountPercent > 0)
+              .sort((a, b) => b.bundleDiscountPercent - a.bundleDiscountPercent)) {
+              while (project.components.every((component) => (remaining.get(component.productId) || 0) >= component.quantity)) {
+                let kitSubtotal = 0;
+                for (const component of project.components) {
+                  remaining.set(component.productId, remaining.get(component.productId) - component.quantity);
+                  kitSubtotal += (priced.get(component.productId) || 0) * component.quantity;
+                }
+                const savings = Math.floor(kitSubtotal * project.bundleDiscountPercent / 100);
+                bundleDiscount += savings;
+                bundlePromotions.push({ projectId: project.id, name: project.name, percent: project.bundleDiscountPercent, discount: savings });
+              }
+            }
+            let couponDiscount = 0;
+            if (couponCode) {
+              const coupon = db.prepare("SELECT * FROM coupons WHERE code=? AND active=1").get(couponCode);
+              if (!coupon || (coupon.valid_until && Date.parse(coupon.valid_until) < Date.now()) || (coupon.max_uses !== null && coupon.used_count >= coupon.max_uses)) fail("COUPON_INVALID", 409);
+              if (subtotal < coupon.min_total) fail("COUPON_MINIMUM_NOT_MET", 409);
+              couponDiscount = Math.floor((subtotal - bundleDiscount) * coupon.percent / 100);
+              db.prepare("UPDATE coupons SET used_count=used_count+1 WHERE code=?").run(couponCode);
+            }
+            const total = subtotal - bundleDiscount - couponDiscount,
               discount = items.reduce(
                 (s, p) =>
                   s +
@@ -704,16 +802,23 @@ export async function createApp({
               userId: user.id,
               date: new Date().toISOString(),
               status: "processing",
+              statusHistory: [{ status: "processing", date: new Date().toISOString() }],
               items,
               total,
-              discount,
+              discount: discount + bundleDiscount + couponDiscount,
+              bundleDiscount,
+              bundlePromotions,
+              couponCode,
+              couponDiscount,
               delivery: customer,
               deliveryCost: null,
             };
             items.forEach((item) =>
-              db
-                .prepare("UPDATE inventory SET stock=stock-? WHERE id=?")
-                .run(item.quantity, item.id),
+              (() => {
+                db.prepare("UPDATE inventory SET stock=stock-? WHERE id=?").run(item.quantity, item.id);
+                db.prepare("INSERT INTO inventory_movements VALUES(?,?,?,?,?,?)")
+                  .run(randomUUID(), item.id, -item.quantity, "order_reserved", order.id, order.date);
+              })(),
             );
             db.prepare(
               "INSERT INTO orders(id,user_id,request_key,body,fingerprint,status) VALUES(?,?,?,?,?,?)",
@@ -736,10 +841,94 @@ export async function createApp({
           return send(res, 200, {
             reviews: db
               .prepare(
-                "SELECT r.id,r.product_id AS productId,r.rating,r.text,r.date,u.name AS userName FROM reviews r JOIN users u ON r.user_id=u.id WHERE product_id=? ORDER BY r.rowid DESC",
+                "SELECT r.id,r.product_id AS productId,r.rating,r.text,r.date,r.image_url AS imageUrl,u.name AS userName FROM reviews r JOIN users u ON r.user_id=u.id WHERE product_id=? ORDER BY r.rowid DESC",
               )
               .all(url.searchParams.get("productId")),
           });
+        if (path === "/api/community-projects" && method === "GET") {
+          const entries = db.prepare("SELECT id,user_id AS userId,user_name AS userName,title,description,photo_url AS photoUrl,schematic_url AS schematicUrl,code_url AS codeUrl,created_at AS date FROM community_projects ORDER BY created_at DESC LIMIT 100").all();
+          const comments = db.prepare("SELECT id,project_id AS projectId,user_id AS userId,user_name AS userName,rating,text,created_at AS date FROM community_project_comments ORDER BY created_at DESC").all();
+          const questions = db.prepare("SELECT id,project_id AS projectId,user_id AS userId,user_name AS userName,text,created_at AS date,answer,answered_by AS answeredBy,answered_at AS answeredAt FROM community_project_questions ORDER BY created_at DESC LIMIT 1000").all();
+          return send(res, 200, { projects: entries.map((project) => {
+            const projectComments = comments.filter((comment) => comment.projectId === project.id);
+            return { ...project, rating: projectComments.length ? projectComments.reduce((sum, item) => sum + item.rating, 0) / projectComments.length : 0, comments: projectComments.slice(0, 30), questions: questions.filter((question) => question.projectId === project.id).slice(0, 30) };
+          }) });
+        }
+        if (path === "/api/community-projects" && method === "POST") {
+          requireUser();
+          throttle(req);
+          const input = await body(req);
+          const secureUrl = (value, optional = false) => {
+            if (optional && !value) return null;
+            if (typeof value !== "string" || value.length > 2000) fail("INVALID_PROJECT_URL");
+            try { const parsed = new URL(value); if (parsed.protocol !== "https:") fail("INVALID_PROJECT_URL"); return parsed.href; }
+            catch { fail("INVALID_PROJECT_URL"); }
+          };
+          const project = {
+            id: randomUUID(), userId: user.id, userName: user.name,
+            title: text(input.title, 120), description: text(input.description, 2000),
+            photoUrl: secureUrl(input.photoUrl), schematicUrl: secureUrl(input.schematicUrl, true),
+            codeUrl: secureUrl(input.codeUrl), date: new Date().toISOString(),
+          };
+          db.prepare("INSERT INTO community_projects(id,user_id,user_name,title,description,photo_url,schematic_url,code_url,created_at) VALUES(?,?,?,?,?,?,?,?,?)")
+            .run(project.id, project.userId, project.userName, project.title, project.description, project.photoUrl, project.schematicUrl, project.codeUrl, project.date);
+          return send(res, 201, { project: { ...project, rating: 0, comments: [] } });
+        }
+        if (path === "/api/community-projects/comments" && method === "POST") {
+          requireUser();
+          throttle(req);
+          const input = await body(req);
+          if (typeof input.projectId !== "string" || !db.prepare("SELECT id FROM community_projects WHERE id=?").get(input.projectId)) fail("PROJECT_NOT_FOUND", 404);
+          if (!Number.isInteger(input.rating) || input.rating < 1 || input.rating > 5) fail("INVALID_RATING");
+          const comment = { id: randomUUID(), projectId: input.projectId, userId: user.id, userName: user.name, rating: input.rating, text: text(input.text, 1000), date: new Date().toISOString() };
+          db.prepare("INSERT INTO community_project_comments(id,project_id,user_id,user_name,rating,text,created_at) VALUES(?,?,?,?,?,?,?)")
+            .run(comment.id, comment.projectId, comment.userId, comment.userName, comment.rating, comment.text, comment.date);
+          return send(res, 201, { comment });
+        }
+        if (path === "/api/community-projects/questions" && method === "POST") {
+          requireUser();
+          throttle(req);
+          const input = await body(req);
+          if (typeof input.projectId !== "string" || !db.prepare("SELECT id FROM community_projects WHERE id=?").get(input.projectId)) fail("PROJECT_NOT_FOUND", 404);
+          const question = { id: randomUUID(), projectId: input.projectId, userId: user.id, userName: user.name, text: text(input.text, 1000), date: new Date().toISOString() };
+          db.prepare("INSERT INTO community_project_questions(id,project_id,user_id,user_name,text,created_at) VALUES(?,?,?,?,?,?)")
+            .run(question.id, question.projectId, question.userId, question.userName, question.text, question.date);
+          return send(res, 201, { question });
+        }
+        if (path === "/api/community-projects/questions/answer" && method === "PATCH") {
+          requireUser();
+          throttle(req);
+          const input = await body(req);
+          if (typeof input.id !== "string") fail("INVALID_QUESTION");
+          const question = db.prepare("SELECT q.id,q.project_id AS projectId,p.user_id AS projectOwnerId FROM community_project_questions q JOIN community_projects p ON p.id=q.project_id WHERE q.id=?").get(input.id);
+          if (!question) fail("QUESTION_NOT_FOUND", 404);
+          if (question.projectOwnerId !== user.id && user.role !== "admin" && !rolePermissions[user.role]?.has("support")) fail("FORBIDDEN", 403);
+          const answer = text(input.answer, 1000);
+          const answeredAt = new Date().toISOString();
+          db.prepare("UPDATE community_project_questions SET answer=?,answered_by=?,answered_at=? WHERE id=?")
+            .run(answer, user.name, answeredAt, question.id);
+          return send(res, 200, { question: { ...question, answer, answeredBy: user.name, answeredAt } });
+        }
+        if (path === "/api/stock-alerts" && method === "POST") {
+          requireUser();
+          const input = await body(req), productId = text(input.productId, 64);
+          const product = db.prepare("SELECT i.stock FROM inventory i JOIN product_data p ON p.id=i.id WHERE i.id=? AND p.deleted=0").get(productId);
+          if (!product) fail("PRODUCT_NOT_FOUND", 404);
+          if (product.stock > 0) fail("PRODUCT_ALREADY_AVAILABLE", 409);
+          db.prepare("INSERT INTO stock_alerts(user_id,product_id,created_at) VALUES(?,?,?) ON CONFLICT(user_id,product_id) DO UPDATE SET created_at=excluded.created_at,notified_at=NULL")
+            .run(user.id, productId, new Date().toISOString());
+          return send(res, 201, { subscribed: true });
+        }
+        if (path === "/api/stock-alerts" && method === "GET") {
+          requireUser();
+          const rows = db.prepare("SELECT a.product_id AS productId,a.notified_at AS notifiedAt,i.stock,p.body FROM stock_alerts a JOIN inventory i ON i.id=a.product_id JOIN product_data p ON p.id=a.product_id WHERE a.user_id=? AND p.deleted=0").all(user.id);
+          const alerts = rows.filter((row) => row.stock > 0 && !row.notifiedAt).map((row) => {
+            db.prepare("UPDATE stock_alerts SET notified_at=? WHERE user_id=? AND product_id=?")
+              .run(new Date().toISOString(), user.id, row.productId);
+            return { productId: row.productId, name: JSON.parse(row.body).name };
+          });
+          return send(res, 200, { alerts });
+        }
         if (path === "/api/reviews" && method === "POST") {
           requireUser();
           const input = await body(req);
@@ -757,14 +946,23 @@ export async function createApp({
             text: text(input.text, 1000),
             date: new Date().toISOString(),
             userName: user.name,
+            imageUrl: input.imageUrl ? (() => {
+              if (typeof input.imageUrl !== "string" || input.imageUrl.length > 2000) fail("INVALID_REVIEW_IMAGE");
+              try {
+                const parsed = new URL(input.imageUrl);
+                if (parsed.protocol !== "https:") fail("INVALID_REVIEW_IMAGE");
+                return parsed.href;
+              } catch { fail("INVALID_REVIEW_IMAGE"); }
+            })() : null,
           };
-          db.prepare("INSERT INTO reviews VALUES(?,?,?,?,?,?)").run(
+          db.prepare("INSERT INTO reviews(id,user_id,product_id,rating,text,date,image_url) VALUES(?,?,?,?,?,?,?)").run(
             review.id,
             user.id,
             review.productId,
             review.rating,
             review.text,
             review.date,
+            review.imageUrl,
           );
           return send(res, 201, { review });
         }
@@ -772,7 +970,7 @@ export async function createApp({
           requireUser();
           const saved = db
             .prepare(
-              "SELECT id,project_id AS projectId,created_at AS createdAt,checklist FROM saved_projects WHERE user_id=? ORDER BY rowid DESC",
+              "SELECT id,project_id AS projectId,created_at AS createdAt,checklist,step_checklist AS stepChecklist FROM saved_projects WHERE user_id=? ORDER BY rowid DESC",
             )
             .all(user.id);
           const projectList = allProjects();
@@ -782,15 +980,23 @@ export async function createApp({
                 projectList.find((project) => project.id === row.projectId)
                   ?.components || [];
               let checklist = [];
+              let stepChecklist = [];
               try {
                 checklist = JSON.parse(row.checklist);
+              } catch {}
+              try {
+                stepChecklist = JSON.parse(row.stepChecklist);
               } catch {}
               checklist = components.map(
                 (_, index) => checklist[index] === true,
               );
+              const steps = projectList.find((project) => project.id === row.projectId)?.steps || [];
+              stepChecklist = steps.map((_, index) => stepChecklist[index] === true);
               return {
                 ...row,
                 checklist,
+                stepChecklist,
+                steps,
                 progress: components.length
                   ? Math.round(
                       (checklist.filter(Boolean).length / components.length) *
@@ -808,7 +1014,7 @@ export async function createApp({
           if (!allProjects().some((p) => p.id === input.projectId))
             fail("PROJECT_NOT_FOUND", 404);
           db.prepare(
-            "INSERT OR IGNORE INTO saved_projects(id,user_id,project_id,created_at,checklist) VALUES(?,?,?,?,?)",
+            "INSERT OR IGNORE INTO saved_projects(id,user_id,project_id,created_at,checklist,step_checklist) VALUES(?,?,?,?,?,'[]')",
           ).run(
             randomUUID(),
             user.id,
@@ -826,14 +1032,18 @@ export async function createApp({
             !project ||
             !Array.isArray(input.checklist) ||
             input.checklist.length !== project.components.length ||
-            !input.checklist.every((value) => typeof value === "boolean")
+            !input.checklist.every((value) => typeof value === "boolean") ||
+            (input.stepChecklist !== undefined &&
+              (!Array.isArray(input.stepChecklist) ||
+                input.stepChecklist.length !== (project.steps || []).length ||
+                !input.stepChecklist.every((value) => typeof value === "boolean")))
           )
             fail("INVALID_PROJECT_CHECKLIST");
           const result = db
             .prepare(
-              "UPDATE saved_projects SET checklist=? WHERE user_id=? AND project_id=?",
+              "UPDATE saved_projects SET checklist=?,step_checklist=COALESCE(?,step_checklist) WHERE user_id=? AND project_id=?",
             )
-            .run(JSON.stringify(input.checklist), user.id, project.id);
+            .run(JSON.stringify(input.checklist), input.stepChecklist === undefined ? null : JSON.stringify(input.stepChecklist), user.id, project.id);
           if (!result.changes) fail("SAVED_PROJECT_NOT_FOUND", 404);
           return send(res, 200, { saved: true });
         }
@@ -850,10 +1060,12 @@ export async function createApp({
           return send(res, 200, { deleted: true });
         }
         if (path === "/api/admin/products" && method === "PATCH") {
-          requireUser();
-          if (user.role !== "admin") fail("FORBIDDEN", 403);
+          const current = requireUser();
           const input = await body(req);
           if (typeof input.id !== "string") fail("INVALID_PRODUCT");
+          if (current.role === "warehouse") {
+            if (Object.keys(input).some((key) => !["id", "stock"].includes(key))) fail("FORBIDDEN", 403);
+          } else if (current.role !== "admin" && !rolePermissions[current.role]?.has("catalog")) fail("FORBIDDEN", 403);
           const existing = db
             .prepare("SELECT body FROM product_data WHERE id=? AND deleted=0")
             .get(input.id);
@@ -871,12 +1083,15 @@ export async function createApp({
           });
           db.exec("BEGIN IMMEDIATE");
           try {
+            const stockChange = product.stock - inventory.stock;
             db.prepare(
               "UPDATE inventory SET price=?,old_price=?,stock=? WHERE id=?",
             ).run(product.price, product.oldPrice, product.stock, product.id);
             db.prepare(
               "UPDATE product_data SET body=? WHERE id=? AND deleted=0",
             ).run(JSON.stringify(product), product.id);
+            if (stockChange) db.prepare("INSERT INTO inventory_movements VALUES(?,?,?,?,?,?)")
+              .run(randomUUID(), product.id, stockChange, "manual_adjustment", null, new Date().toISOString());
             db.exec("COMMIT");
             return send(res, 200, { saved: true });
           } catch (error) {
@@ -896,14 +1111,26 @@ export async function createApp({
           db.prepare("UPDATE shop_settings SET body=? WHERE id=1").run(JSON.stringify(settings));
           return send(res, 200, { settings });
         }
+        if (path === "/api/admin/coupons" && method === "GET") {
+          requirePermission("catalog");
+          return send(res, 200, { coupons: db.prepare("SELECT code,percent,min_total AS minTotal,max_uses AS maxUses,used_count AS usedCount,valid_until AS validUntil,active FROM coupons ORDER BY code").all().map((coupon) => ({ ...coupon, active: Boolean(coupon.active) })) });
+        }
+        if (path === "/api/admin/coupons" && ["POST", "PATCH"].includes(method)) {
+          requirePermission("catalog");
+          const coupon = couponInput(await body(req));
+          const existing = db.prepare("SELECT code FROM coupons WHERE code=?").get(coupon.code);
+          if (method === "PATCH" && !existing) fail("COUPON_NOT_FOUND", 404);
+          if (method === "POST" && existing) fail("COUPON_EXISTS", 409);
+          db.prepare("INSERT INTO coupons(code,percent,min_total,max_uses,used_count,valid_until,active) VALUES(?,?,?,?,0,?,?) ON CONFLICT(code) DO UPDATE SET percent=excluded.percent,min_total=excluded.min_total,max_uses=excluded.max_uses,valid_until=excluded.valid_until,active=excluded.active")
+            .run(coupon.code, coupon.percent, coupon.minTotal, coupon.maxUses, coupon.validUntil, coupon.active ? 1 : 0);
+          return send(res, method === "POST" ? 201 : 200, { coupon });
+        }
         if (path === "/api/admin/projects" && method === "GET") {
-          requireUser();
-          if (user.role !== "admin") fail("FORBIDDEN", 403);
+          requirePermission("catalog");
           return send(res, 200, { projects: allProjects() });
         }
         if (path === "/api/admin/projects" && ["POST", "PATCH"].includes(method)) {
-          requireUser();
-          if (user.role !== "admin") fail("FORBIDDEN", 403);
+          requirePermission("catalog");
           const project = projectInput(await body(req));
           if (!project.components.every((item) => allProducts().some((product) => product.id === item.productId)))
             fail("INVALID_PROJECT_COMPONENT");
@@ -915,8 +1142,7 @@ export async function createApp({
           return send(res, method === "POST" ? 201 : 200, { project });
         }
         if (path === "/api/admin/projects" && method === "DELETE") {
-          requireUser();
-          if (user.role !== "admin") fail("FORBIDDEN", 403);
+          requirePermission("catalog");
           const input = await body(req);
           if (typeof input.id !== "string") fail("INVALID_PROJECT");
           db.exec("BEGIN IMMEDIATE");
@@ -934,8 +1160,7 @@ export async function createApp({
           }
         }
         if (path === "/api/admin/products" && method === "POST") {
-          requireUser();
-          if (user.role !== "admin") fail("FORBIDDEN", 403);
+          requirePermission("catalog");
           const product = productInput(await body(req));
           const existing = db
             .prepare("SELECT deleted FROM product_data WHERE id=?")
@@ -949,6 +1174,8 @@ export async function createApp({
             db.prepare(
               "INSERT INTO product_data(id,body,deleted) VALUES(?,?,0) ON CONFLICT(id) DO UPDATE SET body=excluded.body,deleted=0",
             ).run(product.id, JSON.stringify(product));
+            db.prepare("INSERT INTO inventory_movements VALUES(?,?,?,?,?,?)")
+              .run(randomUUID(), product.id, product.stock, "initial_stock", null, new Date().toISOString());
             db.exec("COMMIT");
             return send(res, 201, { product });
           } catch (error) {
@@ -957,8 +1184,7 @@ export async function createApp({
           }
         }
         if (path === "/api/admin/products" && method === "DELETE") {
-          requireUser();
-          if (user.role !== "admin") fail("FORBIDDEN", 403);
+          requirePermission("catalog");
           const input = await body(req);
           if (typeof input.id !== "string") fail("INVALID_PRODUCT");
           const exists = db
@@ -979,8 +1205,7 @@ export async function createApp({
           }
         }
         if (path === "/api/admin/orders" && method === "GET") {
-          requireUser();
-          if (user.role !== "admin") fail("FORBIDDEN", 403);
+          requirePermission("orders");
           return send(res, 200, {
             orders: db
               .prepare("SELECT body FROM orders ORDER BY rowid DESC")
@@ -989,16 +1214,18 @@ export async function createApp({
           });
         }
         if (path === "/api/admin/orders" && method === "PATCH") {
-          requireUser();
-          if (user.role !== "admin") fail("FORBIDDEN", 403);
+          requirePermission("orders");
           const input = await body(req);
           if (
             typeof input.id !== "string" ||
-            !["processing", "delivered", "cancelled", "returned"].includes(
+            !["processing", "confirmed", "shipped", "delivered", "cancelled", "returned"].includes(
               input.status,
             )
           )
             fail("INVALID_ORDER_STATUS");
+          if (input.trackingNumber != null && typeof input.trackingNumber !== "string") fail("INVALID_INPUT");
+          const trackingNumber = input.trackingNumber == null ? null : input.trackingNumber.trim();
+          if (trackingNumber?.length > 80) fail("INVALID_INPUT");
           db.exec("BEGIN IMMEDIATE");
           try {
             const row = db
@@ -1007,13 +1234,17 @@ export async function createApp({
             if (!row) fail("ORDER_NOT_FOUND", 404);
             if (row.status !== input.status) {
               const transitions = {
-                processing: ["delivered", "cancelled"],
+                processing: ["confirmed", "cancelled"],
+                confirmed: ["shipped", "cancelled"],
+                shipped: ["delivered"],
                 cancelled: ["processing"],
-                delivered: ["returned"],
+                delivered: [],
                 returned: [],
               };
               if (!transitions[row.status]?.includes(input.status))
                 fail("INVALID_ORDER_TRANSITION", 409);
+              if (input.status === "shipped" && !trackingNumber)
+                fail("TRACKING_REQUIRED");
               const order = JSON.parse(row.body);
               if (row.status === "cancelled" && input.status !== "cancelled") {
                 for (const item of order.items) {
@@ -1023,25 +1254,38 @@ export async function createApp({
                   if (!stock || stock.stock < item.quantity)
                     fail("OUT_OF_STOCK", 409);
                 }
-                for (const item of order.items)
+                for (const item of order.items) {
                   db.prepare(
                     "UPDATE inventory SET stock=stock-? WHERE id=?",
                   ).run(item.quantity, item.id);
-              } else if (
-                (row.status === "processing" && input.status === "cancelled") ||
-                (row.status === "delivered" && input.status === "returned")
-              ) {
-                for (const item of order.items)
+                  db.prepare("INSERT INTO inventory_movements VALUES(?,?,?,?,?,?)")
+                    .run(randomUUID(), item.id, -item.quantity, "order_reopened", order.id, new Date().toISOString());
+                }
+              } else if (["processing", "confirmed"].includes(row.status) && input.status === "cancelled") {
+                for (const item of order.items) {
                   db.prepare(
                     "UPDATE inventory SET stock=stock+? WHERE id=?",
                   ).run(item.quantity, item.id);
+                  db.prepare("INSERT INTO inventory_movements VALUES(?,?,?,?,?,?)")
+                    .run(randomUUID(), item.id, item.quantity, "order_cancelled", order.id, new Date().toISOString());
+                }
               }
               order.status = input.status;
+              order.statusHistory = [...(Array.isArray(order.statusHistory) ? order.statusHistory : []), { status: input.status, date: new Date().toISOString() }];
+              if (trackingNumber !== null) order.trackingNumber = trackingNumber;
               db.prepare("UPDATE orders SET status=?,body=? WHERE id=?").run(
                 input.status,
                 JSON.stringify(order),
                 input.id,
               );
+            }
+            if (trackingNumber !== null && row.status === input.status) {
+              const order = JSON.parse(row.body);
+              if ((order.trackingNumber || "") !== trackingNumber) {
+                order.trackingNumber = trackingNumber;
+                order.statusHistory = [...(Array.isArray(order.statusHistory) ? order.statusHistory : []), { status: row.status, date: new Date().toISOString(), note: "Номер відстеження оновлено" }];
+                db.prepare("UPDATE orders SET body=? WHERE id=?").run(JSON.stringify(order), input.id);
+              }
             }
             db.exec("COMMIT");
             return send(res, 200, { saved: true });
@@ -1050,9 +1294,54 @@ export async function createApp({
             throw error;
           }
         }
+        if (path === "/api/admin/orders/return" && method === "PATCH") {
+          const current = requirePermission("orders");
+          const input = await body(req);
+          if (typeof input.id !== "string" || !["accepted", "rejected"].includes(input.decision)) fail("INVALID_RETURN_DECISION");
+          const decisionNote = input.note ? text(input.note, 300) : "";
+          db.exec("BEGIN IMMEDIATE");
+          try {
+            const row = db.prepare("SELECT id,body,status FROM orders WHERE id=?").get(input.id);
+            if (!row) fail("ORDER_NOT_FOUND", 404);
+            const order = JSON.parse(row.body);
+            if (row.status !== "delivered" || order.returnRequest?.status !== "requested") fail("RETURN_NOT_PENDING", 409);
+            const reviewedAt = new Date().toISOString();
+            order.returnRequest = {
+              ...order.returnRequest,
+              status: input.decision,
+              reviewedAt,
+              reviewedBy: current.name,
+              decisionNote,
+            };
+            if (input.decision === "accepted") {
+              order.status = "returned";
+              order.statusHistory = [...(Array.isArray(order.statusHistory) ? order.statusHistory : []), {
+                status: "returned",
+                date: reviewedAt,
+                note: "Повернення прийнято після отримання товару",
+              }];
+              for (const item of order.items) {
+                const stock = db.prepare("SELECT id FROM inventory WHERE id=?").get(item.id);
+                if (!stock) continue;
+                db.prepare("UPDATE inventory SET stock=stock+? WHERE id=?").run(item.quantity, item.id);
+                db.prepare("INSERT INTO inventory_movements VALUES(?,?,?,?,?,?)")
+                  .run(randomUUID(), item.id, item.quantity, "order_returned", order.id, reviewedAt);
+              }
+            }
+            db.prepare("UPDATE orders SET status=?,body=? WHERE id=?").run(order.status, JSON.stringify(order), order.id);
+            db.exec("COMMIT");
+            return send(res, 200, { order });
+          } catch (error) {
+            db.exec("ROLLBACK");
+            throw error;
+          }
+        }
+        if (path === "/api/admin/inventory-movements" && method === "GET") {
+          requirePermission("warehouse");
+          return send(res, 200, { movements: db.prepare("SELECT id,product_id AS productId,quantity_change AS quantityChange,reason,order_id AS orderId,created_at AS date FROM inventory_movements ORDER BY rowid DESC LIMIT 500").all() });
+        }
         if (path === "/api/admin/users" && method === "GET") {
-          requireUser();
-          if (user.role !== "admin") fail("FORBIDDEN", 403);
+          requirePermission("support");
           return send(res, 200, {
             users: db
               .prepare(
@@ -1061,9 +1350,23 @@ export async function createApp({
               .all(),
           });
         }
-        if (path === "/api/admin/users/reset-password" && method === "POST") {
+        if (path === "/api/admin/users/role" && method === "PATCH") {
           requireUser();
           if (user.role !== "admin") fail("FORBIDDEN", 403);
+          const input = await body(req);
+          const allowedRoles = ["user", "order_manager", "catalog_manager", "warehouse", "support"];
+          if (typeof input.id !== "string" || !allowedRoles.includes(input.role)) fail("INVALID_ROLE");
+          if (input.id === user.id) fail("CANNOT_CHANGE_OWN_ROLE", 409);
+          const target = db.prepare("SELECT id,role FROM users WHERE id=?").get(input.id);
+          if (!target) fail("USER_NOT_FOUND", 404);
+          if (target.role === "admin" && db.prepare("SELECT COUNT(*) AS count FROM users WHERE role='admin'").get().count <= 1)
+            fail("LAST_ADMIN", 409);
+          db.prepare("UPDATE users SET role=? WHERE id=?").run(input.role, input.id);
+          return send(res, 200, { user: { id: target.id, role: input.role } });
+        }
+        if (path === "/api/admin/users/reset-password" && method === "POST") {
+          requireUser();
+          if (user.role !== "admin" && user.role !== "support") fail("FORBIDDEN", 403);
           throttle(req);
           const input = await body(req);
           if (typeof input.id !== "string") fail("INVALID_INPUT");
@@ -1080,19 +1383,17 @@ export async function createApp({
           return send(res, 200, { temporaryPassword });
         }
         if (path === "/api/admin/reviews" && method === "GET") {
-          requireUser();
-          if (user.role !== "admin") fail("FORBIDDEN", 403);
+          requirePermission("support");
           return send(res, 200, {
             reviews: db
               .prepare(
-                "SELECT r.id,r.product_id AS productId,r.rating,r.text,r.date,u.name AS userName FROM reviews r JOIN users u ON u.id=r.user_id ORDER BY r.rowid DESC",
+                "SELECT r.id,r.product_id AS productId,r.rating,r.text,r.date,r.image_url AS imageUrl,u.name AS userName FROM reviews r JOIN users u ON u.id=r.user_id ORDER BY r.rowid DESC",
               )
               .all(),
           });
         }
         if (path === "/api/admin/reviews" && method === "DELETE") {
-          requireUser();
-          if (user.role !== "admin") fail("FORBIDDEN", 403);
+          requirePermission("support");
           const input = await body(req);
           if (typeof input.id !== "string") fail("INVALID_REVIEW");
           const result = db
@@ -1111,7 +1412,7 @@ export async function createApp({
           });
           return res.end();
         }
-        if (user.role !== "admin") fail("FORBIDDEN", 403);
+        if (!["admin", "order_manager", "catalog_manager", "warehouse", "support"].includes(user.role)) fail("FORBIDDEN", 403);
       }
       const decoded = decodeURIComponent(path),
         relative = decoded === "/" ? "index.html" : decoded.replace(/^\//, "");

@@ -36,11 +36,16 @@ export async function initializeMyProjects() {
           const checklist = project.components.map(
             (_, index) => record.checklist?.[index] === true,
           );
-          const completed = checklist.filter(Boolean).length,
-            progress = project.components.length
-              ? Math.round((completed / project.components.length) * 100)
+          const steps = project.steps || [];
+          const stepChecklist = steps.map(
+            (_, index) => record.stepChecklist?.[index] === true,
+          );
+          const totalTasks = checklist.length + stepChecklist.length;
+          const completed = [...checklist, ...stepChecklist].filter(Boolean).length,
+            progress = totalTasks
+              ? Math.round((completed / totalTasks) * 100)
               : 0;
-          return `<article class="my-project-card" data-saved-project="${safe(project.id)}"><a href="project.html?id=${encodeURIComponent(project.id)}" class="my-project-art">${projectCover(project, products)}</a><div class="my-project-copy"><div class="my-project-heading"><p class="eyebrow">${safe(project.difficulty)}</p><a class="my-project-open" href="project.html?id=${encodeURIComponent(project.id)}" aria-label="Відкрити ${safe(project.name)}">↗</a></div><h2><a href="project.html?id=${encodeURIComponent(project.id)}">${safe(project.name)}</a></h2><div class="progress-meta"><span data-progress-label>${completed} із ${project.components.length} компонентів підготовлено</span><strong data-progress-value>${progress}%</strong></div><div class="progress-track" role="progressbar" aria-label="Прогрес складання: ${safe(project.name)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress}"><span data-progress-fill style="width:${progress}%"></span></div><div class="my-project-checklist">${project.components
+          return `<article class="my-project-card" data-saved-project="${safe(project.id)}"><a href="project.html?id=${encodeURIComponent(project.id)}" class="my-project-art">${projectCover(project, products)}</a><div class="my-project-copy"><div class="my-project-heading"><p class="eyebrow">${safe(project.difficulty)}</p><a class="my-project-open" href="project.html?id=${encodeURIComponent(project.id)}" aria-label="Відкрити ${safe(project.name)}">↗</a></div><h2><a href="project.html?id=${encodeURIComponent(project.id)}">${safe(project.name)}</a></h2><div class="progress-meta"><span data-progress-label>${completed} із ${totalTasks} завдань виконано</span><strong data-progress-value>${progress}%</strong></div><div class="progress-track" role="progressbar" aria-label="Прогрес навчання: ${safe(project.name)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress}"><span data-progress-fill style="width:${progress}%"></span></div><h3 class="my-project-subheading">Підготуй компоненти</h3><div class="my-project-checklist">${project.components
             .map((item, index) => {
               const product = products.find(
                 (entry) => entry.id === item.productId,
@@ -49,7 +54,7 @@ export async function initializeMyProjects() {
             })
             .join(
               "",
-            )}</div><div class="my-project-footer"><span>Набір ≈ ${money(project.estimatedPrice)}</span><button type="button" class="my-project-remove" data-project-remove>Прибрати з майстерні</button></div></div></article>`;
+            )}</div>${steps.length ? `<section class="my-project-learning" aria-label="Навчальні завдання"><h3 class="my-project-subheading">Пройди кроки проєкту</h3><ol>${steps.map((step, index) => `<li><label><input type="checkbox" data-step-check="${index}" ${stepChecklist[index] ? "checked" : ""}><span>${safe(step)}</span></label></li>`).join("")}</ol></section>` : ""}<p class="project-course-complete" data-course-complete ${progress === 100 ? "" : "hidden"} role="status">Проєкт завершено — чудова робота!</p><div class="my-project-footer"><span>Набір ≈ ${money(project.estimatedPrice)}</span><button type="button" class="my-project-remove" data-project-remove>Прибрати з майстерні</button></div></div></article>`;
         })
         .join("")}</div>`;
     } catch (error) {
@@ -57,41 +62,46 @@ export async function initializeMyProjects() {
     }
   }
   root.addEventListener("change", async (event) => {
-    const checkbox = event.target.closest("[data-project-check]");
+    const checkbox = event.target.closest("[data-project-check], [data-step-check]");
     if (!checkbox) return;
     const card = checkbox.closest("[data-saved-project]"),
-      checks = [...card.querySelectorAll("[data-project-check]")];
-    const completed = checks.filter((input) => input.checked).length,
-      progress = Math.round((completed / checks.length) * 100);
+      checks = [...card.querySelectorAll("[data-project-check]")],
+      stepChecks = [...card.querySelectorAll("[data-step-check]")];
+    const completed = [...checks, ...stepChecks].filter((input) => input.checked).length,
+      totalTasks = checks.length + stepChecks.length,
+      progress = totalTasks ? Math.round((completed / totalTasks) * 100) : 0;
     card.querySelector("[data-progress-label]").textContent =
-      `${completed} із ${checks.length} компонентів підготовлено`;
+      `${completed} із ${totalTasks} завдань виконано`;
     card.querySelector("[data-progress-value]").textContent = progress + "%";
     card
       .querySelector(".progress-track")
       .setAttribute("aria-valuenow", String(progress));
     card.querySelector("[data-progress-fill]").style.width = progress + "%";
-    checks.forEach((input) => (input.disabled = true));
+    card.querySelector("[data-course-complete]").hidden = progress !== 100;
+    [...checks, ...stepChecks].forEach((input) => (input.disabled = true));
     try {
       await updateMyProject(
         card.dataset.savedProject,
         checks.map((input) => input.checked),
+        stepChecks.map((input) => input.checked),
       );
     } catch {
       checkbox.checked = !checkbox.checked;
-      const restored = checks.filter((input) => input.checked).length,
-        value = Math.round((restored / checks.length) * 100);
+      const restored = [...checks, ...stepChecks].filter((input) => input.checked).length,
+        value = totalTasks ? Math.round((restored / totalTasks) * 100) : 0;
       card.querySelector("[data-progress-label]").textContent =
-        `${restored} із ${checks.length} компонентів підготовлено`;
+        `${restored} із ${totalTasks} завдань виконано`;
       card.querySelector("[data-progress-value]").textContent = value + "%";
       card
         .querySelector(".progress-track")
         .setAttribute("aria-valuenow", String(value));
       card.querySelector("[data-progress-fill]").style.width = value + "%";
+      card.querySelector("[data-course-complete]").hidden = value !== 100;
       toast(
         "Не вдалося зберегти прогрес. Перевір з’єднання та спробуй ще раз.",
       );
     } finally {
-      checks.forEach((input) => (input.disabled = false));
+      [...checks, ...stepChecks].forEach((input) => (input.disabled = false));
     }
   });
   root.addEventListener("click", async (event) => {

@@ -1,6 +1,7 @@
 import { firebaseConfig, firebaseConfigured } from "../js/firebase-config.js";
 
 const sdk = "https://www.gstatic.com/firebasejs/13.0.0/";
+const staffRoles = new Set(["admin", "order_manager", "catalog_manager", "warehouse", "support"]);
 let servicesPromise;
 
 export const isFirebaseConfigured = firebaseConfigured;
@@ -50,7 +51,7 @@ async function profileFor(user, db, firestoreSdk) {
     id: user.uid,
     name: profile.name || user.displayName || "Користувач",
     email: user.email,
-    role: profile.role === "admin" ? "admin" : "user",
+    role: staffRoles.has(profile.role) ? profile.role : "user",
     createdAt: profile.createdAt || user.metadata.creationTime,
   };
 }

@@ -1,6 +1,10 @@
 import { isFirebaseConfigured } from "./firebaseAuth.js";
 let csrfToken = "";
 let backendUnavailable = false;
+if (typeof window !== "undefined" && typeof window.addEventListener === "function")
+  window.addEventListener("online", () => {
+    backendUnavailable = false;
+  });
 export function setCsrfToken(token) {
   csrfToken = token || "";
 }
@@ -21,7 +25,6 @@ export async function request(path, options = {}) {
       ...(body === undefined ? {} : { body: JSON.stringify(body) }),
     });
   } catch {
-    backendUnavailable = true;
     throw new Error("BACKEND_UNAVAILABLE");
   }
   if (!response.headers.get("content-type")?.includes("application/json")) {

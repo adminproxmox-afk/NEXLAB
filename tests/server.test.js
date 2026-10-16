@@ -411,6 +411,104 @@ test("review count and average come from actual reviews; validation rejects inva
     await f.close();
   }
 });
+test("community project questions can be answered by the author but not another member", async () => {
+  const f = await fixture();
+  try {
+    const owner = f.client(), member = f.client();
+    await owner.register("owner@example.com");
+    await member.register("member@example.com");
+    const created = await owner.call("/api/community-projects", "POST", {
+      title: "Тестова збірка",
+      description: "Перевірка запитань і відповідей.",
+      photoUrl: "https://example.com/project.jpg",
+      schematicUrl: "",
+      codeUrl: "https://example.com/project.ino",
+    });
+    assert.equal(created.status, 201);
+    const projectId = created.data.project.id;
+    const asked = await member.call("/api/community-projects/questions", "POST", {
+      projectId,
+      text: "Яке живлення потрібно для цієї збірки?",
+    });
+    assert.equal(asked.status, 201);
+    const questionId = asked.data.question.id;
+    assert.equal(
+      (await member.call("/api/community-projects/questions/answer", "PATCH", {
+        id: questionId,
+        answer: "Неправильна відповідь",
+      })).status,
+      403,
+    );
+    assert.equal(
+      (await owner.call("/api/community-projects/questions/answer", "PATCH", {
+        id: questionId,
+        answer: "Використай стабілізоване живлення 5 V.",
+      })).status,
+      200,
+    );
+    const project = (await member.call("/api/community-projects")).data.projects[0];
+    assert.equal(project.questions[0].text, "Яке живлення потрібно для цієї збірки?");
+    assert.equal(project.questions[0].answer, "Використай стабілізоване живлення 5 V.");
+  } finally {
+    await f.close();
+  }
+});
+test("employee roles restrict admin API access and warehouse edits to stock", async () => {
+  const f = await fixture({ adminEmail: "admin@example.com", adminPassword: "admin-sample-password-42" });
+  try {
+    const employee = f.client(), admin = f.client();
+    const registered = await employee.register("employee@example.com");
+    await admin.init();
+    await admin.call("/api/auth/login", "POST", {
+      email: "admin@example.com",
+      password: "admin-sample-password-42",
+    });
+    assert.equal((await admin.call("/api/admin/users/role", "PATCH", {
+      id: registered.data.user.id,
+      role: "warehouse",
+    })).status, 200);
+    assert.equal((await employee.call("/api/session")).data.user.role, "warehouse");
+    assert.equal((await employee.call("/api/admin/inventory-movements")).status, 200);
+    assert.equal((await employee.call("/api/admin/products", "PATCH", {
+      id: item.id,
+      stock: 7,
+    })).status, 200);
+    assert.equal(f.db.prepare("SELECT stock FROM inventory WHERE id=?").get(item.id).stock, 7);
+    assert.equal((await employee.call("/api/admin/products", "PATCH", {
+      id: item.id,
+      stock: 8,
+      price: 1,
+    })).status, 403);
+    assert.equal((await employee.call("/api/admin/orders")).status, 403);
+    assert.equal((await admin.call("/api/admin/users/role", "PATCH", {
+      id: (await admin.call("/api/session")).data.user.id,
+      role: "user",
+    })).status, 409);
+  } finally {
+    await f.close();
+  }
+});
+test("restock alerts notify once per restock and can be rearmed", async () => {
+  const f = await fixture();
+  try {
+    const customer = f.client();
+    await customer.register();
+    f.db.prepare("UPDATE inventory SET stock=0 WHERE id=?").run(item.id);
+    assert.equal((await customer.call("/api/stock-alerts", "POST", { productId: item.id })).status, 201);
+    assert.equal((await customer.call("/api/stock-alerts")).data.alerts.length, 0);
+    f.db.prepare("UPDATE inventory SET stock=1 WHERE id=?").run(item.id);
+    const first = await customer.call("/api/stock-alerts");
+    assert.equal(first.data.alerts.length, 1);
+    assert.equal(first.data.alerts[0].productId, item.id);
+    assert.equal((await customer.call("/api/stock-alerts")).data.alerts.length, 0);
+    f.db.prepare("UPDATE inventory SET stock=0 WHERE id=?").run(item.id);
+    assert.equal((await customer.call("/api/stock-alerts", "POST", { productId: item.id })).status, 201);
+    f.db.prepare("UPDATE inventory SET stock=1 WHERE id=?").run(item.id);
+    assert.equal((await customer.call("/api/stock-alerts")).data.alerts.length, 1);
+  } finally {
+    await f.close();
+  }
+});
 test("password change revokes other sessions; logout revokes its session", async () => {
   const f = await fixture();
   try {
@@ -509,8 +607,8 @@ test("admin cancellation, reopening and confirmed returns adjust stock exactly o
     const id = created.data.order.id;
     const stock = () =>
       f.db.prepare("SELECT stock FROM inventory WHERE id=?").get(item.id).stock;
-    const change = (status) =>
-      admin.call("/api/admin/orders", "PATCH", { id, status });
+    const change = (status, trackingNumber) =>
+      admin.call("/api/admin/orders", "PATCH", { id, status, trackingNumber });
     assert.equal(stock(), 22);
     assert.equal((await change("cancelled")).status, 200);
     assert.equal(stock(), 24);
@@ -518,18 +616,28 @@ test("admin cancellation, reopening and confirmed returns adjust stock exactly o
     assert.equal(stock(), 24);
     assert.equal((await change("processing")).status, 200);
     assert.equal(stock(), 22);
+    assert.equal((await change("confirmed")).status, 200);
+    assert.equal((await change("shipped", "TEST-TRACKING-123")).status, 200);
     assert.equal((await change("delivered")).status, 200);
     assert.equal(stock(), 22);
     assert.equal((await change("cancelled")).status, 409);
+      assert.equal((await change("returned")).status, 409);
     assert.equal(stock(), 22);
-    assert.equal((await change("returned")).status, 200);
+      const stranger = f.client();
+      assert.equal((await stranger.register("stranger@example.com")).status, 201);
+      assert.equal((await stranger.call("/api/orders/return-request", "POST", { orderId: id, reason: "Не моє замовлення" })).status, 404);
+      assert.equal((await customer.call("/api/orders/return-request", "POST", { orderId: id, reason: " " })).status, 400);
+      assert.equal((await customer.call("/api/orders/return-request", "POST", { orderId: id, reason: "Пошкоджений корпус" })).status, 201);
+      assert.equal(stock(), 22);
+      assert.equal((await customer.call("/api/orders/return-request", "POST", { orderId: id, reason: "Повтор" })).status, 409);
+      assert.equal((await admin.call("/api/admin/orders/return", "PATCH", { id, decision: "accepted" })).status, 200);
     assert.equal(stock(), 24);
     assert.equal((await change("processing")).status, 409);
     assert.equal(stock(), 24);
-    assert.equal(
-      (await customer.call("/api/orders")).data.orders[0].status,
-      "returned",
-    );
+      const returnedOrder = (await customer.call("/api/orders")).data.orders[0];
+      assert.equal(returnedOrder.status, "returned");
+      assert.equal(returnedOrder.returnRequest.status, "accepted");
+      assert.equal(returnedOrder.returnRequest.reason, "Пошкоджений корпус");
   } finally {
     await f.close();
   }

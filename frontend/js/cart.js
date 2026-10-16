@@ -1,7 +1,10 @@
 import { getFavorites, toggleFavorite } from "./favorites.js";
 import { productArt, products } from "./products.js";
 import { toast } from "./notifications.js";
+import { getBundlePromotion } from "../api/promotionService.js";
+import { formatMoney } from "./i18n.js";
 const CART_KEY = "nexlab-cart-v1";
+let cartRenderVersion = 0;
 function readCart() {
   try {
     const saved = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
@@ -111,7 +114,7 @@ export function removeFromCart(id) {
 export function clearCart() {
   saveCart([]);
 }
-const money = (value) => new Intl.NumberFormat("uk-UA").format(value) + " ₴";
+const money = formatMoney;
 const safe = (value) =>
   String(value ?? "").replace(
     /[&<>"']/g,
@@ -120,7 +123,8 @@ const safe = (value) =>
         char
       ],
   );
-export function renderCartPage() {
+export async function renderCartPage() {
+  const renderVersion = ++cartRenderVersion;
   const root = document.querySelector("[data-cart-items]"),
     summary = document.querySelector("[data-cart-summary]");
   if (!root || !summary) return;
@@ -134,13 +138,15 @@ export function renderCartPage() {
     summary.innerHTML = "";
     return;
   }
+  const bundlePromotion = await getBundlePromotion(cart).catch(() => ({ discount: 0, promotions: [] }));
+  if (renderVersion !== cartRenderVersion) return;
   root.innerHTML = cart
     .map(
       (row) =>
         `<article class="cart-row"><a href="product.html?id=${encodeURIComponent(row.id)}">${productArt(row)}</a><div><h3>${safe(row.name)}</h3><span class="product-category">${safe(row.category)}</span><div class="cart-row-price">${money(row.price)}${row.oldPrice > row.price ? `<del>${money(row.oldPrice)}</del>` : ""}</div><div class="quantity-control"><button type="button" data-quantity="${safe(row.id)}" data-delta="-1" aria-label="Зменшити кількість" ${row.quantity <= 1 ? "disabled" : ""}>−</button><span>${row.quantity}</span><button type="button" data-quantity="${safe(row.id)}" data-delta="1" aria-label="Збільшити кількість" ${row.quantity >= row.stock ? "disabled" : ""}>+</button></div></div><button class="remove-button" type="button" data-remove="${safe(row.id)}">Видалити</button></article>`,
     )
     .join("");
-  summary.innerHTML = `<h2>Разом</h2><div class="summary-row"><span>Кількість товарів</span><span>${cartCount()}</span></div><div class="summary-row"><span>Вартість товарів</span><span>${money(cartSubtotal())}</span></div><div class="summary-row"><span>Знижка</span><span>− ${money(cartDiscount())}</span></div><div class="summary-row summary-total"><span>Товари до сплати</span><span>${money(cartTotal())}</span></div><a class="button button-primary" href="checkout.html">Перейти до оформлення ↗</a><p class="cart-note">Доставка оплачується окремо за тарифом перевізника.</p>`;
+  summary.innerHTML = `<h2>Разом</h2><div class="summary-row"><span>Кількість товарів</span><span>${cartCount()}</span></div><div class="summary-row"><span>Вартість товарів</span><span>${money(cartSubtotal())}</span></div><div class="summary-row"><span>Знижка на товари</span><span>− ${money(cartDiscount())}</span></div>${bundlePromotion.promotions.map((promotion) => `<div class="summary-row"><span>Комплект «${safe(promotion.name)}» · −${promotion.percent}%</span><span>− ${money(promotion.discount)}</span></div>`).join("")}<div class="summary-row summary-total"><span>Товари до сплати</span><span>${money(Math.max(0, cartTotal() - bundlePromotion.discount))}</span></div><a class="button button-primary" href="checkout.html">Перейти до оформлення ↗</a><p class="cart-note">Купон можна застосувати під час оформлення. Доставка оплачується окремо за тарифом перевізника.</p>`;
 }
 export function bindCartPage() {
   document.addEventListener("click", (event) => {

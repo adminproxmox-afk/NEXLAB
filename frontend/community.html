@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#111412" />
+    <meta name="description" content="Власні DIY-збірки спільноти NEXLAB: фото, схеми, код, відгуки та оцінки." />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <title>Проєкти спільноти — NEXLAB</title>
+    <script src="js/theme.js"></script>
+    <link rel="stylesheet" href="css/style.css" />
+    <script type="module" src="js/main.js"></script>
+  </head>
+  <body>
+    <aside class="announcement-bar" data-announcement role="status"><div class="wrap"><span>Навчальна спільнота NEXLAB: публікуй свої збірки та ділися досвідом.</span><button type="button" data-dismiss-announcement aria-label="Закрити повідомлення">×</button></div></aside>
+    <div data-site-header></div>
+    <main class="wrap page-main community-page" data-community-projects>
+      <div class="breadcrumbs"><a href="index.html">Головна</a><span>/</span><span>Проєкти спільноти</span></div>
+      <header class="projects-intro"><div><p class="eyebrow">NEXLAB / Спільнота</p><h1>Ідеї, які <span>вже працюють.</span></h1><p>Ділися власними електронними збірками: додай фото, короткий опис, схему та код. Постав оцінку й допоможи іншим зібрати свій проєкт.</p></div></header>
+      <section class="community-submit-section" aria-labelledby="community-submit-title">
+        <details class="community-submit-details"><summary class="button button-primary" id="community-submit-title">＋ Опублікувати свою збірку</summary>
+          <form class="profile-panel community-project-form" data-community-project-form>
+            <label>Назва збірки<input name="title" maxlength="120" required></label>
+            <label>Опис<textarea name="description" rows="4" maxlength="2000" required placeholder="Що робить проєкт, які компоненти використав, чого навчився?"></textarea></label>
+            <label>Посилання на фото HTTPS<input name="photoUrl" type="url" pattern="https://.*" maxlength="2000" placeholder="https://…" required></label>
+            <label>Посилання на схему (необов’язково)<input name="schematicUrl" type="url" pattern="https://.*" maxlength="2000" placeholder="https://…"></label>
+            <label>Посилання на код HTTPS<input name="codeUrl" type="url" pattern="https://.*" maxlength="2000" placeholder="GitHub, Gist або інше HTTPS-посилання" required></label>
+            <p class="form-note">Публікуй лише власні проєкти й матеріали, на які маєш право. Фото та код зберігаються за зовнішніми HTTPS-посиланнями.</p>
+            <button class="button button-primary" type="submit">Опублікувати</button><p role="status" data-community-form-status></p>
+          </form>
+        </details>
+      </section>
+      <section class="community-project-grid" data-community-project-grid aria-label="Проєкти учасників"><p role="status">Завантажуємо проєкти спільноти…</p></section>
+    </main>
+    <div data-site-footer></div>
+    <div class="toast-region" aria-live="polite" data-toast-region></div>
+  </body>
+</html>
