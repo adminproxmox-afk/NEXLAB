@@ -2,6 +2,7 @@ import { getProducts, getCategories } from "./productService.js";
 import { searchProducts } from "./search.js";
 import { productCard } from "./product-card.js";
 import { getFavorites } from "./favorites.js";
+import { formatProductCount, translateText } from "./i18n.js";
 
 const safe = (value) =>
   String(value || "").replace(
@@ -54,23 +55,23 @@ export async function initializeCatalog() {
     )
     .join("");
   const brands = [...new Set(products.map((product) => product.brand))].sort();
-  controls.innerHTML = `<button class="filter-mobile-toggle" type="button" data-filter-toggle aria-expanded="false">☷ Фільтри <span data-filter-active-count></span></button>
-    <div class="catalog-filters" data-filter-panel><div class="filter-head"><strong>Фільтри</strong><button type="button" data-clear-filters>Скинути</button></div>
+  controls.innerHTML = `<button class="filter-mobile-toggle" type="button" data-filter-toggle aria-expanded="false" aria-controls="catalog-filter-panel">☷ Фільтри <span data-filter-active-count></span></button>
+    <div class="catalog-filters" id="catalog-filter-panel" data-filter-panel><div class="filter-head"><strong>Фільтри</strong><button type="button" data-clear-filters>Скинути</button></div>
     <label>Категорія<select data-filter-category><option value="">Усі категорії</option>${categoriesOptions}</select></label>
     <div class="filter-price"><label>Ціна від<input type="number" min="0" placeholder="0" data-price-min></label><label>До, ₴<input type="number" min="0" placeholder="∞" data-price-max></label></div>
     <label>Виробник<select data-filter-brand><option value="">Усі бренди</option>${brands.map((brand) => `<option value="${safe(brand)}">${safe(brand)}</option>`).join("")}</select></label>
     <label>Рейтинг<select data-filter-rating><option value="0">Будь-який</option><option value="4">Від 4,0</option><option value="4.5">Від 4,5</option><option value="4.8">Від 4,8</option></select></label>
     <label class="check-filter"><input type="checkbox" data-filter-stock> Лише в наявності</label></div>
-    <div class="catalog-results"><div class="catalog-toolbar"><label class="search-field"><span>⌕</span><input type="search" placeholder="Знайти компонент…" data-catalog-search aria-label="Пошук у каталозі"></label>
+    <div class="catalog-results"><div class="catalog-toolbar"><label class="search-field"><span aria-hidden="true">⌕</span><input type="search" placeholder="Знайти компонент…" data-catalog-search aria-label="Пошук у каталозі"></label>
     <label class="sort-select"><span>Сортування</span><select data-sort><option value="popular">За популярністю</option><option value="price-asc">Спочатку дешевші</option><option value="price-desc">Спочатку дорожчі</option><option value="rating">За рейтингом</option><option value="new">Спочатку новинки</option></select></label></div>
-    <div class="catalog-quick-filters" aria-label="Швидкий вибір категорії" data-quick-categories><button type="button" data-quick-category="" class="is-active">Усе</button>${categories
+    <div class="catalog-quick-filters" role="group" aria-label="Швидкий вибір категорії" data-quick-categories><button type="button" data-quick-category="" class="is-active" aria-pressed="true">Усе</button>${categories
       .slice(0, 5)
       .map(
         (category) =>
-          `<button type="button" data-quick-category="${safe(category.name)}">${safe(category.name)}</button>`,
+          `<button type="button" data-quick-category="${safe(category.name)}" aria-pressed="false">${safe(category.name)}</button>`,
       )
       .join("")}</div>
-    <p class="result-count" data-result-count></p><div class="product-grid catalog-grid" data-catalog-grid></div></div>`;
+    <p class="result-count" data-result-count role="status" aria-live="polite"></p><div class="product-grid catalog-grid" data-catalog-grid></div></div>`;
   const search = controls.querySelector("[data-catalog-search]");
   const grid = controls.querySelector("[data-catalog-grid]");
   const count = controls.querySelector("[data-result-count]");
@@ -86,6 +87,12 @@ export async function initializeCatalog() {
       const open = filterPanel.classList.toggle("is-open");
       filterToggle.setAttribute("aria-expanded", String(open));
     });
+  filterPanel.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || !filterPanel.classList.contains("is-open")) return;
+    filterPanel.classList.remove("is-open");
+    filterToggle.setAttribute("aria-expanded", "false");
+    filterToggle.focus();
+  });
 
   function update() {
     const minimum = Number(
@@ -131,16 +138,15 @@ export async function initializeCatalog() {
       ? `(${active})`
       : "";
     count.textContent = found.length
-      ? `Знайдено ${found.length} товарів`
-      : "Товарів не знайдено";
+      ? formatProductCount(found.length)
+      : translateText("Товарів не знайдено");
     controls
       .querySelectorAll("[data-quick-category]")
-      .forEach((button) =>
-        button.classList.toggle(
-          "is-active",
-          button.dataset.quickCategory === category,
-        ),
-      );
+      .forEach((button) => {
+        const selected = button.dataset.quickCategory === category;
+        button.classList.toggle("is-active", selected);
+        button.setAttribute("aria-pressed", String(selected));
+      });
     grid.innerHTML = found.length
       ? found.map(productCard).join("")
       : `<div class="no-results"><strong>${isFavorites ? "В обраному поки порожньо" : "За цим запитом нічого не знайдено"}</strong><p>Зміни пошуковий запит або скинь фільтри, щоб переглянути інші товари.</p><button class="button button-quiet" type="button" data-clear-filters>Показати всі товари</button></div>`;

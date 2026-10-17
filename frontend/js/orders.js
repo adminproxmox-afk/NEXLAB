@@ -1,6 +1,4 @@
 import { getOrders, requestOrderReturn } from "../api/orderService.js";
-import { getCurrentUser } from "./session.js";
-import { toast } from "./notifications.js";
 import { formatDate, formatMoney } from "./i18n.js";
 
 const money = formatMoney;
@@ -52,29 +50,6 @@ export async function initializeOrdersPage() {
     }
   });
   const orders = await getOrders();
-  const userId = getCurrentUser()?.id;
-  if (userId) {
-    const key = `nexlab_seen_order_statuses_${userId}`;
-    let seen = {};
-    try { seen = JSON.parse(localStorage.getItem(key) || "{}"); } catch {}
-    const changed = [];
-    for (const order of orders) {
-      const history = Array.isArray(order.statusHistory) && order.statusHistory.length
-        ? order.statusHistory
-        : [{ status: order.status, date: order.date }];
-      const previous = seen[order.id];
-      let newEvents = [];
-      if (previous && typeof previous === "object" && Number.isInteger(previous.historyLength)) {
-        newEvents = history.slice(previous.historyLength);
-      } else if (typeof previous === "string" && previous !== order.status) {
-        newEvents = [{ status: order.status }];
-      }
-      if (newEvents.length) changed.push({ order, event: newEvents.at(-1) });
-      seen[order.id] = { status: order.status, historyLength: history.length };
-    }
-    try { localStorage.setItem(key, JSON.stringify(seen)); } catch {}
-    if (changed.length) toast(`Оновлення: ${changed.slice(0, 3).map(({ order, event }) => `№ ${order.id} · ${event.note || statuses[event.status]?.[0] || statuses[order.status]?.[0] || order.status}`).join("; ")}`);
-  }
   if (!orders.length) {
     root.innerHTML = '<div class="empty-state"><span class="empty-mark">▣</span><h2>Замовлень поки немає</h2><p>Тут з’явиться історія покупок після оформлення.</p><a class="button button-primary" href="catalog.html">До каталогу ↗</a></div>';
     return;

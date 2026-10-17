@@ -16,6 +16,8 @@ export async function createReview(input) {
     const user = auth.currentUser;
     if (!user) throw new Error("UNAUTHENTICATED");
     const id = `${input.productId}__${user.uid}`;
+    if ((await firestoreSdk.getDoc(firestoreSdk.doc(db, "reviews", id))).exists())
+      throw new Error("REVIEW_ALREADY_EXISTS");
     const review = {
       productId: input.productId,
       userId: user.uid,
@@ -25,7 +27,14 @@ export async function createReview(input) {
       imageUrl: input.imageUrl || null,
       date: new Date().toISOString(),
     };
-    await firestoreSdk.setDoc(firestoreSdk.doc(db, "reviews", id), review);
+    try {
+      await firestoreSdk.setDoc(firestoreSdk.doc(db, "reviews", id), review);
+    } catch (error) {
+      if (error.code === "permission-denied"
+        && (await firestoreSdk.getDoc(firestoreSdk.doc(db, "reviews", id))).exists())
+        throw new Error("REVIEW_ALREADY_EXISTS");
+      throw error;
+    }
     return { id, ...review };
   }
   return (await request("reviews", { method: "POST", body: input })).review;

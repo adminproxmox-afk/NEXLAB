@@ -7,6 +7,8 @@ import { getCurrentUser } from "./session.js";
 import { getMyProjects, saveMyProject } from "../api/userProjectsService.js";
 import { showAuthDialog } from "./authGate.js";
 import { renderProjectGuide, projectGuides } from "./project-guides.js";
+import { matchesSearch } from "./search.js";
+import { currentLanguage } from "./i18n.js";
 import {
   money,
   componentLabel,
@@ -45,33 +47,37 @@ export async function initializeProjectsDirectory() {
   const filters = [...root.querySelectorAll("[data-project-filter]")];
   let difficulty = "all";
   function render() {
-    const query = search.value.trim().toLocaleLowerCase("uk-UA");
+    const query = search.value.trim();
     const visible = projects.filter((project) => {
       const matchesDifficulty =
         difficulty === "all" || project.difficulty === difficulty;
-      const components = project.components
-        .map(
-          ({ productId }) =>
-            products.find((product) => product.id === productId)?.name || "",
-        )
-        .join(" ");
-      const matchesQuery =
-        !query ||
-        `${project.name} ${project.description} ${components}`
-          .toLocaleLowerCase("uk-UA")
-          .includes(query);
+      const components = project.components.map(
+        ({ productId }) =>
+          products.find((product) => product.id === productId)?.name || "",
+      );
+      const matchesQuery = matchesSearch(query, [
+        project.id,
+        project.name,
+        project.description,
+        project.difficulty,
+        ...components,
+      ]);
       const inventory = projectInventory(project, products);
       const matchesBudget = !budget.value || Number(project.estimatedPrice || 0) <= Number(budget.value);
       const matchesStock = !inStock.checked || inventory.complete;
       return matchesDifficulty && matchesQuery && matchesBudget && matchesStock;
     });
-    const noun = {
-      one: "проєкт",
-      few: "проєкти",
-      many: "проєктів",
-      other: "проєкту",
-    }[new Intl.PluralRules("uk-UA").select(visible.length)];
-    count.textContent = `${visible.length} ${noun}`;
+    const language = currentLanguage();
+    if (language === "en") {
+      count.textContent = `${visible.length} project${visible.length === 1 ? "" : "s"}`;
+    } else {
+      const locale = language === "ru" ? "ru-RU" : "uk-UA";
+      const form = new Intl.PluralRules(locale).select(visible.length);
+      const nouns = language === "ru"
+        ? { one: "проект", few: "проекта", many: "проектов", other: "проекта" }
+        : { one: "проєкт", few: "проєкти", many: "проєктів", other: "проєкту" };
+      count.textContent = `${visible.length} ${nouns[form]}`;
+    }
     grid.innerHTML = visible.length
       ? visible.map((project) => projectCard(project, products)).join("")
         : '<div class="project-empty"><span aria-hidden="true">⌕</span><h2>Нічого не знайдено</h2><p>Зміни пошук, бюджет або умови наявності.</p><button class="button button-quiet" type="button" data-project-reset>Скинути фільтри</button></div>';

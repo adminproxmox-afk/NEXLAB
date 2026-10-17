@@ -7,6 +7,7 @@ import {
 } from "../api/productService.js";
 import { getCurrentUser, hasAdminAccess, hasAdminPermission, isAdmin } from "./session.js";
 import { formatMoney, formatDate } from "./i18n.js";
+import { allocateNetItemRevenue } from "./admin-analytics.js";
 import {
   firebaseSendPasswordReset,
   isFirebaseConfigured,
@@ -17,6 +18,7 @@ import {
   removeFirebaseProject,
   removeFirebaseReview,
   saveFirebaseProduct,
+  importFirebaseCatalog,
   saveFirebaseProject,
   saveFirebaseSettings,
   saveFirebaseCoupon,
@@ -85,7 +87,7 @@ function orderCard(order, settings, users) {
     .join("");
   const returnRequest = order.returnRequest;
   const returnBlock = returnRequest
-    ? `<section class="admin-return-request"><strong>Заявка на повернення · ${{ requested: "очікує рішення", accepted: "прийнято", rejected: "відхилено" }[returnRequest.status] || safe(returnRequest.status)}</strong><p>${safe(returnRequest.reason)}</p>${returnRequest.decisionNote ? `<small>Коментар: ${safe(returnRequest.decisionNote)}</small>` : ""}${returnRequest.status === "requested" ? `<div class="admin-return-actions"><button class="button button-primary" type="button" data-review-return="accepted" data-order-id="${safe(order.id)}">Прийняти повернення</button><button class="button button-quiet" type="button" data-review-return="rejected" data-order-id="${safe(order.id)}">Відхилити</button><span role="status" data-return-status></span></div>${isFirebaseConfigured() ? '<small>Firebase не має захищеного серверного складу: після прийняття скоригуй залишки вручну.</small>' : ""}` : ""}</section>`
+    ? `<section class="admin-return-request"><strong>Заявка на повернення · ${{ requested: "очікує рішення", accepted: "прийнято", rejected: "відхилено" }[returnRequest.status] || safe(returnRequest.status)}</strong><p>${safe(returnRequest.reason)}</p>${returnRequest.decisionNote ? `<small>Коментар: ${safe(returnRequest.decisionNote)}</small>` : ""}${returnRequest.status === "requested" ? `<div class="admin-return-actions"><button class="button button-primary" type="button" data-review-return="accepted" data-order-id="${safe(order.id)}">Прийняти повернення</button><button class="button button-quiet" type="button" data-review-return="rejected" data-order-id="${safe(order.id)}">Відхилити</button><span role="status" data-return-status></span></div><small>${order.verificationRequired ? "Стара заявка: перед прийняттям звір склад вручну. Після цього система збереже рішення." : "Приймай повернення після фактичного отримання товару. Склад оновиться автоматично."}</small>` : ""}</section>`
     : "";
   return `<article class="admin-order profile-panel" data-order-status="${safe(order.status)}" data-order-search="${safe(searchable)}"><div class="admin-order-heading"><div><p class="eyebrow">Замовлення · ${shortDate(order.date)}</p><h3 class="order-id">№ ${safe(order.id)}</h3></div><strong>${money(order.total)}</strong></div>
     <div class="admin-order-details"><p><strong>${safe(order.delivery.name)}</strong><br>${safe(order.delivery.phone)}${account?.email ? `<br><a href="mailto:${safe(account.email)}">${safe(account.email)}</a>` : ""}</p><p>${safe(order.delivery.city)}, ${safe(order.delivery.address)}</p><p>${safe(settings.deliveryMethods.find((item) => item.id === order.delivery.carrier)?.name || order.delivery.carrier)} · ${safe(settings.paymentMethods.find((item) => item.id === order.delivery.payment)?.name || order.delivery.payment)}</p></div>
@@ -148,10 +150,10 @@ function orderAnalytics(orders, users, period) {
     customer.count += 1;
     customer.total += Number(order.total) || 0;
     customerRows.set(key, customer);
-    for (const item of order.items || []) {
+    for (const item of allocateNetItemRevenue(order)) {
       const product = productRows.get(item.id) || { name: item.name, quantity: 0, total: 0 };
       product.quantity += item.quantity;
-      product.total += item.price * item.quantity;
+      product.total += item.revenue;
       productRows.set(item.id, product);
     }
   }
@@ -160,7 +162,7 @@ function orderAnalytics(orders, users, period) {
   const list = (rows, render, empty) => rows.length
     ? `<ol class="admin-analytics-list">${rows.map(render).join("")}</ol>`
     : `<p class="admin-analytics-empty">${empty}</p>`;
-  return `<div class="admin-analytics-metrics"><article><span>Замовлень без скасувань</span><strong>${active.length}</strong><small>${selected.filter((order) => order.status === "cancelled").length} скасовано · ${selected.filter((order) => order.status === "returned").length} повернено</small></article><article><span>Сума активних замовлень</span><strong>${money(amount(active))}</strong><small>в обробці та доставлені</small></article><article><span>Середній чек</span><strong>${money(active.length ? Math.round(amount(active) / active.length) : 0)}</strong><small>за вибраний період</small></article><article><span>Унікальних клієнтів</span><strong>${customerRows.size}</strong><small>${[...customerRows.values()].filter((row) => row.count > 1).length} замовляли повторно</small></article></div><div class="admin-analytics-columns"><section><h3>Найактивніші клієнти</h3>${list(topCustomers, (row) => `<li><div><strong>${safe(row.name)}</strong><small>${safe(row.email || row.phone)} · ${row.count} замовл.</small></div><b>${money(row.total)}</b></li>`, "За цей період замовлень немає.")}</section><section><h3>Популярні товари</h3>${list(topProducts, (row) => `<li><div><strong>${safe(row.name)}</strong><small>${row.quantity} од.</small></div><b>${money(row.total)}</b></li>`, "За цей період проданих товарів немає.")}</section></div>`;
+  return `<div class="admin-analytics-metrics"><article><span>Замовлень без скасувань</span><strong>${active.length}</strong><small>${selected.filter((order) => order.status === "cancelled").length} скасовано · ${selected.filter((order) => order.status === "returned").length} повернено</small></article><article><span>Сума активних замовлень</span><strong>${money(amount(active))}</strong><small>в обробці та доставлені</small></article><article><span>Середній чек</span><strong>${money(active.length ? Math.round(amount(active) / active.length) : 0)}</strong><small>за вибраний період</small></article><article><span>Унікальних клієнтів</span><strong>${customerRows.size}</strong><small>${[...customerRows.values()].filter((row) => row.count > 1).length} замовляли повторно</small></article></div><div class="admin-analytics-columns"><section><h3>Найактивніші клієнти</h3>${list(topCustomers, (row) => `<li><div><strong>${safe(row.name)}</strong><small>${safe(row.email || row.phone)} · ${row.count} замовл.</small></div><b>${money(row.total)}</b></li>`, "За цей період замовлень немає.")}</section><section><h3>Популярні товари</h3>${list(topProducts, (row) => `<li><div><strong>${safe(row.name)}</strong><small>${row.quantity} од. · дохід після знижок</small></div><b>${money(row.total)}</b></li>`, "За цей період проданих товарів немає.")}</section></div>`;
 }
 
 const imageKinds = [
@@ -248,7 +250,7 @@ export async function initializeAdmin() {
     <section class="admin-overview" id="admin-overview" aria-labelledby="admin-summary-title"><div class="admin-section-heading"><div><p class="eyebrow">ПОТОЧНИЙ СТАН МАГАЗИНУ</p><h2 id="admin-summary-title">Огляд</h2></div></div><div class="admin-metrics" data-admin-metrics></div><div class="admin-attention" data-admin-attention></div><div class="admin-analytics-heading"><div><p class="eyebrow">ЗАМОВЛЕННЯ ТА ПОКУПЦІ</p><h3>Аналітика замовлень</h3></div><label>Період<select data-order-analytics-period><option value="7">7 днів</option><option value="30" selected>30 днів</option><option value="all">Увесь час</option></select></label></div><div data-order-analytics></div></section>
     <section class="admin-section" id="admin-orders-section"><div class="admin-section-heading"><div><p class="eyebrow">ОБСЛУГОВУВАННЯ</p><h2>Замовлення</h2></div><div class="admin-order-tools"><label class="admin-search"><span aria-hidden="true">⌕</span><input type="search" data-order-search-input placeholder="Номер, ім’я, місто" aria-label="Пошук замовлень"></label><button class="button button-quiet" type="button" data-export-orders>Експорт CSV</button></div></div><div class="admin-filter-row"><label>Статус<select data-order-status-filter><option value="all">Усі статуси</option><option value="processing">В обробці</option><option value="confirmed">Підтверджено</option><option value="shipped">Передано перевізнику</option><option value="delivered">Доставлено</option><option value="cancelled">Скасовано</option><option value="returned">Повернення прийнято</option></select></label><span data-admin-order-count></span></div><div class="admin-order-list" data-admin-orders></div><p class="admin-filter-empty" data-order-empty hidden>За цими умовами замовлень не знайдено.</p></section>
     <section class="admin-section" id="admin-inventory-section"><div class="admin-section-heading"><div><p class="eyebrow">СКЛАД</p><h2>Журнал руху залишків</h2><p class="admin-section-note">Останні зміни: резервування замовлення, скасування, повернення та ручне коригування.</p></div></div><div data-admin-inventory></div></section>
-      <section class="admin-section" id="admin-promotions-section"><div class="admin-section-heading"><div><p class="eyebrow">ЗАОХОЧЕННЯ ПОКУПКИ</p><h2>Купони й набори</h2><p class="admin-section-note">Купони перевіряються під час оформлення, а знижка комплекту діє лише коли в кошику є всі компоненти проєкту.</p></div></div><div class="admin-coupon-list" data-admin-coupons></div></section><section class="admin-section" id="admin-products-section"><div class="admin-section-heading"><div><p class="eyebrow">АСОРТИМЕНТ І ЗАЛИШКИ</p><h2>Каталог і склад</h2><p class="admin-section-note">Зміни одразу зберігаються в базі магазину.</p></div><div class="admin-product-tools"><label class="admin-search"><span aria-hidden="true">⌕</span><input type="search" data-product-search-input placeholder="Назва, бренд або артикул" aria-label="Пошук товарів"></label><button class="button button-quiet" type="button" data-export-products>Експорт JSON</button><label class="button button-quiet admin-import-button">Імпорт JSON<input type="file" accept="application/json,.json" data-import-products aria-label="Вибрати JSON-файл каталогу"></label></div></div><p class="admin-section-note" data-import-products-status role="status"></p><div class="admin-filter-row"><span data-admin-product-count></span></div><div class="admin-products" data-admin-products></div><p class="admin-filter-empty" data-product-empty hidden>Товарів за цим запитом не знайдено.</p></section>
+      <section class="admin-section" id="admin-promotions-section"><div class="admin-section-heading"><div><p class="eyebrow">ЗАОХОЧЕННЯ ПОКУПКИ</p><h2>Купони й набори</h2><p class="admin-section-note">Купони перевіряються під час оформлення, а знижка комплекту діє лише коли в кошику є всі компоненти проєкту.</p></div></div><div class="admin-coupon-list" data-admin-coupons></div></section><section class="admin-section" id="admin-products-section"><div class="admin-section-heading"><div><p class="eyebrow">АСОРТИМЕНТ І ЗАЛИШКИ</p><h2>Каталог і склад</h2><p class="admin-section-note">Зміни одразу зберігаються в базі магазину.</p></div><div class="admin-product-tools"><label class="admin-search"><span aria-hidden="true">⌕</span><input type="search" data-product-search-input placeholder="Назва, бренд або артикул" aria-label="Пошук товарів"></label><button class="button button-quiet" type="button" data-export-products>Експорт JSON</button><label class="button button-quiet admin-import-button">Імпорт JSON<input type="file" accept="application/json,.json" data-import-products aria-label="Вибрати JSON-файл каталогу"></label></div></div><p class="admin-section-note" data-import-products-status role="status">JSON-масив товарів або об’єкт із полем products. Можна редагувати файл експорту; один пакет — до 200 товарів.</p><div class="admin-filter-row"><span data-admin-product-count></span></div><div class="admin-products" data-admin-products></div><p class="admin-filter-empty" data-product-empty hidden>Товарів за цим запитом не знайдено.</p></section>
     <section class="admin-section" id="admin-projects-section"><div class="admin-section-heading"><div><p class="eyebrow">DIY · ПОКРОКОВІ ЗБІРКИ</p><h2>Проєкти</h2><p class="admin-section-note">Керуй описом, складністю та компонентами; ціна комплекту рахується з актуальних цін товарів.</p></div><label class="admin-search"><span aria-hidden="true">⌕</span><input type="search" data-project-search-input placeholder="Назва або опис" aria-label="Пошук проєктів"></label></div><div class="admin-filter-row"><span data-admin-project-count></span></div><div class="admin-projects"><button class="button button-primary" type="button" data-admin-add-project>＋ Створити проєкт</button><div class="admin-project-list" data-admin-projects></div></div><p class="admin-filter-empty" data-project-empty hidden>Проєктів за цим запитом не знайдено.</p></section>
     <section class="admin-section" id="admin-settings-section"><div class="admin-section-heading"><div><p class="eyebrow">ВИГЛЯД І УМОВИ МАГАЗИНУ</p><h2>Налаштування магазину</h2><p class="admin-section-note">Ці дані показуються покупцям у шапці сайту, оформленні замовлення та інформаційних сторінках.</p></div></div><form class="admin-settings-form profile-panel" data-admin-settings>
       <h3>Назва та контакти</h3><div class="admin-settings-grid"><label>Назва магазину<input name="name" maxlength="80" required></label><label>Ім’я продавця<input name="sellerName" maxlength="120" required></label><label>Місто відправлення<input name="sellerCity" maxlength="100" required></label><label>Телефон підтримки<input name="supportPhone" maxlength="30" placeholder="+380..."></label><label>Електронна пошта<input name="supportEmail" type="email" maxlength="254" placeholder="support@example.com"></label><label>Гарантія, місяців<input name="warrantyMonths" type="number" min="0" max="120" placeholder="Не вказано"></label></div>
@@ -644,7 +646,7 @@ export async function initializeAdmin() {
     try {
       const data = JSON.parse(await file.text());
       const items = Array.isArray(data) ? data : data.products;
-      if (!Array.isArray(items) || !items.length || items.length > 500)
+      if (!Array.isArray(items) || !items.length || items.length > 200)
         throw new Error("INVALID_IMPORT");
       const ids = new Set();
       for (const product of items) {
@@ -658,20 +660,18 @@ export async function initializeAdmin() {
       }
       if (!window.confirm(`Імпортувати ${items.length} товарів? Позиції з однаковими артикулами буде оновлено.`)) return;
       status.textContent = "Імпорт триває…";
-      let imported = 0;
-      for (const product of items) {
-        const exists = currentProducts.some((item) => item.id === product.id);
-        if (isFirebaseConfigured()) await saveFirebaseProduct(product);
-        else await request("admin/products", { method: exists ? "PATCH" : "POST", body: product });
-        imported++;
-      }
+      const result = isFirebaseConfigured()
+        ? await importFirebaseCatalog(items)
+        : await request("admin/products/import", { method: "POST", body: { products: items } });
       await refreshProducts();
       await load();
-      status.textContent = `Імпортовано товарів: ${imported}.`;
+      status.textContent = `Імпортовано товарів: ${result.imported}.`;
     } catch (error) {
-      status.textContent = error.message === "INVALID_IMPORT"
-        ? "Файл має містити до 500 коректних товарів: унікальний артикул, назву, ціну, цілий залишок і масив фото."
-        : "Імпорт зупинився на помилці. Перевір формат і обов’язкові поля; частина товарів могла зберегтися.";
+      status.textContent = ["INVALID_IMPORT", "INVALID_CATALOG_IMPORT", "INVALID_CATALOG_PRODUCT", "INVALID_PRODUCT", "INVALID_INPUT"].includes(error.message)
+        ? "Файл має містити до 200 коректних товарів: унікальні артикули, назви, ціни, залишки й фото. Каталог не змінено."
+        : error.message === "FORBIDDEN" || error.status === 403
+          ? "Для імпорту потрібна роль менеджера каталогу."
+          : "Не вдалося підтвердити результат. Імпорт атомарний: пакет оновлюється повністю або не змінюється. Онови список і перевір каталог.";
     }
   });
   root.addEventListener("click", async (event) => {

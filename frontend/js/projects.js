@@ -8,6 +8,7 @@ import { getProducts } from "./productService.js";
 import { toast } from "./notifications.js";
 import { money, projectCover, safe } from "./project-ui.js";
 import { isFirebaseConfigured } from "../api/firebaseAuth.js";
+import { getProjectSteps } from "./project-guides.js";
 
 export async function initializeMyProjects() {
   const root = document.querySelector("[data-my-projects]");
@@ -36,7 +37,7 @@ export async function initializeMyProjects() {
           const checklist = project.components.map(
             (_, index) => record.checklist?.[index] === true,
           );
-          const steps = project.steps || [];
+          const steps = getProjectSteps(project);
           const stepChecklist = steps.map(
             (_, index) => record.stepChecklist?.[index] === true,
           );

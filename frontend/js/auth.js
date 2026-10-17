@@ -1,6 +1,7 @@
 import { login, register } from "../api/authService.js";
 import { hasBackend } from "../api/client.js";
 import { toast } from "./notifications.js";
+import { requestedAuthDestination, safeAuthDestination } from "./auth-redirect.js";
 
 function errorFor(form, name) {
   return form.querySelector(`[data-error="${name}"]`);
@@ -25,23 +26,23 @@ function setBusy(button, busy, label) {
 }
 
 function destination() {
-  const target =
-    new URLSearchParams(location.search).get("redirect") || "profile.html";
-  try {
-    const url = new URL(target, location.href);
-    const base = new URL(".", location.href);
-    return url.protocol === base.protocol &&
-      url.origin === base.origin &&
-      url.pathname.startsWith(base.pathname) &&
-      url.pathname.endsWith(".html")
-      ? url.href
-      : new URL("profile.html", location.href).href;
-  } catch {
-    return new URL("profile.html", location.href).href;
-  }
+  return requestedAuthDestination(location.search, location.href)
+    || safeAuthDestination("profile.html", location.href);
+}
+
+function preserveAuthRedirect() {
+  const redirect = requestedAuthDestination(location.search, location.href);
+  if (!redirect) return;
+  document.querySelectorAll('a[href$="register.html"], a[href$="login.html"]')
+    .forEach((link) => {
+      const target = new URL(link.getAttribute("href"), location.href);
+      target.searchParams.set("redirect", redirect);
+      link.href = target.href;
+    });
 }
 
 export function initializeAuthForms() {
+  preserveAuthRedirect();
   if (!hasBackend()) {
     const form = document.querySelector(
       "[data-login-form],[data-register-form]",

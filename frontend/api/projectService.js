@@ -24,7 +24,9 @@ export async function getProjects() {
             for (const record of records)
               if (!known.has(record.id) && !record.deleted) merged.push(record);
             const items = await getProducts();
-            firebaseProjectsWarning = "";
+            firebaseProjectsWarning = records.length
+              ? ""
+              : "У Firebase ще немає DIY-проєктів: показуємо демонстраційні приклади.";
             return merged.map((project) => ({
               ...project,
               estimatedPrice: project.components.reduce(

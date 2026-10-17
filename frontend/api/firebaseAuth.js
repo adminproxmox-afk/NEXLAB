@@ -13,11 +13,13 @@ async function services() {
       import(`${sdk}firebase-app.js`),
       import(`${sdk}firebase-auth.js`),
       import(`${sdk}firebase-firestore.js`),
-    ]).then(([appSdk, authSdk, firestoreSdk]) => {
+      import(`${sdk}firebase-functions.js`),
+    ]).then(([appSdk, authSdk, firestoreSdk, functionsSdk]) => {
       const app = appSdk.initializeApp(firebaseConfig);
       const auth = authSdk.getAuth(app);
       const db = firestoreSdk.getFirestore(app);
-      return { auth, db, authSdk, firestoreSdk };
+      const functions = functionsSdk.getFunctions(app, "europe-west1");
+      return { auth, db, authSdk, firestoreSdk, functionsSdk, functions };
     });
   return servicesPromise;
 }

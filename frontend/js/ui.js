@@ -3,10 +3,22 @@ import { toast } from "./notifications.js";
 import { getCurrentUser, hasAdminAccess, logout } from "./session.js";
 import { showAuthDialog } from "./authGate.js";
 import { getProducts } from "./productService.js";
+import { searchProducts } from "./search.js";
 import { getComparisonIds } from "../api/comparisonService.js";
-import { currentLanguage, initializeI18n, setLanguage, formatMoney } from "./i18n.js";
+import { currentLanguage, initializeI18n, setLanguage, formatMoney, formatProductCount } from "./i18n.js";
 export { showAuthDialog };
 export { toast };
+
+const mainContent = document.querySelector("main");
+if (mainContent) {
+  mainContent.id ||= "main-content";
+  mainContent.tabIndex = -1;
+  const skipLink = document.createElement("a");
+  skipLink.className = "skip-link";
+  skipLink.href = `#${mainContent.id}`;
+  skipLink.textContent = "Перейти до основного вмісту";
+  document.body.prepend(skipLink);
+}
 
 initializeI18n();
 
@@ -47,7 +59,7 @@ export function renderSharedLayout(settings = { name: "NEXLAB" }) {
         <a href="${prefix}projects.html" ${path === "projects.html" || path === "project.html" ? 'aria-current="page"' : ""}>Проєкти</a><a href="${prefix}community.html" ${path === "community.html" ? 'aria-current="page"' : ""}>Спільнота</a><a href="${prefix}catalog.html?tag=sale" ${new URLSearchParams(location.search).get("tag") === "sale" ? 'aria-current="page"' : ""}>Акції</a>
       </nav>
       <div class="header-tools">
-        <div class="header-search-wrap"><form class="header-search" data-header-search role="search"><span aria-hidden="true">⌕</span><input type="search" placeholder="Шукати товар" aria-label="Пошук товарів" role="combobox" aria-autocomplete="list" aria-controls="header-search-results" aria-expanded="false"></form><div class="header-search-results" id="header-search-results" data-header-search-results role="region" aria-label="Результати пошуку" aria-live="polite" hidden></div></div>
+        <div class="header-search-wrap"><form class="header-search" data-header-search role="search"><span aria-hidden="true">⌕</span><input type="search" placeholder="Шукати товар" aria-label="Пошук товарів" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="header-search-listbox" aria-expanded="false"></form><div class="header-search-results" data-header-search-results role="region" aria-label="Результати пошуку" aria-live="polite" hidden></div></div>
         <a class="tool-link" href="${prefix}favorites.html" aria-label="Обране">♡<span class="tool-count" data-favorite-count hidden>0</span></a>
         <a class="tool-link" href="${prefix}compare.html" aria-label="Порівняння товарів">⇄<span class="tool-count" data-comparison-count hidden>0</span></a>
         <a class="tool-link" href="${prefix}cart.html" aria-label="Кошик">▣<span class="tool-count" data-cart-count hidden>0</span></a>
@@ -136,6 +148,10 @@ export function bindLayoutEvents() {
     toggle.setAttribute("aria-expanded", String(open));
     toggle.setAttribute("aria-label", open ? "Закрити меню" : "Відкрити меню");
   });
+  document.addEventListener("click", (event) => {
+    if (!nav?.classList.contains("is-open") || nav.contains(event.target) || toggle?.contains(event.target)) return;
+    closeMobileNav();
+  });
   nav?.addEventListener("click", (event) => {
     if (event.target.closest("a") && window.matchMedia("(max-width: 700px)").matches)
       closeMobileNav();
@@ -149,10 +165,19 @@ export function bindLayoutEvents() {
   const search = document.querySelector("[data-header-search]");
   const searchWrap = search?.closest(".header-search-wrap");
   const searchResults = document.querySelector("[data-header-search-results]");
+  const searchInput = search?.querySelector("input");
   let searchRequest = 0;
+  let activeSearchOption = -1;
+  const closeSearchResults = () => {
+    if (!searchInput || !searchResults) return;
+    searchResults.hidden = true;
+    searchInput.setAttribute("aria-expanded", "false");
+    searchInput.removeAttribute("aria-activedescendant");
+    activeSearchOption = -1;
+  };
   search?.addEventListener("submit", (event) => {
     event.preventDefault();
-    const query = search.querySelector("input").value.trim();
+    const query = searchInput.value.trim();
     location.href = `${prefix}catalog.html${query ? `?q=${encodeURIComponent(query)}` : ""}`;
   });
   search?.addEventListener("click", (event) => {
@@ -165,47 +190,69 @@ export function bindLayoutEvents() {
       search.querySelector("input").focus();
     }
   });
-  search
-    ?.querySelector("input")
-    ?.addEventListener("focus", () => search.classList.add("is-open"));
-  search?.querySelector("input")?.addEventListener("input", async (event) => {
+  searchInput?.addEventListener("focus", () => search.classList.add("is-open"));
+  searchInput?.addEventListener("input", async (event) => {
     const query = event.target.value.trim().toLocaleLowerCase("uk-UA");
     const request = ++searchRequest;
+    activeSearchOption = -1;
+    searchInput.removeAttribute("aria-activedescendant");
     if (query.length < 2) {
-      searchResults.hidden = true;
-      search.querySelector("input").setAttribute("aria-expanded", "false");
+      closeSearchResults();
       searchResults.innerHTML = "";
       return;
     }
-    const products = await getProducts();
+    let products;
+    try {
+      products = await getProducts();
+    } catch {
+      if (request !== searchRequest) return;
+      searchResults.innerHTML = '<p class="search-empty">Не вдалося завантажити каталог. Перевір з’єднання й спробуй ще раз.</p>';
+      searchResults.hidden = false;
+      searchInput.setAttribute("aria-expanded", "true");
+      return;
+    }
     if (request !== searchRequest) return;
-    const found = products
-      .filter((product) =>
-        [product.name, product.category, product.brand, ...(product.tags || [])]
-          .join(" ")
-          .toLocaleLowerCase("uk-UA")
-          .includes(query),
-      )
-      .slice(0, 5);
+    const found = searchProducts(products, query).slice(0, 5);
     searchResults.innerHTML = found.length
-      ? `<p>Знайдено ${found.length} товарів</p>${found.map((product) => `<a href="${prefix}product.html?id=${encodeURIComponent(product.id)}"><span>${safe(product.category)}</span><strong>${safe(product.name)}</strong><b>${formatMoney(product.price)}</b></a>`).join("")}<a class="search-all" href="${prefix}catalog.html?q=${encodeURIComponent(event.target.value.trim())}">Переглянути всі результати →</a>`
-      : `<p class="search-empty">Нічого не знайдено. Спробуй іншу назву.</p>`;
+      ? `<p>${formatProductCount(found.length)}</p><div id="header-search-listbox" role="listbox" aria-label="Підказки пошуку">${found.map((product, index) => `<a id="header-search-option-${index}" role="option" aria-selected="false" tabindex="-1" href="${prefix}product.html?id=${encodeURIComponent(product.id)}"><span>${safe(product.category)}</span><strong>${safe(product.name)}</strong><b>${formatMoney(product.price)}</b></a>`).join("")}<a id="header-search-option-all" class="search-all" role="option" aria-selected="false" tabindex="-1" href="${prefix}catalog.html?q=${encodeURIComponent(event.target.value.trim())}">Переглянути всі результати →</a></div>`
+      : `<p class="search-empty">Нічого не знайдено. Спробуй іншу назву.</p><div id="header-search-listbox" role="listbox" aria-label="Підказки пошуку"></div>`;
     searchResults.hidden = false;
-    search.querySelector("input").setAttribute("aria-expanded", "true");
+    searchInput.setAttribute("aria-expanded", "true");
   });
-  search?.querySelector("input")?.addEventListener("keydown", (event) => {
+  searchInput?.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
-      searchResults.hidden = true;
-      search.querySelector("input").setAttribute("aria-expanded", "false");
+      closeSearchResults();
       search.classList.remove("is-open");
       event.currentTarget.blur();
+      return;
     }
+    if (!["ArrowDown", "ArrowUp"].includes(event.key) || searchResults.hidden) return;
+    const options = [...searchResults.querySelectorAll('[role="option"]')];
+    if (!options.length) return;
+    event.preventDefault();
+    const direction = event.key === "ArrowDown" ? 1 : -1;
+    activeSearchOption = activeSearchOption < 0
+      ? direction > 0 ? 0 : options.length - 1
+      : (activeSearchOption + direction + options.length) % options.length;
+    options.forEach((option, index) => {
+      const active = index === activeSearchOption;
+      option.setAttribute("aria-selected", String(active));
+      option.classList.toggle("is-active", active);
+    });
+    searchInput.setAttribute("aria-activedescendant", options[activeSearchOption].id);
+    options[activeSearchOption].scrollIntoView({ block: "nearest" });
+  });
+  searchInput?.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" || activeSearchOption < 0) return;
+    const selected = searchResults.querySelectorAll('[role="option"]')[activeSearchOption];
+    if (!selected) return;
+    event.preventDefault();
+    location.href = selected.href;
   });
   document.addEventListener("click", (event) => {
     if (searchWrap && !searchWrap.contains(event.target)) {
       search.classList.remove("is-open");
-      searchResults.hidden = true;
-      search.querySelector("input").setAttribute("aria-expanded", "false");
+      closeSearchResults();
     }
   });
   window.addEventListener("nexlab:cart-updated", updateHeaderCounts);

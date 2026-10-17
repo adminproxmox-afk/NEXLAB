@@ -139,13 +139,22 @@
   color: #77867d;
 }
 :root[data-theme="light"] :is(
-  .header-search-results > a:not(.search-all),
+  .header-search-results [role="option"]:not(.search-all),
   .admin-project-form,
   .admin-order-form,
   .profile-form,
   .footer-bottom
 ) {
   border-color: var(--line);
+}
+:root[data-theme="light"] .header-search-results [role="option"].is-active {
+  background: #e7f4ee;
+}
+:root[data-theme="light"] .header-search-results strong {
+  color: var(--text);
+}
+:root[data-theme="light"] .header-search-results span {
+  color: var(--muted);
 }
 :root[data-theme="light"] :is(
   .button-quiet,

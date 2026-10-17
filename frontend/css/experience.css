@@ -60,14 +60,15 @@ body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
-.header-search-results > a:not(.search-all) {
+.header-search-results [role="option"]:not(.search-all) {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 2px 14px;
   padding: 10px 14px;
   border-top: 1px solid #354038;
 }
-.header-search-results > a:not(.search-all):hover {
+.header-search-results [role="option"]:not(.search-all):hover,
+.header-search-results [role="option"].is-active {
   background: #283228;
 }
 .header-search-results span {

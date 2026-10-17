@@ -25,7 +25,7 @@ const safe = (value) =>
 export async function initializeProductPage() {
   const root = document.querySelector("[data-product-detail]");
   if (!root) return;
-  const product = await getProductById(
+  let product = await getProductById(
     new URLSearchParams(location.search).get("id"),
   );
   if (!product) {
@@ -39,7 +39,7 @@ export async function initializeProductPage() {
   const thumbs = (product.images.length > 1 ? product.images : [])
     .map(
       (image, index) =>
-        `<button type="button" data-gallery-image="${index}" class="${index === 0 ? "is-active" : ""}" aria-label="Зображення ${index + 1}">${productArt(product, true, index)}</button>`,
+        `<button type="button" data-gallery-image="${index}" class="${index === 0 ? "is-active" : ""}" aria-label="Зображення ${index + 1}" aria-pressed="${index === 0}">${productArt(product, true, index)}</button>`,
     )
     .join("");
   root.innerHTML = `<div class="detail-gallery"><div class="detail-art" data-gallery-main>${productArt(product, true)}</div><div class="gallery-thumbs">${thumbs}</div><p class="gallery-note">${product.images.length ? `Фото для ознайомлення зі сторінки виробника або продавця; воно не підтверджує фактичну позицію магазину. Відповідність конкретного товару та комплектацію NEXLAB ще не підтвердив.` : `Показано схематичну ілюстрацію; фотографію фактичного товару ще не додано.`}</p></div><div class="detail-content"><div class="detail-copy">
@@ -86,6 +86,16 @@ export async function initializeProductPage() {
           toast("Повідомимо в цьому акаунті, коли товар з’явиться.");
         })
         .catch((error) => {
+          if (error.message === "PRODUCT_ALREADY_AVAILABLE" && Number.isInteger(error.stock)) {
+            product.stock = error.stock;
+            const stockLabel = root.querySelector(".detail-stock");
+            stockLabel?.classList.remove("detail-out");
+            if (stockLabel) stockLabel.textContent = `✓ Є в наявності · ${error.stock} шт.`;
+            root.querySelector("[data-detail-add]")?.removeAttribute("disabled");
+            stockAlert.remove();
+            toast("Товар уже є в наявності.");
+            return;
+          }
           stockAlert.disabled = false;
           toast(error.message === "PRODUCT_ALREADY_AVAILABLE" ? "Товар уже є в наявності." : "Не вдалося підписатися. Спробуй ще раз.");
         });
@@ -122,9 +132,10 @@ export async function initializeProductPage() {
     if (thumb) {
       root
         .querySelectorAll("[data-gallery-image]")
-        .forEach((button) =>
-          button.classList.toggle("is-active", button === thumb),
-        );
+        .forEach((button) => {
+          button.classList.toggle("is-active", button === thumb);
+          button.setAttribute("aria-pressed", String(button === thumb));
+        });
       root.querySelector("[data-gallery-main]").innerHTML = productArt(
         product,
         true,

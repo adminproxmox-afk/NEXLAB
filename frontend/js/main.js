@@ -40,8 +40,10 @@ import { initializeInfoPage } from "./info-page.js";
 import { initializeAdmin } from "./admin.js";
 import { toggleComparison } from "../api/comparisonService.js";
 import { initializeComparisonPage } from "./comparison.js";
-import { consumeAvailableStockAlerts } from "../api/stockAlertService.js";
 import { initializeCommunityProjects } from "./community-projects.js";
+import { initializeOrderNotifications } from "./order-notifications.js";
+import { initializeStockAlertNotifications } from "./stock-alert-notifications.js";
+import { currentLanguage } from "./i18n.js";
 
 const escapeHTML = (value) =>
   String(value).replace(
@@ -61,13 +63,54 @@ function initializeConnectionNotice() {
   notice.hidden = true;
   document.body.prepend(notice);
   let wasOffline = !navigator.onLine;
+  let backendUnavailable = false;
+  let dismissTimer;
+  const messages = {
+    uk: {
+      offline: "Немає з’єднання. Доступні лише збережені сторінки й локальний каталог.",
+      unavailable: "Сервер тимчасово недоступний. Дані не збережуться, поки він не відновиться.",
+      restored: "Сервер знову доступний. Повтори останню дію — попередня спроба не збереглася.",
+      browserRestored: "З’єднання відновлено. Онови сторінку, щоб завантажити актуальні дані.",
+      reload: "Оновити сторінку",
+      more: "Детальніше",
+    },
+    ru: {
+      offline: "Нет соединения. Доступны только сохранённые страницы и локальный каталог.",
+      unavailable: "Сервер временно недоступен. Данные не сохранятся, пока он не восстановится.",
+      restored: "Сервер снова доступен. Повтори последнее действие — предыдущая попытка не сохранилась.",
+      browserRestored: "Соединение восстановлено. Обнови страницу, чтобы загрузить актуальные данные.",
+      reload: "Обновить страницу",
+      more: "Подробнее",
+    },
+    en: {
+      offline: "You are offline. Only saved pages and the local catalog are available.",
+      unavailable: "The server is temporarily unavailable. Changes will not be saved until it recovers.",
+      restored: "The server is available again. Retry your last action; the previous attempt was not saved.",
+      browserRestored: "Connection restored. Refresh the page to load current data.",
+      reload: "Refresh page",
+      more: "More information",
+    },
+  };
+  let serverRestored = false;
   const update = () => {
+    const copy = messages[currentLanguage()] || messages.uk;
+    clearTimeout(dismissTimer);
     if (!navigator.onLine) {
       wasOffline = true;
-      notice.innerHTML = `<span>Немає з’єднання. Доступні лише збережені сторінки й локальний каталог.</span><a href="${new URL("../offline.html", import.meta.url).href}">Детальніше</a>`;
+      notice.innerHTML = `<span>${copy.offline}</span><a href="${new URL("../offline.html", import.meta.url).href}">${copy.more}</a>`;
       notice.hidden = false;
+    } else if (backendUnavailable) {
+      notice.textContent = copy.unavailable;
+      notice.hidden = false;
+    } else if (serverRestored) {
+      serverRestored = false;
+      wasOffline = false;
+      notice.textContent = copy.restored;
+      notice.hidden = false;
+      dismissTimer = window.setTimeout(() => { notice.hidden = true; }, 8_000);
     } else if (wasOffline) {
-      notice.innerHTML = '<span>З’єднання відновлено. Онови дані перед оформленням замовлення.</span><button type="button" data-connection-reload>Оновити сторінку</button>';
+      wasOffline = false;
+      notice.innerHTML = `<span>${copy.browserRestored}</span><button type="button" data-connection-reload>${copy.reload}</button>`;
       notice.hidden = false;
     } else {
       notice.hidden = true;
@@ -78,6 +121,11 @@ function initializeConnectionNotice() {
   });
   window.addEventListener("online", update);
   window.addEventListener("offline", update);
+  window.addEventListener("nexlab:backend-connection", (event) => {
+    backendUnavailable = !event.detail?.available;
+    if (!backendUnavailable) serverRestored = true;
+    update();
+  });
   update();
 }
 
@@ -88,6 +136,29 @@ function registerOfflineSupport() {
   navigator.serviceWorker.register(worker, { scope }).catch((error) => {
     console.info("Offline cache could not be registered", error);
   });
+}
+
+function registerProjectCoverFallbacks() {
+  document.addEventListener("error", (event) => {
+    const image = event.target;
+    if (!(image instanceof HTMLImageElement)) return;
+    if (image.matches("[data-cover-photo]")) {
+      image.hidden = true;
+      return;
+    }
+    if (image.dataset.loadFailed) return;
+    image.dataset.loadFailed = "true";
+    image.hidden = true;
+    const parent = image.parentElement;
+    if (!parent || parent.querySelector(".image-load-fallback")) return;
+    parent.classList.add("has-image-load-error");
+    parent.querySelector(".photo-source-label")?.remove();
+    const fallback = document.createElement("span");
+    fallback.className = "image-load-fallback";
+    fallback.setAttribute("role", "status");
+    fallback.textContent = "Фото тимчасово недоступне";
+    parent.append(fallback);
+  }, true);
 }
 
 function renderHomeCategories(categories) {
@@ -151,6 +222,8 @@ function bindProductButtons() {
 async function start() {
   initializeConnectionNotice();
   registerOfflineSupport();
+  registerProjectCoverFallbacks();
+  initializeOrderNotifications();
   try {
     await initializeUsers();
   } catch (error) {
@@ -173,14 +246,7 @@ async function start() {
     getProducts(),
     getCategories(),
   ]);
-  try {
-    const availableAlerts = await consumeAvailableStockAlerts(products);
-    if (availableAlerts.length)
-      toast(`Знову в наявності: ${availableAlerts.map((item) => item.name).join(", ")}`);
-  } catch (error) {
-    if (error.message !== "UNAUTHENTICATED" && error.message !== "BACKEND_UNAVAILABLE")
-      console.warn("Restock alerts could not be loaded", error);
-  }
+  initializeStockAlertNotifications(products);
   reconcileCart();
   renderHomeCategories(categories);
   const featured = document.querySelector('[data-products="featured"]');

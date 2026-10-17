@@ -24,6 +24,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: Install Cloud Function dependencies
+        run: npm ci --prefix functions
+      - name: Run application and function tests
+        run: npm test
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload website

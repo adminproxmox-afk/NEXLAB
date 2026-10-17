@@ -23,9 +23,11 @@ export function setShopSettings(settings) {
 export async function loadShopSettings() {
   if (isFirebaseConfigured()) {
     try {
-      storeSettings =
-        (await getFirebaseDocument("settings", "store")) || shopConfig;
-      firebaseSettingsWarning = "";
+      const remoteSettings = await getFirebaseDocument("settings", "store");
+      storeSettings = remoteSettings || shopConfig;
+      firebaseSettingsWarning = remoteSettings
+        ? ""
+        : "У Firebase немає налаштувань магазину: показуємо демонстраційні значення.";
     } catch (error) {
       storeSettings = shopConfig;
       firebaseSettingsWarning = `Використовуються базові налаштування магазину: Firebase повернув ${error.code || "помилку доступу"}. Перевір, чи створено Firestore та опубліковано правила.`;
@@ -78,7 +80,9 @@ export async function refreshProducts() {
             }),
           );
           currentCategories = categories;
-          firebaseCatalogWarning = "";
+          firebaseCatalogWarning = records.length
+            ? ""
+            : "У Firebase ще немає товарів: показуємо демонстраційний каталог.";
           return products;
         })
       : request("products"))

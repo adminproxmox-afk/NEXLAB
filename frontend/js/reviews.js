@@ -6,6 +6,7 @@ import { refreshProducts } from "../api/productService.js";
 import { ratingMarkup } from "./rating.js";
 import { hasBackend } from "../api/client.js";
 import { formatDate } from "./i18n.js";
+import { prepareCommunityImage } from "../api/imageUpload.js";
 
 const safe = (value) =>
   String(value || "").replace(
@@ -38,7 +39,7 @@ export async function initializeReviews(product) {
     }
     root.innerHTML = `<div class="section-heading"><div><p class="eyebrow">Досвід спільноти</p><h2>Відгуки <span data-review-count>${reviews.length}</span></h2></div></div>
       <div class="reviews-layout"><div class="review-list">${reviews.length ? reviews.map(reviewMarkup).join("") : `<div class="empty-inline">${hasBackend() ? "Відгуків поки немає. Поділися враженнями першим." : "Відгуки з’являться після підключення сервера магазину."}</div>`}</div>
-      ${hasBackend() ? `<form class="review-form" data-review-form novalidate><h3>Залишити відгук</h3><fieldset><legend>Твоя оцінка</legend><div class="rating-input">${[5, 4, 3, 2, 1].map((rating) => `<label><input type="radio" name="rating" value="${rating}"><span aria-label="${rating} з 5">★</span></label>`).join("")}</div><small class="field-error" data-review-error="rating"></small></fieldset><label>Коментар<textarea name="text" rows="4" maxlength="1000" placeholder="Що варто знати іншим?" required></textarea><small class="field-error" data-review-error="text"></small></label><label>Фото (необов’язково)<input name="imageUrl" type="url" maxlength="2000" pattern="https://.+" placeholder="https://…"><small>Додай пряме HTTPS-посилання на зображення.</small><small class="field-error" data-review-error="imageUrl"></small></label><button class="button button-primary" type="submit">Опублікувати</button></form>` : ""}</div>`;
+      ${hasBackend() ? `<form class="review-form" data-review-form novalidate><h3>Залишити відгук</h3><fieldset><legend>Твоя оцінка</legend><div class="rating-input">${[5, 4, 3, 2, 1].map((rating) => `<label><input type="radio" name="rating" value="${rating}"><span aria-label="${rating} з 5">★</span></label>`).join("")}</div><small class="field-error" data-review-error="rating"></small></fieldset><label>Коментар<textarea name="text" rows="4" maxlength="1000" placeholder="Що варто знати іншим?" required></textarea><small class="field-error" data-review-error="text"></small></label><label>Фото (необов’язково)<input name="imageFile" type="file" accept="image/jpeg,image/png,image/webp"><small>JPG, PNG або WebP, до 12 МБ. Фото буде зменшено перед збереженням.</small><small class="field-error" data-review-error="imageFile"></small></label><label>Або HTTPS-посилання<input name="imageUrl" type="url" maxlength="2000" pattern="https://.+" placeholder="https://…"><small class="field-error" data-review-error="imageUrl"></small></label><button class="button button-primary" type="submit">Опублікувати</button></form>` : ""}</div>`;
     root
       .querySelector("[data-review-form]")
       ?.addEventListener("submit", async (event) => {
@@ -49,8 +50,9 @@ export async function initializeReviews(product) {
         }
         const form = event.currentTarget,
           rating = Number(form.elements.rating.value),
-          text = form.elements.text.value.trim(),
-          imageUrl = form.elements.imageUrl.value.trim();
+          text = form.elements.text.value.trim();
+        let imageUrl = form.elements.imageUrl.value.trim();
+        const imageFile = form.elements.imageFile.files[0];
         form.querySelector('[data-review-error="rating"]').textContent = rating
           ? ""
           : "Обери оцінку.";
@@ -58,6 +60,10 @@ export async function initializeReviews(product) {
           ? ""
           : "Напиши кілька слів про товар.";
         if (!rating || !text) return;
+        if (imageUrl && imageFile) {
+          form.querySelector('[data-review-error="imageUrl"]').textContent = "Обери файл фото або посилання, не обидва варіанти.";
+          return;
+        }
         if (imageUrl && (!/^https:\/\//i.test(imageUrl) || !form.elements.imageUrl.validity.valid)) {
           form.querySelector('[data-review-error="imageUrl"]').textContent = "Вкажи коректне HTTPS-посилання або залиш поле порожнім.";
           return;
@@ -66,15 +72,26 @@ export async function initializeReviews(product) {
         if (button.disabled) return;
         button.disabled = true;
         try {
+          if (imageFile) imageUrl = await prepareCommunityImage(imageFile);
           await createReview({ productId: product.id, rating, text, imageUrl });
           await refreshProducts();
           document.querySelector("[data-product-rating]").innerHTML =
             ratingMarkup(product);
           toast("Відгук опубліковано.");
           await render();
-        } catch {
-          form.querySelector('[data-review-error="text"]').textContent =
-            "Не вдалося зберегти відгук.";
+        } catch (error) {
+          if (["IMAGE_TOO_LARGE", "INVALID_IMAGE_TYPE", "INVALID_IMAGE_FILE", "IMAGE_CONVERSION_FAILED"].includes(error.message)) {
+            form.querySelector('[data-review-error="imageFile"]').textContent = error.message === "IMAGE_TOO_LARGE"
+              ? "Фото завелике. Обери файл до 12 МБ; перед збереженням його буде стиснуто."
+              : error.message === "IMAGE_CONVERSION_FAILED"
+                ? "Цей браузер не зміг підготувати фото. Спробуй інший файл або HTTPS-посилання."
+                : "Підтримуються справжні фото JPG, PNG або WebP.";
+          } else {
+            form.querySelector('[data-review-error="text"]').textContent =
+              error.message === "REVIEW_ALREADY_EXISTS"
+                ? "Ти вже залишав відгук про цей товар."
+                : "Не вдалося зберегти відгук.";
+          }
           button.disabled = false;
         }
       });

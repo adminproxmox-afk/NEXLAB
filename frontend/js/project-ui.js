@@ -7,6 +7,7 @@ export const safe = (value) =>
       ],
   );
 import { formatMoney, currentLanguage } from "./i18n.js";
+import { productArt } from "./products.js";
 
 export const money = formatMoney;
 export const componentLabel = (count) => {
@@ -77,7 +78,7 @@ export function projectCover(project, products) {
       products.find((product) => product.id === productId),
     )
     .filter(Boolean);
-  return `<div class="project-cover" aria-hidden="true">${items.map((product, index) => `<div class="project-cover-photo project-cover-photo-${index + 1}"><img src="${safe(product.images?.[0] || "")}" alt="" loading="lazy" decoding="async"></div>`).join("")}<span class="project-cover-id">NXL / ${safe(project.id.toUpperCase())}</span><span class="project-cover-count">${componentLabel(project.components.length)}</span></div>`;
+  return `<div class="project-cover" aria-hidden="true">${items.map((product, index) => `<div class="project-cover-photo project-cover-photo-${index + 1}"><span class="project-cover-placeholder">${productArt({ ...product, images: [] }, true)}</span>${product.images?.[0] ? `<img data-cover-photo src="${safe(product.images[0])}" alt="" loading="lazy" decoding="async">` : ""}</div>`).join("")}<span class="project-cover-id">NXL / ${safe(project.id.toUpperCase())}</span><span class="project-cover-count">${componentLabel(project.components.length)}</span></div>`;
 }
 
 export function projectCard(project, products) {

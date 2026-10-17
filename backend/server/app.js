@@ -12,10 +12,12 @@ import {
 import { promisify } from "node:util";
 import { DatabaseSync } from "node:sqlite";
 import { products as catalog, categories, projects } from "../../frontend/js/products.js";
+import { getProjectSteps } from "../../frontend/js/project-guides.js";
 import { shopConfig } from "../../frontend/js/shop-config.js";
 
 const scrypt = promisify(scryptCallback);
 const root = resolve(fileURLToPath(new URL("../../frontend/", import.meta.url)));
+const catalogImagesById = new Map(catalog.map((product) => [product.id, product.images || []]));
 const SESSION_AGE = 7 * 86400;
 const productImages = new Set([
   "board",
@@ -45,6 +47,17 @@ const productImages = new Set([
   "buzzer",
 ]);
 const hash = (value) => createHash("sha256").update(value).digest("hex");
+function normalizeCatalogImages(productId, images) {
+  const canonicalImages = catalogImagesById.get(productId) || [];
+  if (!Array.isArray(images)) return [];
+  return images.map((image) => {
+    const legacyRootPath = typeof image === "string"
+      ? image.match(/^assets\/images\/([^/]+)$/)
+      : null;
+    if (!legacyRootPath) return image;
+    return canonicalImages.find((path) => path.endsWith(`/${legacyRootPath[1]}`)) || image;
+  });
+}
 const publicUser = (user) =>
   user
     ? {
@@ -64,6 +77,26 @@ function text(value, max = 200) {
   if (typeof value !== "string" || !value.trim() || value.trim().length > max)
     fail("INVALID_INPUT");
   return value.trim();
+}
+function safeImageUrl(value, code) {
+  if (typeof value !== "string") fail(code);
+  if (value.length <= 2000) {
+    try {
+      const parsed = new URL(value);
+      if (parsed.protocol === "https:") return parsed.href;
+    } catch {}
+  }
+  const prefix = "data:image/webp;base64,";
+  if (!value.startsWith(prefix) || value.length > 320_000) fail(code);
+  const encoded = value.slice(prefix.length);
+  if (!/^[A-Za-z0-9+/]+={0,2}$/.test(encoded)) fail(code);
+  const bytes = Buffer.from(encoded, "base64");
+  if (
+    bytes.toString("base64") !== encoded ||
+    bytes.toString("ascii", 0, 4) !== "RIFF" ||
+    bytes.toString("ascii", 8, 12) !== "WEBP"
+  ) fail(code);
+  return value;
 }
 function email(value) {
   const result = text(value, 254).toLowerCase();
@@ -241,6 +274,7 @@ export async function createApp({
   secureCookies = false,
   adminEmail,
   adminPassword,
+  logger = console,
 } = {}) {
   const db = new DatabaseSync(dbPath);
   db.exec(`PRAGMA foreign_keys=ON; PRAGMA journal_mode=WAL;
@@ -250,7 +284,7 @@ export async function createApp({
     CREATE TABLE IF NOT EXISTS product_data(id TEXT PRIMARY KEY,body TEXT NOT NULL,deleted INTEGER NOT NULL DEFAULT 0 CHECK(deleted IN (0,1)));
     CREATE TABLE IF NOT EXISTS orders(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),request_key TEXT NOT NULL,body TEXT NOT NULL,UNIQUE(user_id,request_key));
     CREATE TABLE IF NOT EXISTS inventory_movements(id TEXT PRIMARY KEY,product_id TEXT NOT NULL,quantity_change INTEGER NOT NULL,reason TEXT NOT NULL,order_id TEXT,created_at TEXT NOT NULL);
-    CREATE TABLE IF NOT EXISTS stock_alerts(user_id TEXT NOT NULL REFERENCES users(id),product_id TEXT NOT NULL,created_at TEXT NOT NULL,notified_at TEXT,PRIMARY KEY(user_id,product_id));
+    CREATE TABLE IF NOT EXISTS stock_alerts(user_id TEXT NOT NULL REFERENCES users(id),product_id TEXT NOT NULL,created_at TEXT NOT NULL,notified_at TEXT,claim_id TEXT,claim_expires_at TEXT,PRIMARY KEY(user_id,product_id));
     CREATE TABLE IF NOT EXISTS reviews(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),product_id TEXT NOT NULL,rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),text TEXT NOT NULL,date TEXT NOT NULL,image_url TEXT);
     CREATE TABLE IF NOT EXISTS community_projects(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),user_name TEXT NOT NULL,title TEXT NOT NULL,description TEXT NOT NULL,photo_url TEXT NOT NULL,schematic_url TEXT,code_url TEXT NOT NULL,created_at TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS community_project_comments(id TEXT PRIMARY KEY,project_id TEXT NOT NULL REFERENCES community_projects(id) ON DELETE CASCADE,user_id TEXT NOT NULL REFERENCES users(id),user_name TEXT NOT NULL,rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),text TEXT NOT NULL,created_at TEXT NOT NULL);
@@ -259,9 +293,29 @@ export async function createApp({
     CREATE TABLE IF NOT EXISTS saved_projects(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),project_id TEXT NOT NULL,created_at TEXT NOT NULL,UNIQUE(user_id,project_id));
     CREATE TABLE IF NOT EXISTS shop_settings(id INTEGER PRIMARY KEY CHECK(id=1),body TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS store_projects(id TEXT PRIMARY KEY,body TEXT NOT NULL);`);
+  const stockAlertColumns = db.prepare("PRAGMA table_info(stock_alerts)").all().map((column) => column.name);
+  if (!stockAlertColumns.includes("claim_id")) db.exec("ALTER TABLE stock_alerts ADD COLUMN claim_id TEXT");
+  if (!stockAlertColumns.includes("claim_expires_at")) db.exec("ALTER TABLE stock_alerts ADD COLUMN claim_expires_at TEXT");
   if (!db.prepare("PRAGMA table_info(reviews)").all().some((column) => column.name === "image_url"))
     db.exec("ALTER TABLE reviews ADD COLUMN image_url TEXT");
+  db.exec(`
+    DELETE FROM reviews
+    WHERE rowid NOT IN (
+      SELECT MAX(rowid) FROM reviews GROUP BY user_id, product_id
+    );
+    CREATE UNIQUE INDEX IF NOT EXISTS reviews_one_per_user_product
+      ON reviews(user_id, product_id);
+  `);
+  db.exec(`
+    DELETE FROM community_project_comments
+    WHERE rowid NOT IN (
+      SELECT MAX(rowid) FROM community_project_comments GROUP BY project_id, user_id
+    );
+    CREATE UNIQUE INDEX IF NOT EXISTS community_comments_one_per_user_project
+      ON community_project_comments(project_id, user_id);
+  `);
   db.prepare("INSERT OR IGNORE INTO shop_settings(id,body) VALUES(1,?)").run(JSON.stringify(shopConfig));
+  db.prepare("INSERT OR IGNORE INTO coupons(code,percent,min_total,max_uses,used_count,valid_until,active) VALUES('NEXLAB10',10,1000,NULL,0,NULL,1)").run();
   const seedProject = db.prepare("INSERT OR IGNORE INTO store_projects(id,body) VALUES(?,?)");
   for (const project of projects) seedProject.run(project.id, JSON.stringify(project));
   function currentShopSettings() {
@@ -439,7 +493,7 @@ export async function createApp({
             price: row.price,
             oldPrice: row.old_price,
             stock: row.stock,
-            images: product.images || [],
+            images: normalizeCatalogImages(product.id, product.images),
             tags: product.tags || [],
             specifications: product.specifications || {},
             reviewsCount: stat?.count || 0,
@@ -465,13 +519,13 @@ export async function createApp({
       .get(id);
     return row ? JSON.parse(row.body) : null;
   }
-  async function body(req) {
+  async function body(req, maxBytes = 32768) {
     if (!(req.headers["content-type"] || "").startsWith("application/json"))
       fail("JSON_REQUIRED", 415);
     let result = "";
     for await (const chunk of req) {
       result += chunk;
-      if (Buffer.byteLength(result) > 32768) fail("BODY_TOO_LARGE", 413);
+      if (Buffer.byteLength(result) > maxBytes) fail("BODY_TOO_LARGE", 413);
     }
     try {
       const parsed = JSON.parse(result);
@@ -845,19 +899,55 @@ export async function createApp({
               )
               .all(url.searchParams.get("productId")),
           });
+        if (path.startsWith("/api/community-projects/") && method === "GET") {
+          let projectId;
+          try { projectId = decodeURIComponent(path.slice("/api/community-projects/".length)); }
+          catch { fail("PROJECT_NOT_FOUND", 404); }
+          if (!projectId || projectId.length > 128 || projectId.includes("/")) fail("PROJECT_NOT_FOUND", 404);
+          const project = db.prepare("SELECT id,user_id AS userId,user_name AS userName,title,description,photo_url AS photoUrl,schematic_url AS schematicUrl,code_url AS codeUrl,created_at AS date FROM community_projects WHERE id=?").get(projectId);
+          if (!project) fail("PROJECT_NOT_FOUND", 404);
+          const comments = db.prepare("SELECT id,project_id AS projectId,user_id AS userId,user_name AS userName,rating,text,created_at AS date FROM community_project_comments WHERE project_id=? ORDER BY created_at DESC,rowid DESC LIMIT 30").all(projectId);
+          const questions = db.prepare("SELECT id,project_id AS projectId,user_id AS userId,user_name AS userName,text,created_at AS date,answer,answered_by AS answeredBy,answered_at AS answeredAt FROM community_project_questions WHERE project_id=? ORDER BY created_at DESC,rowid DESC LIMIT 30").all(projectId);
+          const summary = db.prepare("SELECT COUNT(*) AS count,AVG(rating) AS rating FROM community_project_comments WHERE project_id=?").get(projectId);
+          const questionCount = db.prepare("SELECT COUNT(*) AS count FROM community_project_questions WHERE project_id=?").get(projectId).count;
+          return send(res, 200, { project: {
+            ...project,
+            rating: summary.rating || 0,
+            commentCount: summary.count,
+            hasRated: Boolean(user && db.prepare("SELECT 1 FROM community_project_comments WHERE project_id=? AND user_id=?").get(projectId, user.id)),
+            comments,
+            questions,
+            questionCount,
+          } });
+        }
         if (path === "/api/community-projects" && method === "GET") {
-          const entries = db.prepare("SELECT id,user_id AS userId,user_name AS userName,title,description,photo_url AS photoUrl,schematic_url AS schematicUrl,code_url AS codeUrl,created_at AS date FROM community_projects ORDER BY created_at DESC LIMIT 100").all();
-          const comments = db.prepare("SELECT id,project_id AS projectId,user_id AS userId,user_name AS userName,rating,text,created_at AS date FROM community_project_comments ORDER BY created_at DESC").all();
-          const questions = db.prepare("SELECT id,project_id AS projectId,user_id AS userId,user_name AS userName,text,created_at AS date,answer,answered_by AS answeredBy,answered_at AS answeredAt FROM community_project_questions ORDER BY created_at DESC LIMIT 1000").all();
-          return send(res, 200, { projects: entries.map((project) => {
-            const projectComments = comments.filter((comment) => comment.projectId === project.id);
-            return { ...project, rating: projectComments.length ? projectComments.reduce((sum, item) => sum + item.rating, 0) / projectComments.length : 0, comments: projectComments.slice(0, 30), questions: questions.filter((question) => question.projectId === project.id).slice(0, 30) };
-          }) });
+          const requestedLimit = Number(url.searchParams.get("limit")) || 12;
+          const limit = Math.max(1, Math.min(24, Math.floor(requestedLimit)));
+          const requestedOffset = Number(url.searchParams.get("offset")) || 0;
+          const offset = Math.max(0, Math.floor(requestedOffset));
+          const entries = db.prepare("SELECT id,user_id AS userId,user_name AS userName,title,description,photo_url AS photoUrl,schematic_url AS schematicUrl,code_url AS codeUrl,created_at AS date FROM community_projects ORDER BY created_at DESC,rowid DESC LIMIT ? OFFSET ?").all(limit + 1, offset);
+          const hasMore = entries.length > limit;
+          const projects = entries.slice(0, limit).map((project) => {
+            const comments = db.prepare("SELECT id,project_id AS projectId,user_id AS userId,user_name AS userName,rating,text,created_at AS date FROM community_project_comments WHERE project_id=? ORDER BY created_at DESC,rowid DESC LIMIT 30").all(project.id);
+            const questions = db.prepare("SELECT id,project_id AS projectId,user_id AS userId,user_name AS userName,text,created_at AS date,answer,answered_by AS answeredBy,answered_at AS answeredAt FROM community_project_questions WHERE project_id=? ORDER BY created_at DESC,rowid DESC LIMIT 30").all(project.id);
+            const summary = db.prepare("SELECT COUNT(*) AS count,AVG(rating) AS rating FROM community_project_comments WHERE project_id=?").get(project.id);
+            const questionCount = db.prepare("SELECT COUNT(*) AS count FROM community_project_questions WHERE project_id=?").get(project.id).count;
+            return {
+              ...project,
+              rating: summary.rating || 0,
+              commentCount: summary.count,
+              hasRated: Boolean(user && db.prepare("SELECT 1 FROM community_project_comments WHERE project_id=? AND user_id=?").get(project.id, user.id)),
+              comments,
+              questions,
+              questionCount,
+            };
+          });
+          return send(res, 200, { projects, hasMore, nextOffset: offset + projects.length });
         }
         if (path === "/api/community-projects" && method === "POST") {
           requireUser();
           throttle(req);
-          const input = await body(req);
+          const input = await body(req, 400_000);
           const secureUrl = (value, optional = false) => {
             if (optional && !value) return null;
             if (typeof value !== "string" || value.length > 2000) fail("INVALID_PROJECT_URL");
@@ -867,7 +957,7 @@ export async function createApp({
           const project = {
             id: randomUUID(), userId: user.id, userName: user.name,
             title: text(input.title, 120), description: text(input.description, 2000),
-            photoUrl: secureUrl(input.photoUrl), schematicUrl: secureUrl(input.schematicUrl, true),
+            photoUrl: safeImageUrl(input.photoUrl, "INVALID_PROJECT_URL"), schematicUrl: secureUrl(input.schematicUrl, true),
             codeUrl: secureUrl(input.codeUrl), date: new Date().toISOString(),
           };
           db.prepare("INSERT INTO community_projects(id,user_id,user_name,title,description,photo_url,schematic_url,code_url,created_at) VALUES(?,?,?,?,?,?,?,?,?)")
@@ -880,9 +970,17 @@ export async function createApp({
           const input = await body(req);
           if (typeof input.projectId !== "string" || !db.prepare("SELECT id FROM community_projects WHERE id=?").get(input.projectId)) fail("PROJECT_NOT_FOUND", 404);
           if (!Number.isInteger(input.rating) || input.rating < 1 || input.rating > 5) fail("INVALID_RATING");
-          const comment = { id: randomUUID(), projectId: input.projectId, userId: user.id, userName: user.name, rating: input.rating, text: text(input.text, 1000), date: new Date().toISOString() };
-          db.prepare("INSERT INTO community_project_comments(id,project_id,user_id,user_name,rating,text,created_at) VALUES(?,?,?,?,?,?,?)")
-            .run(comment.id, comment.projectId, comment.userId, comment.userName, comment.rating, comment.text, comment.date);
+          const commentText = text(input.text, 1000);
+          if (db.prepare("SELECT 1 FROM community_project_comments WHERE project_id=? AND user_id=?").get(input.projectId, user.id))
+            fail("COMMENT_ALREADY_EXISTS", 409);
+          const comment = { id: randomUUID(), projectId: input.projectId, userId: user.id, userName: user.name, rating: input.rating, text: commentText, date: new Date().toISOString() };
+          try {
+            db.prepare("INSERT INTO community_project_comments(id,project_id,user_id,user_name,rating,text,created_at) VALUES(?,?,?,?,?,?,?)")
+              .run(comment.id, comment.projectId, comment.userId, comment.userName, comment.rating, comment.text, comment.date);
+          } catch (error) {
+            if (error.code === "ERR_SQLITE_CONSTRAINT_UNIQUE") fail("COMMENT_ALREADY_EXISTS", 409);
+            throw error;
+          }
           return send(res, 201, { comment });
         }
         if (path === "/api/community-projects/questions" && method === "POST") {
@@ -915,23 +1013,38 @@ export async function createApp({
           const product = db.prepare("SELECT i.stock FROM inventory i JOIN product_data p ON p.id=i.id WHERE i.id=? AND p.deleted=0").get(productId);
           if (!product) fail("PRODUCT_NOT_FOUND", 404);
           if (product.stock > 0) fail("PRODUCT_ALREADY_AVAILABLE", 409);
-          db.prepare("INSERT INTO stock_alerts(user_id,product_id,created_at) VALUES(?,?,?) ON CONFLICT(user_id,product_id) DO UPDATE SET created_at=excluded.created_at,notified_at=NULL")
+          db.prepare("INSERT INTO stock_alerts(user_id,product_id,created_at) VALUES(?,?,?) ON CONFLICT(user_id,product_id) DO UPDATE SET created_at=excluded.created_at,notified_at=NULL,claim_id=NULL,claim_expires_at=NULL")
             .run(user.id, productId, new Date().toISOString());
           return send(res, 201, { subscribed: true });
         }
-        if (path === "/api/stock-alerts" && method === "GET") {
+        if (path === "/api/stock-alerts/claim" && method === "POST") {
           requireUser();
-          const rows = db.prepare("SELECT a.product_id AS productId,a.notified_at AS notifiedAt,i.stock,p.body FROM stock_alerts a JOIN inventory i ON i.id=a.product_id JOIN product_data p ON p.id=a.product_id WHERE a.user_id=? AND p.deleted=0").all(user.id);
-          const alerts = rows.filter((row) => row.stock > 0 && !row.notifiedAt).map((row) => {
-            db.prepare("UPDATE stock_alerts SET notified_at=? WHERE user_id=? AND product_id=?")
-              .run(new Date().toISOString(), user.id, row.productId);
-            return { productId: row.productId, name: JSON.parse(row.body).name };
-          });
+          const now = new Date();
+          const nowIso = now.toISOString();
+          const expiresAt = new Date(now.getTime() + 2 * 60_000).toISOString();
+          const claimId = randomUUID();
+          const rows = db.prepare("SELECT a.product_id AS productId,i.stock,p.body FROM stock_alerts a JOIN inventory i ON i.id=a.product_id JOIN product_data p ON p.id=a.product_id WHERE a.user_id=? AND a.notified_at IS NULL AND (a.claim_expires_at IS NULL OR a.claim_expires_at<=?) AND i.stock>0 AND p.deleted=0").all(user.id, nowIso);
+          const updateClaim = db.prepare("UPDATE stock_alerts SET claim_id=?,claim_expires_at=? WHERE user_id=? AND product_id=? AND notified_at IS NULL AND (claim_expires_at IS NULL OR claim_expires_at<=?)");
+          const alerts = rows.flatMap((row) => updateClaim.run(claimId, expiresAt, user.id, row.productId, nowIso).changes
+            ? [{ productId: row.productId, name: JSON.parse(row.body).name, claimId }]
+            : []);
           return send(res, 200, { alerts });
+        }
+        if (path === "/api/stock-alerts/acknowledge" && method === "POST") {
+          requireUser();
+          const input = await body(req);
+          if (!Array.isArray(input.alerts) || input.alerts.length > 100) fail("INVALID_INPUT");
+          const acknowledge = db.prepare("UPDATE stock_alerts SET notified_at=?,claim_id=NULL,claim_expires_at=NULL WHERE user_id=? AND product_id=? AND claim_id=? AND notified_at IS NULL");
+          const notifiedAt = new Date().toISOString();
+          const acknowledged = input.alerts.reduce((count, alert) => {
+            if (!alert || typeof alert.productId !== "string" || typeof alert.claimId !== "string") fail("INVALID_INPUT");
+            return count + acknowledge.run(notifiedAt, user.id, alert.productId, alert.claimId).changes;
+          }, 0);
+          return send(res, 200, { acknowledged });
         }
         if (path === "/api/reviews" && method === "POST") {
           requireUser();
-          const input = await body(req);
+          const input = await body(req, 400_000);
           if (
             !allProducts().some((p) => p.id === input.productId) ||
             !Number.isInteger(input.rating) ||
@@ -939,31 +1052,35 @@ export async function createApp({
             input.rating > 5
           )
             fail("INVALID_RATING");
+          const reviewText = text(input.text, 1000);
+          if (db.prepare("SELECT 1 FROM reviews WHERE user_id=? AND product_id=?").get(user.id, input.productId))
+            fail("REVIEW_ALREADY_EXISTS", 409);
           const review = {
             id: randomUUID(),
             productId: input.productId,
             rating: input.rating,
-            text: text(input.text, 1000),
+            text: reviewText,
             date: new Date().toISOString(),
             userName: user.name,
             imageUrl: input.imageUrl ? (() => {
-              if (typeof input.imageUrl !== "string" || input.imageUrl.length > 2000) fail("INVALID_REVIEW_IMAGE");
-              try {
-                const parsed = new URL(input.imageUrl);
-                if (parsed.protocol !== "https:") fail("INVALID_REVIEW_IMAGE");
-                return parsed.href;
-              } catch { fail("INVALID_REVIEW_IMAGE"); }
+              return safeImageUrl(input.imageUrl, "INVALID_REVIEW_IMAGE");
             })() : null,
           };
-          db.prepare("INSERT INTO reviews(id,user_id,product_id,rating,text,date,image_url) VALUES(?,?,?,?,?,?,?)").run(
-            review.id,
-            user.id,
-            review.productId,
-            review.rating,
-            review.text,
-            review.date,
-            review.imageUrl,
-          );
+          try {
+            db.prepare("INSERT INTO reviews(id,user_id,product_id,rating,text,date,image_url) VALUES(?,?,?,?,?,?,?)").run(
+              review.id,
+              user.id,
+              review.productId,
+              review.rating,
+              review.text,
+              review.date,
+              review.imageUrl,
+            );
+          } catch (error) {
+            if (error.code === "ERR_SQLITE_CONSTRAINT_UNIQUE")
+              fail("REVIEW_ALREADY_EXISTS", 409);
+            throw error;
+          }
           return send(res, 201, { review });
         }
         if (path === "/api/my-projects" && method === "GET") {
@@ -976,9 +1093,8 @@ export async function createApp({
           const projectList = allProjects();
           return send(res, 200, {
             projects: saved.map((row) => {
-              const components =
-                projectList.find((project) => project.id === row.projectId)
-                  ?.components || [];
+              const project = projectList.find((item) => item.id === row.projectId);
+              const components = project?.components || [];
               let checklist = [];
               let stepChecklist = [];
               try {
@@ -990,16 +1106,17 @@ export async function createApp({
               checklist = components.map(
                 (_, index) => checklist[index] === true,
               );
-              const steps = projectList.find((project) => project.id === row.projectId)?.steps || [];
+              const steps = project ? getProjectSteps(project) : [];
               stepChecklist = steps.map((_, index) => stepChecklist[index] === true);
+              const totalTasks = components.length + steps.length;
               return {
                 ...row,
                 checklist,
                 stepChecklist,
                 steps,
-                progress: components.length
+                progress: totalTasks
                   ? Math.round(
-                      (checklist.filter(Boolean).length / components.length) *
+                      ((checklist.filter(Boolean).length + stepChecklist.filter(Boolean).length) / totalTasks) *
                         100,
                     )
                   : 0,
@@ -1035,7 +1152,7 @@ export async function createApp({
             !input.checklist.every((value) => typeof value === "boolean") ||
             (input.stepChecklist !== undefined &&
               (!Array.isArray(input.stepChecklist) ||
-                input.stepChecklist.length !== (project.steps || []).length ||
+                input.stepChecklist.length !== getProjectSteps(project).length ||
                 !input.stepChecklist.every((value) => typeof value === "boolean")))
           )
             fail("INVALID_PROJECT_CHECKLIST");
@@ -1094,6 +1211,39 @@ export async function createApp({
               .run(randomUUID(), product.id, stockChange, "manual_adjustment", null, new Date().toISOString());
             db.exec("COMMIT");
             return send(res, 200, { saved: true });
+          } catch (error) {
+            db.exec("ROLLBACK");
+            throw error;
+          }
+        }
+        if (path === "/api/admin/products/import" && method === "POST") {
+          requirePermission("catalog");
+          const input = await body(req, 2_500_000);
+          if (!Array.isArray(input.products) || input.products.length < 1 || input.products.length > 200)
+            fail("INVALID_CATALOG_IMPORT");
+          const products = input.products.map(productInput);
+          if (new Set(products.map((product) => product.id)).size !== products.length)
+            fail("INVALID_CATALOG_IMPORT");
+          db.exec("BEGIN IMMEDIATE");
+          try {
+            const findInventory = db.prepare("SELECT stock FROM inventory WHERE id=?");
+            const saveInventory = db.prepare("INSERT INTO inventory(id,price,old_price,stock) VALUES(?,?,?,?) ON CONFLICT(id) DO UPDATE SET price=excluded.price,old_price=excluded.old_price,stock=excluded.stock");
+            const saveProduct = db.prepare("INSERT INTO product_data(id,body,deleted) VALUES(?,?,0) ON CONFLICT(id) DO UPDATE SET body=excluded.body,deleted=0");
+            const addMovement = db.prepare("INSERT INTO inventory_movements VALUES(?,?,?,?,?,?)");
+            const date = new Date().toISOString();
+            let movements = 0;
+            for (const product of products) {
+              const inventory = findInventory.get(product.id);
+              const stockChange = product.stock - (inventory?.stock || 0);
+              saveInventory.run(product.id, product.price, product.oldPrice, product.stock);
+              saveProduct.run(product.id, JSON.stringify(product));
+              if (stockChange) {
+                addMovement.run(randomUUID(), product.id, stockChange, inventory ? "manual_adjustment" : "initial_stock", null, date);
+                movements++;
+              }
+            }
+            db.exec("COMMIT");
+            return send(res, 200, { imported: products.length, movements });
           } catch (error) {
             db.exec("ROLLBACK");
             throw error;
@@ -1418,6 +1568,8 @@ export async function createApp({
         relative = decoded === "/" ? "index.html" : decoded.replace(/^\//, "");
       const permitted =
         /^[^/]+\.html$/.test(relative) ||
+        /^offline-assets\.json$/.test(relative) ||
+        /^service-worker\.js$/.test(relative) ||
         /^(favicon\.(svg|ico)|apple-touch-icon\.png)$/.test(relative) ||
         /^admin\/index\.html$/.test(relative) ||
         /^(js|api|css|assets|guides)\/[\w./-]+\.(js|css|jpg|jpeg|png|webp|svg|ino)$/.test(
@@ -1434,6 +1586,7 @@ export async function createApp({
       }
       const mime = {
         ".html": "text/html; charset=utf-8",
+        ".json": "application/json; charset=utf-8",
         ".js": "text/javascript; charset=utf-8",
         ".css": "text/css; charset=utf-8",
         ".jpg": "image/jpeg",
@@ -1451,7 +1604,7 @@ export async function createApp({
       res.end(method === "HEAD" ? undefined : contents);
     } catch (error) {
       const status = error.status || 500;
-      if (status === 500) console.error(error);
+      if (status === 500) logger.error?.(error);
       send(res, status, {
         error: status === 500 ? "SERVER_ERROR" : error.message,
       });

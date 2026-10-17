@@ -4,6 +4,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createApp } from "../backend/server/app.js";
+import { products } from "../frontend/js/products.js";
 
 async function fixture(options = {}) {
   const app = await createApp(options);
@@ -80,6 +81,42 @@ const submit = (
     { "Idempotency-Key": key },
   );
 
+test("demo coupon is available in a new local database and enforces its minimum", async () => {
+  const f = await fixture();
+  try {
+    const client = f.client();
+    await client.init();
+    const valid = await client.call("/api/coupons/validate", "POST", {
+      code: "nexlab10",
+      subtotal: 1000,
+      bundleDiscount: 0,
+    });
+    assert.equal(valid.status, 200);
+    assert.equal(valid.data.coupon.discount, 100);
+
+    const belowMinimum = await client.call("/api/coupons/validate", "POST", {
+      code: "NEXLAB10",
+      subtotal: 999,
+      bundleDiscount: 0,
+    });
+    assert.equal(belowMinimum.status, 422);
+
+    await client.register();
+    const order = await submit(
+      client,
+      [{ ...item, quantity: 4 }],
+      crypto.randomUUID(),
+      { couponCode: "NEXLAB10" },
+    );
+    assert.equal(order.status, 201);
+    assert.equal(order.data.order.couponDiscount, 140);
+    assert.equal(order.data.order.total, 1260);
+    assert.equal(f.db.prepare("SELECT used_count FROM coupons WHERE code='NEXLAB10'").get().used_count, 1);
+  } finally {
+    await f.close();
+  }
+});
+
 test("static pages, scripts and assets work; private files are inaccessible", async () => {
   const f = await fixture();
   try {
@@ -106,6 +143,36 @@ test("static pages, scripts and assets work; private files are inaccessible", as
         .status,
       302,
     );
+    const offlineManifest = await fetch(f.origin + "/offline-assets.json");
+    assert.equal(offlineManifest.status, 200);
+    const offlineAssets = await offlineManifest.json();
+    assert.ok(offlineAssets.includes("index.html"));
+    assert.ok(offlineAssets.includes("offline.html"));
+    assert.ok(offlineAssets.includes("service-worker.js"));
+    const offlineResponses = await Promise.all(
+      offlineAssets.map((asset) => fetch(`${f.origin}/${asset}`)),
+    );
+    const unavailable = offlineAssets.filter(
+      (_, index) => !offlineResponses[index].ok,
+    );
+    assert.deepEqual(unavailable, []);
+  } finally {
+    await f.close();
+  }
+});
+test("legacy catalog photo paths are repaired to their existing product assets", async () => {
+  const f = await fixture();
+  try {
+    const row = f.db.prepare("SELECT body FROM product_data WHERE id=?").get("esp32-devkit");
+    const product = JSON.parse(row.body);
+    product.images = ["assets/images/esp32-devkit.jpg"];
+    f.db.prepare("UPDATE product_data SET body=? WHERE id=?").run(JSON.stringify(product), product.id);
+
+    const response = await fetch(f.origin + "/api/products");
+    assert.equal(response.status, 200);
+    const saved = (await response.json()).products.find((item) => item.id === product.id);
+    assert.deepEqual(saved.images, ["assets/images/products/esp32-devkit.jpg"]);
+    assert.equal((await fetch(f.origin + "/assets/images/products/esp32-devkit.jpg")).status, 200);
   } finally {
     await f.close();
   }
@@ -325,18 +392,32 @@ test("orders and projects belong to the authenticated account, not a supplied us
     assert.equal(saved.length, 1);
     assert.equal(saved[0].progress, 0);
     assert.deepEqual(saved[0].checklist, [false, false, false, false]);
+    assert.equal(saved[0].steps.length, 5);
+    assert.deepEqual(saved[0].stepChecklist, [false, false, false, false, false]);
     assert.equal(
       (
         await a.call("/api/my-projects", "PATCH", {
           projectId: "weather-station",
           checklist: [true, false, true, false],
+          stepChecklist: [true, true, true, false, false],
         })
       ).status,
       200,
     );
     saved = (await a.call("/api/my-projects")).data.projects;
-    assert.equal(saved[0].progress, 50);
+    assert.equal(saved[0].progress, 56);
     assert.deepEqual(saved[0].checklist, [true, false, true, false]);
+    assert.deepEqual(saved[0].stepChecklist, [true, true, true, false, false]);
+    assert.equal(
+      (
+        await a.call("/api/my-projects", "PATCH", {
+          projectId: "weather-station",
+          checklist: [true, false, true, false],
+          stepChecklist: [true],
+        })
+      ).status,
+      400,
+    );
     assert.equal(
       (
         await a.call("/api/my-projects", "PATCH", {
@@ -363,30 +444,39 @@ test("orders and projects belong to the authenticated account, not a supplied us
 test("review count and average come from actual reviews; validation rejects invalid entries", async () => {
   const f = await fixture();
   try {
-    const c = f.client();
+    const c = f.client(), second = f.client();
     await c.register();
+    await second.register("second@example.com");
     const product = () =>
       c
         .call("/api/products")
         .then((result) => result.data.products.find((p) => p.id === item.id));
+    const photo = `data:image/webp;base64,${Buffer.from("RIFF0000WEBPVP8 ").toString("base64")}`;
     assert.equal((await product()).reviewsCount, 0);
-    for (const rating of [5, 3])
+    for (const [author, rating] of [[c, 5], [second, 3]])
       assert.equal(
         (
-          await c.call("/api/reviews", "POST", {
+          await author.call("/api/reviews", "POST", {
             productId: item.id,
             rating,
             text: "Тестовий відгук",
+            ...(author === c ? { imageUrl: photo } : {}),
           })
         ).status,
         201,
       );
+    assert.equal((await c.call("/api/reviews", "POST", {
+      productId: item.id,
+      rating: 4,
+      text: "Другий відгук з того самого акаунта",
+    })).status, 409);
     assert.equal((await product()).reviewsCount, 2);
     assert.equal((await product()).rating, 4);
     assert.equal(
       (await c.call("/api/reviews?productId=" + item.id)).data.reviews.length,
       2,
     );
+    assert.equal((await c.call("/api/reviews?productId=" + item.id)).data.reviews.find((review) => review.imageUrl)?.imageUrl, photo);
     assert.equal(
       (
         await c.call("/api/reviews", "POST", {
@@ -411,21 +501,64 @@ test("review count and average come from actual reviews; validation rejects inva
     await f.close();
   }
 });
+test("concurrent review submissions from the same account create exactly one review", async () => {
+  const f = await fixture();
+  try {
+    const first = f.client();
+    await first.register();
+    const second = f.client();
+    await second.init();
+    await second.call("/api/auth/login", "POST", {
+      email: "test@example.com",
+      password: "sample-password-42",
+    });
+    const submitReview = (client, rating) => client.call("/api/reviews", "POST", {
+      productId: item.id,
+      rating,
+      text: "Перевірка повторної одночасної відправки",
+    });
+    const results = await Promise.all([
+      submitReview(first, 4),
+      submitReview(second, 5),
+    ]);
+    assert.deepEqual(results.map((result) => result.status).sort(), [201, 409]);
+    assert.equal(f.db.prepare("SELECT COUNT(*) AS count FROM reviews WHERE user_id=(SELECT id FROM users WHERE email='test@example.com') AND product_id=?").get(item.id).count, 1);
+  } finally {
+    await f.close();
+  }
+});
 test("community project questions can be answered by the author but not another member", async () => {
   const f = await fixture();
   try {
     const owner = f.client(), member = f.client();
     await owner.register("owner@example.com");
     await member.register("member@example.com");
+    const photo = `data:image/webp;base64,${Buffer.from("RIFF0000WEBPVP8 ").toString("base64")}`;
     const created = await owner.call("/api/community-projects", "POST", {
       title: "Тестова збірка",
       description: "Перевірка запитань і відповідей.",
-      photoUrl: "https://example.com/project.jpg",
+      photoUrl: photo,
       schematicUrl: "",
       codeUrl: "https://example.com/project.ino",
     });
     assert.equal(created.status, 201);
+    assert.equal(created.data.project.photoUrl, photo);
+    assert.equal((await owner.call("/api/community-projects", "POST", {
+      title: "Некоректне фото",
+      description: "Цей проєкт не повинен зберегтися.",
+      photoUrl: "data:image/svg+xml,<svg>",
+      schematicUrl: "",
+      codeUrl: "https://example.com/project.ino",
+    })).status, 400);
     const projectId = created.data.project.id;
+    const rateProject = (client, rating) => client.call("/api/community-projects/comments", "POST", {
+      projectId,
+      rating,
+      text: "Перевірка оцінки проєкту",
+    });
+    assert.equal((await rateProject(member, 5)).status, 201);
+    assert.equal((await rateProject(member, 4)).status, 409);
+    assert.equal((await rateProject(owner, 3)).status, 201);
     const asked = await member.call("/api/community-projects/questions", "POST", {
       projectId,
       text: "Яке живлення потрібно для цієї збірки?",
@@ -449,6 +582,46 @@ test("community project questions can be answered by the author but not another 
     const project = (await member.call("/api/community-projects")).data.projects[0];
     assert.equal(project.questions[0].text, "Яке живлення потрібно для цієї збірки?");
     assert.equal(project.questions[0].answer, "Використай стабілізоване живлення 5 V.");
+    assert.equal(project.questionCount, 1);
+    assert.equal(project.commentCount, 2);
+    assert.equal(project.rating, 4);
+    assert.equal(project.hasRated, true);
+    const detail = await member.call(`/api/community-projects/${encodeURIComponent(projectId)}`);
+    assert.equal(detail.status, 200);
+    assert.equal(detail.data.project.title, "Тестова збірка");
+    assert.equal(detail.data.project.photoUrl, photo);
+    assert.equal(detail.data.project.codeUrl, "https://example.com/project.ino");
+    assert.equal(detail.data.project.comments.length, 2);
+    assert.equal(detail.data.project.questions[0].answer, "Використай стабілізоване живлення 5 V.");
+    assert.equal(detail.data.project.hasRated, true);
+    assert.equal((await member.call("/api/community-projects/missing-project")).status, 404);
+  } finally {
+    await f.close();
+  }
+});
+test("community project listing is paginated with stable offsets", async () => {
+  const f = await fixture();
+  try {
+    const owner = f.client();
+    await owner.register("owner@example.com");
+    for (const title of ["Збірка A", "Збірка B"]) {
+      assert.equal((await owner.call("/api/community-projects", "POST", {
+        title,
+        description: "Тестова збірка для пагінації.",
+        photoUrl: "https://example.com/project.jpg",
+        schematicUrl: "",
+        codeUrl: "https://example.com/project.ino",
+      })).status, 201);
+    }
+    const first = await owner.call("/api/community-projects?limit=1&offset=0");
+    const second = await owner.call("/api/community-projects?limit=1&offset=1");
+    assert.equal(first.data.projects.length, 1);
+    assert.equal(first.data.hasMore, true);
+    assert.equal(first.data.nextOffset, 1);
+    assert.equal(second.data.projects.length, 1);
+    assert.equal(second.data.hasMore, false);
+    assert.equal(second.data.nextOffset, 2);
+    assert.notEqual(first.data.projects[0].id, second.data.projects[0].id);
   } finally {
     await f.close();
   }
@@ -469,6 +642,7 @@ test("employee roles restrict admin API access and warehouse edits to stock", as
     })).status, 200);
     assert.equal((await employee.call("/api/session")).data.user.role, "warehouse");
     assert.equal((await employee.call("/api/admin/inventory-movements")).status, 200);
+    assert.equal((await employee.call("/api/admin/products/import", "POST", { products: [products[0]] })).status, 403);
     assert.equal((await employee.call("/api/admin/products", "PATCH", {
       id: item.id,
       stock: 7,
@@ -488,23 +662,32 @@ test("employee roles restrict admin API access and warehouse edits to stock", as
     await f.close();
   }
 });
-test("restock alerts notify once per restock and can be rearmed", async () => {
+test("restock alerts use an expiring claim and acknowledge only after delivery", async () => {
   const f = await fixture();
   try {
     const customer = f.client();
     await customer.register();
     f.db.prepare("UPDATE inventory SET stock=0 WHERE id=?").run(item.id);
     assert.equal((await customer.call("/api/stock-alerts", "POST", { productId: item.id })).status, 201);
-    assert.equal((await customer.call("/api/stock-alerts")).data.alerts.length, 0);
+    const claimPath = "/api/stock-alerts/claim";
+    const acknowledgePath = "/api/stock-alerts/acknowledge";
+    assert.equal((await customer.call(claimPath, "POST", {})).data.alerts.length, 0);
     f.db.prepare("UPDATE inventory SET stock=1 WHERE id=?").run(item.id);
-    const first = await customer.call("/api/stock-alerts");
+    const first = await customer.call(claimPath, "POST", {});
     assert.equal(first.data.alerts.length, 1);
     assert.equal(first.data.alerts[0].productId, item.id);
-    assert.equal((await customer.call("/api/stock-alerts")).data.alerts.length, 0);
+    assert.equal((await customer.call(claimPath, "POST", {})).data.alerts.length, 0);
+    assert.equal((await customer.call(acknowledgePath, "POST", { alerts: first.data.alerts })).data.acknowledged, 1);
+    assert.equal((await customer.call(claimPath, "POST", {})).data.alerts.length, 0);
     f.db.prepare("UPDATE inventory SET stock=0 WHERE id=?").run(item.id);
     assert.equal((await customer.call("/api/stock-alerts", "POST", { productId: item.id })).status, 201);
     f.db.prepare("UPDATE inventory SET stock=1 WHERE id=?").run(item.id);
-    assert.equal((await customer.call("/api/stock-alerts")).data.alerts.length, 1);
+    const rearmed = await customer.call(claimPath, "POST", {});
+    assert.equal(rearmed.data.alerts.length, 1);
+
+    f.db.prepare("UPDATE stock_alerts SET claim_expires_at=? WHERE user_id=? AND product_id=?")
+      .run("2000-01-01T00:00:00.000Z", (await customer.call("/api/session")).data.user.id, item.id);
+    assert.equal((await customer.call(claimPath, "POST", {})).data.alerts.length, 1);
   } finally {
     await f.close();
   }
@@ -584,6 +767,48 @@ test("admin inventory editing is authorized; project prices match current compon
         ),
       );
     assert.equal((await c.call("/api/admin/orders")).status, 200);
+  } finally {
+    await f.close();
+  }
+});
+test("catalog import commits the whole batch or rolls every product and stock movement back", async () => {
+  const f = await fixture({
+    adminEmail: "admin@example.com",
+    adminPassword: "admin-sample-password-42",
+    logger: { error() {} },
+  });
+  try {
+    const admin = f.client();
+    await admin.init();
+    await admin.call("/api/auth/login", "POST", {
+      email: "admin@example.com",
+      password: "admin-sample-password-42",
+    });
+    const existing = structuredClone(products[0]);
+    const imported = { ...structuredClone(products[1]), id: "import-first", sku: "IMPORT-FIRST", stock: 6 };
+    const movementsBefore = f.db.prepare("SELECT COUNT(*) AS count FROM inventory_movements").get().count;
+    f.db.exec("CREATE TRIGGER fail_catalog_import BEFORE INSERT ON product_data WHEN NEW.id='zz-import-fail' BEGIN SELECT RAISE(ABORT,'test failure'); END;");
+    const failed = await admin.call("/api/admin/products/import", "POST", {
+      products: [imported, { ...existing, id: "zz-import-fail", sku: "IMPORT-FAIL", stock: 8 }],
+    });
+    assert.equal(failed.status, 500);
+    assert.equal(f.db.prepare("SELECT id FROM product_data WHERE id IN ('import-first','zz-import-fail')").all().length, 0);
+    assert.equal(f.db.prepare("SELECT id FROM inventory WHERE id IN ('import-first','zz-import-fail')").all().length, 0);
+    assert.equal(f.db.prepare("SELECT COUNT(*) AS count FROM inventory_movements").get().count, movementsBefore);
+
+    const invalid = await admin.call("/api/admin/products/import", "POST", {
+      products: [imported, { ...existing, stock: -1 }],
+    });
+    assert.equal(invalid.status, 400);
+    assert.equal(f.db.prepare("SELECT id FROM product_data WHERE id='import-first'").all().length, 0);
+
+    const success = await admin.call("/api/admin/products/import", "POST", {
+      products: [imported, { ...existing, price: existing.price + 10, stock: existing.stock + 1 }],
+    });
+    assert.equal(success.status, 200);
+    assert.equal(success.data.imported, 2);
+    assert.equal(f.db.prepare("SELECT stock FROM inventory WHERE id='import-first'").get().stock, 6);
+    assert.equal(f.db.prepare("SELECT price FROM inventory WHERE id=?").get(existing.id).price, existing.price + 10);
   } finally {
     await f.close();
   }

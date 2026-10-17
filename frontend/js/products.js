@@ -882,7 +882,7 @@ export function productArt(product, large = false, view = 0) {
       '<circle cx="130" cy="91" r="48" class="art-board"/><circle cx="130" cy="91" r="32" fill="#202922" stroke="#899789" stroke-width="4"/><circle cx="130" cy="91" r="7" fill="#57cdb3"/><path d="M130 38v-9m-49 62h-9m107 0h-9m-40 48v9" class="art-line"/>',
   };
   const transform = large
-    ? `transform="scale(${1.13 - view * 0.06}) rotate(${view * 3}deg)"`
+    ? `transform="scale(${(1.13 - view * 0.06).toFixed(2)}) rotate(${view * 3})"`
     : "";
   return `<div class="product-art" style="--art-glow:${product.image === "strip" ? "#493544" : "#465846"}"><span class="product-tag">${product.stock === 0 ? "НЕМАЄ В НАЯВНОСТІ" : "Є В НАЯВНОСТІ"}</span><svg viewBox="0 0 260 180" fill="none" aria-hidden="true" ${transform}>${shapes[product.image] || shapes.board}</svg><span class="illustration-note">Схематична ілюстрація</span></div>`;
 }

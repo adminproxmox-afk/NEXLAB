@@ -92,59 +92,28 @@ export async function requestOrderReturn(orderId, reason) {
 }
 export async function createOrder({ items, delivery, requestKey, couponCode = "", bundleDiscount = 0, bundlePromotions = [] }) {
   if (isFirebaseConfigured()) {
-    const { auth, db, firestoreSdk } = await getFirebaseServices();
+    const { auth, functions, functionsSdk } = await getFirebaseServices();
     const user = auth.currentUser;
     if (!user) throw new Error("UNAUTHENTICATED");
-    const id = requestKey;
-    const orderRef = firestoreSdk.doc(db, "orders", id);
-    return firestoreSdk.runTransaction(db, async (transaction) => {
-      const previous = await transaction.get(orderRef);
-      if (previous.exists()) return { id: previous.id, ...previous.data() };
-      const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-      let couponDiscount = 0;
-      let couponRef;
-      let couponSnapshot;
-      if (couponCode) {
-        couponRef = firestoreSdk.doc(db, "coupons", couponCode);
-        couponSnapshot = await transaction.get(couponRef);
-        const coupon = couponSnapshot.exists() ? couponSnapshot.data() : null;
-        if (!coupon || !coupon.active || (coupon.validUntil && Date.parse(coupon.validUntil) < Date.now())
-          || (coupon.maxUses !== null && coupon.maxUses !== undefined && coupon.usedCount >= coupon.maxUses))
-          throw new Error("COUPON_INVALID");
-        // Match the local backend: the minimum cart value is checked before
-        // bundle and coupon discounts are applied.
-        if (subtotal < coupon.minTotal) throw new Error("COUPON_MINIMUM_NOT_MET");
-        couponDiscount = Math.floor((subtotal - bundleDiscount) * coupon.percent / 100);
-      }
-      const date = new Date().toISOString();
-      const saleDiscount = items.reduce((sum, item) => sum + Math.max(0, (item.oldPrice || item.price) - item.price) * item.quantity, 0);
-      const order = {
-        id,
-        userId: user.uid,
-        date,
-        status: "processing",
-        statusHistory: [{ status: "processing", date }],
-        items: items.map(({ id: productId, name, quantity, price }) => ({ id: productId, name, quantity, price })),
-        total: subtotal - bundleDiscount - couponDiscount,
-        discount: saleDiscount + couponDiscount + bundleDiscount,
+    try {
+      const callable = functionsSdk.httpsCallable(functions, "createOrder");
+      return (await callable({
+        items: items.map(({ id, quantity, price }) => ({ id, quantity, expectedPrice: price })),
+        delivery,
+        requestKey,
         couponCode,
-        couponDiscount,
-        bundleDiscount,
-        bundlePromotions,
-        delivery: {
-          name: String(delivery.name || "").trim(),
-          phone: String(delivery.phone || "").replace(/[\s()-]/g, ""),
-          city: String(delivery.city || "").trim(),
-          address: String(delivery.address || "").trim(),
-          carrier: delivery.carrier,
-          payment: delivery.payment,
-        },
-        verificationRequired: true,
-      };
-      transaction.set(orderRef, order);
-      if (couponSnapshot) transaction.update(couponRef, { usedCount: (couponSnapshot.data().usedCount || 0) + 1 });
-      return order;
-    });
+      })).data;
+    } catch (error) {
+      const code = typeof error.details === "string"
+        ? error.details
+        : error.details?.message || error.message;
+      const mapped = new Error(code || "ORDER_FAILED");
+      mapped.code = error.code;
+      if (["PRICE_CHANGED", "OUT_OF_STOCK", "COUPON_INVALID", "COUPON_MINIMUM_NOT_MET"].includes(code))
+        mapped.status = 409;
+      if (code === "UNAUTHENTICATED") mapped.status = 401;
+      throw mapped;
+    }
   }
   return (
     await request("orders", {

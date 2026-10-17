@@ -1,4 +1,4 @@
-const CACHE_NAME = "nexlab-shell-v1";
+const CACHE_NAME = "nexlab-shell-v6";
 const OFFLINE_PAGE = new URL("offline.html", self.registration.scope).href;
 const MANIFEST_URL = new URL("offline-assets.json", self.registration.scope).href;
 
@@ -49,12 +49,35 @@ async function saveImageResponse(request, response) {
   return response;
 }
 
+function offlineImageResponse() {
+  return new Response(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320"><rect width="480" height="320" fill="#151c17"/><rect x="134" y="82" width="212" height="156" rx="16" fill="#20352c" stroke="#56bfa6" stroke-width="4"/><rect x="193" y="125" width="94" height="70" rx="9" fill="#111a15" stroke="#8be4d0" stroke-width="3"/><path d="M155 62v20m34-20v20m34-20v20m34-20v20m34-20v20m34-20v20M155 238v20m34-20v20m34-20v20m34-20v20m34-20v20m34-20v20" stroke="#8be4d0" stroke-width="5" stroke-linecap="round"/><text x="240" y="286" text-anchor="middle" fill="#b9d8ca" font-family="system-ui,sans-serif" font-size="16" letter-spacing="4">NEXLAB · OFFLINE</text></svg>',
+    { headers: { "Content-Type": "image/svg+xml; charset=utf-8", "Cache-Control": "no-store" } },
+  );
+}
+
 self.addEventListener("fetch", (event) => {
   const request = event.request;
-  if (request.method !== "GET") return;
   const url = new URL(request.url);
-  if (url.origin !== self.location.origin || url.pathname.includes("/api/")) return;
+  const isStaticApiModule = request.destination === "script" && url.pathname.endsWith(".js");
+  const isApiEndpoint = url.pathname.includes("/api/") && !isStaticApiModule;
+  if (url.origin !== self.location.origin) return;
   if (request.headers.has("authorization")) return;
+
+  if (isApiEndpoint) {
+    event.respondWith((async () => {
+      try {
+        return await fetchWithTimeout(request);
+      } catch {
+        return new Response(JSON.stringify({ error: "BACKEND_UNAVAILABLE" }), {
+          status: 503,
+          headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" },
+        });
+      }
+    })());
+    return;
+  }
+  if (request.method !== "GET") return;
 
   if (request.mode === "navigate") {
     event.respondWith((async () => {
@@ -90,15 +113,16 @@ self.addEventListener("fetch", (event) => {
       const cached = await cache.match(request);
       if (cached) return cached;
       try {
-        return await saveImageResponse(request, await fetchWithTimeout(request, 5000));
+        const response = await fetchWithTimeout(request, 5000);
+        return response.ok ? await saveImageResponse(request, response) : offlineImageResponse();
       } catch {
-        return (await cache.match(request)) || Response.error();
+        return (await cache.match(request)) || offlineImageResponse();
       }
     })());
     return;
   }
 
-  if (["style", "script", "font", "worker"].includes(request.destination)) {
+  if (["style", "script", "font", "worker"].includes(request.destination) || url.pathname.endsWith(".ino")) {
     event.respondWith((async () => {
       const cache = await caches.open(CACHE_NAME);
       const cached = await cache.match(request);

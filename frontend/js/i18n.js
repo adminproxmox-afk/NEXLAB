@@ -3,8 +3,9 @@ const supported = new Set(["uk", "ru", "en"]);
 const messages = {
   uk: {},
   ru: {
+    "NEXLAB — головна сторінка": "NEXLAB — главная страница",
     "Головна": "Главная", "Каталог": "Каталог", "Проєкти": "Проекты", "Спільнота": "Сообщество", "Акції": "Акции",
-    "Головна навігація": "Главная навигация", "Пошук товарів": "Поиск товаров", "Шукати товар": "Найти товар",
+    "Головна навігація": "Главная навигация", "Перейти до основного вмісту": "Перейти к основному содержимому", "У Firebase немає налаштувань магазину: показуємо демонстраційні значення.": "В Firebase нет настроек магазина: показываем демонстрационные значения.", "У Firebase ще немає товарів: показуємо демонстраційний каталог.": "В Firebase пока нет товаров: показываем демонстрационный каталог.", "У Firebase ще немає DIY-проєктів: показуємо демонстраційні приклади.": "В Firebase пока нет DIY-проектов: показываем демонстрационные примеры.", "Пошук товарів": "Поиск товаров", "Шукати товар": "Найти товар",
     "Обране": "Избранное", "Порівняння товарів": "Сравнение товаров", "Кошик": "Корзина", "Увійти": "Войти",
     "Реєстрація": "Регистрация", "Перемкнути на темну тему": "Включить тёмную тему", "Перемкнути на світлу тему": "Включить светлую тему",
     "Раді бачити знову": "Рады видеть снова", "Увійти до NEXLAB": "Войти в NEXLAB", "Увійди, щоб продовжити роботу над своїми проєктами.": "Войдите, чтобы продолжить работу над своими проектами.",
@@ -22,7 +23,7 @@ const messages = {
     "Введи український номер у форматі +380XXXXXXXXX.": "Введите украинский номер в формате +380XXXXXXXXX.", "Зберігаємо замовлення…": "Сохраняем заказ…", "Кількість товарів змінилася. Перевір оновлене замовлення та підтвердь його ще раз.": "Количество товаров изменилось. Проверьте заказ и подтвердите его ещё раз.", "Ціна товарів змінилася. Перевір оновлену суму перед підтвердженням.": "Цена товаров изменилась. Проверьте новую сумму перед подтверждением.", "Сесія завершилася. Увійди ще раз.": "Сессия завершилась. Войдите снова.", "Перевір номер телефону.": "Проверьте номер телефона.", "Купон більше не діє або його ліміт використань вичерпано. Перевір кошик і застосуй інший купон.": "Купон больше не действует или лимит использований исчерпан. Проверьте корзину и примените другой купон.", "Сума кошика більше не відповідає умовам купона.": "Сумма корзины больше не соответствует условиям купона.", "Firebase відхилив запис. Опублікуй актуальні правила з firebase/firestore.rules у Firebase Console і спробуй знову.": "Firebase отклонил запись. Опубликуйте актуальные правила из firebase/firestore.rules в Firebase Console и попробуйте снова.", "Не вдалося зберегти замовлення. Спробуй ще раз.": "Не удалось сохранить заказ. Попробуйте ещё раз.", "Не вдалося перевірити купон. Перевір з’єднання та спробуй ще раз.": "Не удалось проверить купон. Проверьте соединение и попробуйте снова.", "Кошик не досягає мінімальної суми для цього купона.": "Корзина не достигает минимальной суммы для этого купона.", "Купон не знайдено, він вимкнений або його ліміт вичерпано.": "Купон не найден, отключён или его лимит исчерпан.", "Купон застосовано: знижка": "Применён купон: скидка",
     "Одержувач": "Получатель", "Ім’я та прізвище": "Имя и фамилия", "Телефон": "Телефон", "Перевізник": "Перевозчик", "Місто": "Город", "Відділення / поштомат": "Отделение / почтомат", "Спосіб оплати": "Способ оплаты", "Знижки": "Скидки", "Промокод": "Промокод", "Введи код": "Введите код", "Застосувати": "Применить", "Скасувати": "Отменить", "Підтвердити замовлення": "Подтвердить заказ", "Повернутися до кошика": "Вернуться в корзину", "Кількість товарів": "Количество товаров", "Вартість товарів": "Стоимость товаров", "Знижка на товари": "Скидка на товары", "Перейти до оформлення ↗": "Перейти к оформлению ↗", "Доставку оплачуй за тарифом перевізника. Онлайн-оплата не підключена.": "Доставка оплачивается по тарифу перевозчика. Онлайн-оплата не подключена.",
     "Темна тема": "Тёмная тема", "Світла тема": "Светлая тема", "Відкрити меню": "Открыть меню", "Закрити меню": "Закрыть меню",
-    "Перейти до основного вмісту": "Перейти к основному содержимому", "Зв’язатися з командою": "Связаться с командой",
+    "Зв’язатися з командою": "Связаться с командой",
     "Електронні компоненти": "Электронные компоненты", "Мікроконтролери": "Микроконтроллеры", "Інструменти": "Инструменты",
     "Комп’ютери": "Компьютеры", "Покупцям": "Покупателям", "Доставка": "Доставка", "Оплата": "Оплата", "Гарантія": "Гарантия",
     "Повернення": "Возврат", "Компанія": "Компания", "Про нас": "О нас", "Контакти": "Контакты", "Конфіденційність": "Конфиденциальность",
@@ -94,8 +95,9 @@ const messages = {
     "позицій доступно": "позиций доступно", "позицій у наявності": "позиций в наличии", "шт.": "шт.", "ВІД КОМПОНЕНТІВ ДО ПЕРШОГО ЗАПУСКУ": "ОТ КОМПОНЕНТОВ ДО ПЕРВОГО ЗАПУСКА", "Збери й перевір": "Собери и проверь", "Схема з’єднань": "Схема соединений", "Плата → компонент": "Плата → компонент",
   },
   en: {
+    "NEXLAB — головна сторінка": "NEXLAB — home page",
     "Головна": "Home", "Каталог": "Catalog", "Проєкти": "Projects", "Спільнота": "Community", "Акції": "Offers",
-    "Головна навігація": "Main navigation", "Пошук товарів": "Search products", "Шукати товар": "Search products",
+    "Головна навігація": "Main navigation", "Перейти до основного вмісту": "Skip to main content", "У Firebase немає налаштувань магазину: показуємо демонстраційні значення.": "Firebase store settings are missing; demo values are shown.", "У Firebase ще немає товарів: показуємо демонстраційний каталог.": "Firebase has no products yet; the demo catalog is shown.", "У Firebase ще немає DIY-проєктів: показуємо демонстраційні приклади.": "Firebase has no DIY projects yet; demo examples are shown.", "Пошук товарів": "Search products", "Шукати товар": "Search products",
     "Обране": "Favorites", "Порівняння товарів": "Compare products", "Кошик": "Cart", "Увійти": "Sign in",
     "Реєстрація": "Register", "Перемкнути на темну тему": "Switch to dark theme", "Перемкнути на світлу тему": "Switch to light theme",
     "Раді бачити знову": "Welcome back", "Увійти до NEXLAB": "Sign in to NEXLAB", "Увійди, щоб продовжити роботу над своїми проєктами.": "Sign in to continue working on your projects.",
@@ -113,7 +115,7 @@ const messages = {
     "Введи український номер у форматі +380XXXXXXXXX.": "Enter a Ukrainian number in +380XXXXXXXXX format.", "Зберігаємо замовлення…": "Saving your order…", "Кількість товарів змінилася. Перевір оновлене замовлення та підтвердь його ще раз.": "Item availability changed. Review the updated order and submit it again.", "Ціна товарів змінилася. Перевір оновлену суму перед підтвердженням.": "Product prices changed. Review the updated total before submitting.", "Сесія завершилася. Увійди ще раз.": "Your session expired. Sign in again.", "Перевір номер телефону.": "Check the phone number.", "Купон більше не діє або його ліміт використань вичерпано. Перевір кошик і застосуй інший купон.": "This coupon has expired or reached its usage limit. Review your cart and try another coupon.", "Сума кошика більше не відповідає умовам купона.": "The cart total no longer meets the coupon requirements.", "Firebase відхилив запис. Опублікуй актуальні правила з firebase/firestore.rules у Firebase Console і спробуй знову.": "Firebase rejected the write. Publish the current rules from firebase/firestore.rules in the Firebase Console and try again.", "Не вдалося зберегти замовлення. Спробуй ще раз.": "Could not save the order. Try again.", "Не вдалося перевірити купон. Перевір з’єднання та спробуй ще раз.": "Could not check the coupon. Check your connection and try again.", "Кошик не досягає мінімальної суми для цього купона.": "The cart does not meet this coupon's minimum spend.", "Купон не знайдено, він вимкнений або його ліміт вичерпано.": "Coupon not found, disabled, or its usage limit has been reached.", "Купон застосовано: знижка": "Coupon applied: discount",
     "Одержувач": "Recipient", "Ім’я та прізвище": "Full name", "Телефон": "Phone", "Перевізник": "Carrier", "Місто": "City", "Відділення / поштомат": "Branch / parcel locker", "Спосіб оплати": "Payment method", "Знижки": "Discounts", "Промокод": "Coupon code", "Введи код": "Enter code", "Застосувати": "Apply", "Скасувати": "Cancel", "Підтвердити замовлення": "Submit order", "Повернутися до кошика": "Back to cart", "Кількість товарів": "Items", "Вартість товарів": "Items subtotal", "Знижка на товари": "Product discount", "Перейти до оформлення ↗": "Continue to checkout ↗", "Доставку оплачуй за тарифом перевізника. Онлайн-оплата не підключена.": "Shipping is charged at the carrier's rate. Online payment is not available.",
     "Темна тема": "Dark theme", "Світла тема": "Light theme", "Відкрити меню": "Open menu", "Закрити меню": "Close menu",
-    "Перейти до основного вмісту": "Skip to main content", "Зв’язатися з командою": "Contact the team",
+    "Зв’язатися з командою": "Contact the team",
     "Електронні компоненти": "Electronic components", "Мікроконтролери": "Microcontrollers", "Інструменти": "Tools",
     "Комп’ютери": "Computers", "Покупцям": "For customers", "Доставка": "Shipping", "Оплата": "Payment", "Гарантія": "Warranty",
     "Повернення": "Returns", "Компанія": "Company", "Про нас": "About", "Контакти": "Contact", "Конфіденційність": "Privacy",
@@ -187,6 +189,7 @@ const messages = {
 };
 
 Object.assign(messages.ru, {
+  "Каталог товарів ще не синхронізований із базою замовлень. Адміністратору потрібно ініціалізувати каталог у Firebase; спробуй пізніше.": "Каталог товаров ещё не синхронизирован с базой заказов. Администратору нужно инициализировать каталог в Firebase; попробуйте позже.",
   "Бібліотеки:": "Библиотеки:",
   "Очікуваний результат:": "Ожидаемый результат:",
   "Документація:": "Документация:",
@@ -200,6 +203,7 @@ Object.assign(messages.ru, {
   "Реальні заявки зараз не приймаються. Не передавай через демонстраційну форму свої персональні дані.": "Реальные заказы сейчас не принимаются. Не передавайте личные данные через демонстрационную форму.",
 });
 Object.assign(messages.en, {
+  "Каталог товарів ще не синхронізований із базою замовлень. Адміністратору потрібно ініціалізувати каталог у Firebase; спробуй пізніше.": "The catalog is not synchronized with the order database yet. An administrator needs to initialize the Firebase catalog; please try again later.",
   "Бібліотеки:": "Libraries:",
   "Очікуваний результат:": "Expected result:",
   "Документація:": "Documentation:",
@@ -212,6 +216,658 @@ Object.assign(messages.en, {
   "Замовлення": "Orders",
   "Реальні заявки зараз не приймаються. Не передавай через демонстраційну форму свої персональні дані.": "Real orders are not accepted. Do not submit personal information through the demo form.",
 });
+const guideTranslations = {
+  "Це перший етап робота: перевірка відстані. Для рухомого робота додатково потрібні шасі, мотори, драйвер моторів і відповідне живлення. Їх немає в поточному наборі, тому його ціна не включає ці деталі. Мотори не підключають безпосередньо до GPIO.": ["Это первый этап робота: проверка расстояния. Для подвижного робота дополнительно нужны шасси, моторы, драйвер моторов и соответствующее питание. Их нет в текущем наборе, поэтому его цена не включает эти детали. Моторы нельзя подключать напрямую к GPIO.", "This is the robot's first stage: distance sensing. A mobile robot also needs a chassis, motors, a motor driver, and a suitable power supply. These are not in the current kit, so its price excludes them. Never connect motors directly to GPIO."],
+  "У моніторі порту 115200 бод з’являються відстань і повідомлення про перешкоду. Керування моторами додається після вибору драйвера.": ["В мониторе порта на скорости 115200 бод отображаются расстояние и сообщение о препятствии. Управление моторами можно добавить после выбора драйвера.", "The serial monitor displays distance and obstacle alerts at 115200 baud. Motor control can be added after choosing a driver."],
+  "Вимкни Arduino UNO і підключи HC-SR04: VCC до 5V, GND до GND.": ["Отключи Arduino UNO и подключи HC-SR04: VCC к 5V, GND к GND.", "Power off the Arduino UNO and connect HC-SR04: VCC to 5V and GND to GND."],
+  "З’єднай TRIG із D9, а ECHO — з D10; для іншої плати спершу перевір допустиму напругу входів.": ["Соедини TRIG с D9, а ECHO — с D10; для другой платы сначала проверь допустимое напряжение входов.", "Connect TRIG to D9 and ECHO to D10. For another board, first check its input voltage limits."],
+  "В Arduino IDE вибери Arduino UNO та відкрий файл `arduino-robot.ino`. Додаткові бібліотеки не потрібні.": ["В Arduino IDE выбери Arduino UNO и открой файл `arduino-robot.ino`. Дополнительные библиотеки не нужны.", "In Arduino IDE, select Arduino UNO and open `arduino-robot.ino`. No additional libraries are needed."],
+  "Завантаж код і відкрий монітор порту на швидкості 115200 бод.": ["Загрузи код и открой монитор порта на скорости 115200 бод.", "Upload the code and open the serial monitor at 115200 baud."],
+  "Піднеси предмет до датчика та перевір виміряну відстань. Це тест сенсора; мотори й шасі до комплекту не входять.": ["Поднеси предмет к датчику и проверь измеренное расстояние. Это проверка сенсора; моторы и шасси в комплект не входят.", "Move an object near the sensor and check the measured distance. This tests the sensor; motors and chassis are not included."],
+  "Зовнішнє 5V": ["Внешнее 5V", "External 5V supply"], "GND (спільна)": ["GND (общая земля)", "GND (common ground)"], "GPIO18 → перетворювач рівня → 330 Ом": ["GPIO18 → преобразователь уровня → 330 Ом", "GPIO18 → level shifter → 330 Ω"],
+  "Додатково потрібні блок 5 V з достатнім струмом, перетворювач логічного рівня 3,3→5 V, резистор 330 Ом і конденсатор 500–1000 мкФ. USB-C модуль у каталозі не гарантує струм для всієї стрічки. Живи стрічку окремо від плати; приклад обмежує яскравість і потужність.": ["Дополнительно нужны блок питания 5 V с достаточным током, преобразователь логических уровней 3,3→5 V, резистор 330 Ом и конденсатор 500–1000 мкФ. USB-C-модуль из каталога не гарантирует достаточный ток для всей ленты. Питай ленту отдельно от платы; пример ограничивает яркость и мощность.", "You also need a 5 V supply with enough current, a 3.3-to-5 V logic level shifter, a 330 Ω resistor, and a 500–1000 µF capacitor. The catalog's USB-C module may not provide enough current for the whole strip. Power the strip separately from the board; the example limits brightness and power."],
+  "Зміни пароль точки доступу в коді, підключись до NEXLAB-Lamp і відкрий адресу з монітора порту. Кнопки вмикають та вимикають стрічку.": ["Измени пароль точки доступа в коде, подключись к NEXLAB-Lamp и открой адрес из монитора порта. Кнопки включают и выключают ленту.", "Change the access point password in the code, connect to NEXLAB-Lamp, and open the address shown in the serial monitor. The buttons turn the strip on and off."],
+  "Від’єднай живлення. Підготуй окреме стабільне джерело 5 V для LED-стрічки.": ["Отключи питание. Подготовь отдельный стабильный источник 5 V для LED-ленты.", "Disconnect power. Prepare a separate, stable 5 V supply for the LED strip."],
+  "З’єднай землю джерела з GND ESP32; LED DIN підключай до GPIO18 через перетворювач рівня та резистор 330 Ом.": ["Соедини землю источника с GND ESP32; подключи LED DIN к GPIO18 через преобразователь уровня и резистор 330 Ом.", "Connect the supply ground to ESP32 GND. Connect LED DIN to GPIO18 through a level shifter and 330 Ω resistor."],
+  "Додай конденсатор 500–1000 мкФ між +5 V та GND біля стрічки. Не живи стрічку від USB-порту ESP32.": ["Добавь конденсатор 500–1000 мкФ между +5 V и GND рядом с лентой. Не питай ленту от USB-порта ESP32.", "Place a 500–1000 µF capacitor between +5 V and GND near the strip. Do not power the strip from the ESP32 USB port."],
+  "Встанови FastLED, відкрий `smart-lamp.ino` і зміни пароль точки доступу `change-this-password`.": ["Установи FastLED, открой `smart-lamp.ino` и измени пароль точки доступа `change-this-password`.", "Install FastLED, open `smart-lamp.ino`, and change the access point password `change-this-password`."],
+  "Завантаж код, підключи телефон до NEXLAB-Lamp і відкрий IP-адресу з монітора порту.": ["Загрузи код, подключи телефон к NEXLAB-Lamp и открой IP-адрес из монитора порта.", "Upload the code, connect your phone to NEXLAB-Lamp, and open the IP address shown in the serial monitor."],
+  "ESP32 на релейному модулі": ["ESP32 на релейном модуле", "ESP32 relay module"], "GPIO17 (приклад)": ["GPIO17 (пример)", "GPIO17 (example)"], "GPIO16 (звір зі схемою модуля)": ["GPIO16 (сверь со схемой модуля)", "GPIO16 (check your module's schematic)"], "Керування каналом реле": ["Управление каналом реле", "Relay channel control"],
+  "Релейні модулі мають різні GPIO й активні рівні. Перед прошивкою перевір RELAY_PIN і ACTIVE_LEVEL за схемою виробника. Приклад призначено для низьковольтного стенда без мережі 230 V. Резистор 10 кОм для голого DHT22 додається окремо.": ["У релейных модулей могут отличаться GPIO и активные уровни. Перед прошивкой проверь RELAY_PIN и ACTIVE_LEVEL по схеме производителя. Пример предназначен для низковольтного стенда без сети 230 V. Резистор 10 кОм для отдельного DHT22 приобретается отдельно.", "Relay modules may use different GPIO pins and active logic levels. Before uploading, check RELAY_PIN and ACTIVE_LEVEL against the manufacturer's schematic. This example is for a low-voltage bench setup and does not use mains power. A 10 kΩ resistor for a bare DHT22 is extra."],
+  "На стенді реле активується, коли температура перевищує 28 °C. За помилки сенсора реле вимкнене.": ["На стенде реле включается, когда температура превышает 28 °C. При ошибке датчика реле отключено.", "On the bench, the relay activates above 28 °C. The relay stays off if the sensor reports an error."],
+  "Використовуй лише низьковольтний стенд; не підключай мережу 230 V до цього навчального прикладу.": ["Используй только низковольтный стенд; не подключай сеть 230 V к этому учебному примеру.", "Use a low-voltage bench setup only; do not connect this learning example to 230 V mains."],
+  "Перевір схему саме свого релейного модуля: GPIO та активний рівень можуть відрізнятися.": ["Проверь схему именно своего релейного модуля: GPIO и активный уровень могут отличаться.", "Check the schematic for your exact relay module; GPIO pins and active logic levels may differ."],
+  "Підключи DHT22 до 3V3, GND і GPIO17; без готової плати датчика додай резистор 10 кОм між DATA та 3V3.": ["Подключи DHT22 к 3V3, GND и GPIO17; для отдельного датчика добавь резистор 10 кОм между DATA и 3V3.", "Connect DHT22 to 3V3, GND, and GPIO17. For a bare sensor, add a 10 kΩ resistor between DATA and 3V3."],
+  "Встанови DHT sensor library і Adafruit Unified Sensor. У коді звір RELAY_PIN та ACTIVE_LEVEL зі схемою модуля.": ["Установи DHT sensor library и Adafruit Unified Sensor. Сверь RELAY_PIN и ACTIVE_LEVEL в коде со схемой модуля.", "Install DHT sensor library and Adafruit Unified Sensor. Check RELAY_PIN and ACTIVE_LEVEL in the code against your module's schematic."],
+  "Завантаж код і перевір спрацювання реле без підключеного навантаження.": ["Загрузи код и проверь срабатывание реле без подключённой нагрузки.", "Upload the code and test relay switching with no load connected."],
+  "Heltec WiFi Kit 32 V1/V2 (приклад)": ["Heltec WiFi Kit 32 V1/V2 (пример)", "Heltec WiFi Kit 32 V1/V2 (example)"], "GPIO4 (вбудовано)": ["GPIO4 (встроенный)", "GPIO4 (onboard)"], "GPIO15 (вбудовано)": ["GPIO15 (встроенный)", "GPIO15 (onboard)"], "GPIO16 (вбудовано)": ["GPIO16 (встроенный)", "GPIO16 (onboard)"],
+  "Код і контакти відповідають Heltec WiFi Kit 32 V1/V2. Для іншої плати або ревізії потрібно змінити OLED_SDA, OLED_SCL, OLED_RESET за її документацією. Резистор підтягування DHT22 та USB-кабель додаються окремо.": ["Код и контакты соответствуют Heltec WiFi Kit 32 V1/V2. Для другой платы или ревизии измени OLED_SDA, OLED_SCL и OLED_RESET по её документации. Подтягивающий резистор DHT22 и USB-кабель приобретаются отдельно.", "The code and pinout are for Heltec WiFi Kit 32 V1/V2. For another board or revision, adjust OLED_SDA, OLED_SCL, and OLED_RESET according to its documentation. The DHT22 pull-up resistor and USB cable are extra."],
+  "Вбудований OLED показує температуру та вологість.": ["Встроенный OLED показывает температуру и влажность.", "The onboard OLED displays temperature and humidity."],
+  "Перевір, що в тебе Heltec WiFi Kit 32 V1 або V2: вбудовані контакти OLED на інших платах відрізняються.": ["Убедись, что у тебя Heltec WiFi Kit 32 V1 или V2: контакты встроенного OLED на других платах отличаются.", "Confirm you have a Heltec WiFi Kit 32 V1 or V2; other boards use different onboard OLED pins."],
+  "Підключи DHT22 до 3V3, GND та GPIO17; для окремого сенсора потрібен резистор 10 кОм між DATA та 3V3.": ["Подключи DHT22 к 3V3, GND и GPIO17; для отдельного датчика нужен резистор 10 кОм между DATA и 3V3.", "Connect DHT22 to 3V3, GND, and GPIO17. A bare sensor needs a 10 kΩ resistor between DATA and 3V3."],
+  "Установи бібліотеки DHT sensor library, Adafruit Unified Sensor, Adafruit SSD1306 та Adafruit GFX Library.": ["Установи библиотеки DHT sensor library, Adafruit Unified Sensor, Adafruit SSD1306 и Adafruit GFX Library.", "Install DHT sensor library, Adafruit Unified Sensor, Adafruit SSD1306, and Adafruit GFX Library."],
+  "Відкрий `mini-weather.ino`, вибери відповідну плату Heltec та завантаж код.": ["Открой `mini-weather.ino`, выбери соответствующую плату Heltec и загрузи код.", "Open `mini-weather.ino`, select the matching Heltec board, and upload the code."],
+  "Перевір температуру й вологість на вбудованому OLED. Якщо екран не запускається, звір ревізію плати та її контакти.": ["Проверь температуру и влажность на встроенном OLED. Если экран не запускается, сверь ревизию платы и её контакты.", "Check the temperature and humidity on the onboard OLED. If the display does not start, verify the board revision and pinout."],
+  "Стартовий приклад перемикає стан на екрані. Для керування зовнішнім пристроєм потрібно окремо вибрати сумісний драйвер або виконавчий модуль. Зміни пароль точки доступу в коді.": ["Стартовый пример переключает состояние на экране. Для управления внешним устройством отдельно выбери совместимый драйвер или исполнительный модуль. Измени пароль точки доступа в коде.", "The starter example toggles the state shown on the display. To control an external device, choose a compatible driver or actuator separately. Change the access point password in the code."],
+  "Підключись до NEXLAB-Control та відкрий адресу на OLED. Кнопка перемикає стан ON / OFF.": ["Подключись к NEXLAB-Control и открой адрес с OLED. Кнопка переключает состояние ON / OFF.", "Connect to NEXLAB-Control and open the address shown on the OLED. The button toggles ON / OFF."],
+  "Вимкни живлення ESP32 і підключи OLED I²C: VCC до 3V3, GND до GND, SDA до GPIO21, SCL до GPIO22.": ["Отключи питание ESP32 и подключи OLED I²C: VCC к 3V3, GND к GND, SDA к GPIO21, SCL к GPIO22.", "Power off the ESP32 and connect the I²C OLED: VCC to 3V3, GND to GND, SDA to GPIO21, and SCL to GPIO22."],
+  "Установи Adafruit SSD1306 і Adafruit GFX Library.": ["Установи Adafruit SSD1306 и Adafruit GFX Library.", "Install Adafruit SSD1306 and Adafruit GFX Library."],
+  "Відкрий `iot-controller.ino` та зміни пароль точки доступу `change-this-password`.": ["Открой `iot-controller.ino` и измени пароль точки доступа `change-this-password`.", "Open `iot-controller.ino` and change the access point password `change-this-password`."],
+  "Завантаж прошивку й зачекай, доки OLED покаже стан і IP-адресу точки доступу.": ["Загрузи прошивку и дождись, пока OLED покажет состояние и IP-адрес точки доступа.", "Upload the firmware and wait for the OLED to show the access point status and IP address."],
+  "Підключись до NEXLAB-Control та відкрий цю IP-адресу. Кнопка перемикає стан екрана; зовнішнє навантаження ще не підключене.": ["Подключись к NEXLAB-Control и открой этот IP-адрес. Кнопка переключает состояние на экране; внешняя нагрузка не подключена.", "Connect to NEXLAB-Control and open that IP address. The button toggles the display state; no external load is connected."],
+  "Ємнісний датчик VCC": ["VCC ёмкостного датчика", "Capacitive sensor VCC"], "Датчик GND та OLED GND": ["GND датчика и OLED", "Sensor GND and OLED GND"], "Датчик AOUT": ["AOUT датчика", "Sensor AOUT"],
+  "Це індикатор для навчального макета, а не автоматичний полив: насос до комплекту не входить. Живи датчик від 3V3, щоб його аналоговий вихід не перевищив допустиму напругу входу ESP32. Показник у відсотках умовний: відкалібруй DRY_VALUE та WET_VALUE під свій датчик і ґрунт.": ["Это индикатор для учебного макета, а не система автополива: насос в комплект не входит. Питай датчик от 3V3, чтобы его аналоговый выход не превысил допустимое напряжение входа ESP32. Процентное значение условное: откалибруй DRY_VALUE и WET_VALUE для своего датчика и грунта.", "This is a learning indicator, not an automatic watering system; the pump is not included. Power the sensor from 3V3 so its analog output stays within the ESP32 input voltage limit. The percentage is an estimate: calibrate DRY_VALUE and WET_VALUE for your sensor and soil."],
+  "OLED показує сире значення ADC і приблизний рівень вологості. Поріг можна налаштувати у стартовому коді.": ["OLED показывает исходное значение ADC и примерный уровень влажности. Порог можно настроить в стартовом коде.", "The OLED shows the raw ADC value and an approximate moisture level. Adjust the threshold in the starter code."],
+  "Вимкни ESP32. Підключи ємнісний датчик: VCC до 3V3, GND до GND, AOUT до GPIO34.": ["Отключи ESP32. Подключи ёмкостный датчик: VCC к 3V3, GND к GND, AOUT к GPIO34.", "Power off the ESP32. Connect the capacitive sensor: VCC to 3V3, GND to GND, AOUT to GPIO34."],
+  "Підключи OLED I²C: VCC до 3V3, GND до GND, SDA до GPIO21, SCL до GPIO22. Адреса в коді — 0x3C.": ["Подключи OLED I²C: VCC к 3V3, GND к GND, SDA к GPIO21, SCL к GPIO22. Адрес в коде — 0x3C.", "Connect the I²C OLED: VCC to 3V3, GND to GND, SDA to GPIO21, SCL to GPIO22. The address in the code is 0x3C."],
+  "В Arduino IDE встанови Adafruit SSD1306 та Adafruit GFX Library; вибери ESP32 Dev Module.": ["В Arduino IDE установи Adafruit SSD1306 и Adafruit GFX Library; выбери ESP32 Dev Module.", "In Arduino IDE, install Adafruit SSD1306 and Adafruit GFX Library, then select ESP32 Dev Module."],
+  "Відкрий `soil-moisture-indicator.ino`, завантаж код і відкрий монітор порту на швидкості 115200 бод.": ["Открой `soil-moisture-indicator.ino`, загрузи код и открой монитор порта на скорости 115200 бод.", "Open `soil-moisture-indicator.ino`, upload the code, and open the serial monitor at 115200 baud."],
+  "Запиши показники датчика на сухому повітрі та у вологому ґрунті; підстав їх у DRY_VALUE і WET_VALUE. Не занурюй електроніку датчика у воду.": ["Запиши показания датчика на сухом воздухе и во влажной почве; внеси их в DRY_VALUE и WET_VALUE. Не погружай электронику датчика в воду.", "Record the sensor readings in dry air and moist soil, then set DRY_VALUE and WET_VALUE. Do not submerge the sensor electronics in water."],
+  "PIR GND та бузер GND": ["PIR GND и бузер GND", "PIR GND and buzzer GND"], "Активний бузер VCC": ["VCC активного бузера", "Active buzzer VCC"], "Активний бузер S / IN": ["S / IN активного бузера", "Active buzzer S / IN"],
+  "Демонстраційний макет для навчання, не охоронна система. Після ввімкнення PIR-датчику потрібен час на стабілізацію; під час налаштування звір позначення контактів свого модуля. Бузер підключай лише до низьковольтного стенда.": ["Учебный демонстрационный макет, а не охранная система. После включения PIR-датчику нужно время на стабилизацию; при настройке сверь обозначения контактов своего модуля. Подключай бузер только к низковольтному стенду.", "This is an educational demo, not a security system. The PIR sensor needs time to stabilize after power-up; check the pin labels on your module. Connect the buzzer to a low-voltage bench setup only."],
+  "Після стабілізації датчик виявляє рух і вмикає активний бузер; стан датчика також видно в моніторі порту.": ["После стабилизации датчик обнаруживает движение и включает активный бузер; состояние датчика также отображается в мониторе порта.", "After stabilizing, the sensor detects motion and activates the buzzer. The sensor state is also shown in the serial monitor."],
+  "Від’єднай USB. Підключи PIR-модуль: VCC до 5V, GND до GND, OUT до D2.": ["Отключи USB. Подключи PIR-модуль: VCC к 5V, GND к GND, OUT к D2.", "Disconnect USB. Connect the PIR module: VCC to 5V, GND to GND, OUT to D2."],
+  "Підключи бузер-модуль за маркуванням: VCC до 5V, GND до спільного GND, S або IN до D8.": ["Подключи модуль бузера по маркировке: VCC к 5V, GND к общей земле, S или IN к D8.", "Connect the buzzer module according to its labels: VCC to 5V, GND to common ground, and S or IN to D8."],
+  "Перевір, що використовується активний бузер-модуль із входом керування, а не окремий пасивний п’єзоелемент.": ["Убедись, что используется модуль с активным бузером и входом управления, а не отдельный пассивный пьезоэлемент.", "Use an active buzzer module with a control input, not a standalone passive piezo element."],
+  "В Arduino IDE вибери Arduino UNO та відкрий `motion-alarm.ino`. Додаткові бібліотеки не потрібні.": ["В Arduino IDE выбери Arduino UNO и открой `motion-alarm.ino`. Дополнительные библиотеки не нужны.", "In Arduino IDE, select Arduino UNO and open `motion-alarm.ino`. No additional libraries are needed."],
+  "Завантаж код, відкрий монітор порту на 9600 бод і зачекай стабілізації PIR. Рух перед датчиком має ввімкнути звуковий сигнал.": ["Загрузи код, открой монитор порта на 9600 бод и дождись стабилизации PIR. Движение перед датчиком должно включить звуковой сигнал.", "Upload the code, open the serial monitor at 9600 baud, and wait for the PIR sensor to stabilize. Motion in front of the sensor should trigger the buzzer."],
+  "Компонент": ["Компонент", "Component"], "Кроки складання": ["Этапы сборки", "Assembly steps"], "Лише стандартні бібліотеки Arduino": ["Только стандартные библиотеки Arduino", "Arduino built-in libraries only"], "Стартовий код": ["Стартовый код", "Starter code"], "Завантажити .ino ↓": ["Скачать .ino ↓", "Download .ino ↓"], "Переглянути код": ["Посмотреть код", "View code"],
+  "Ультразвуковий датчик HC-SR04": ["Ультразвуковой датчик HC-SR04", "HC-SR04 ultrasonic sensor"], "Набір для прототипування": ["Набор для прототипирования", "Prototyping kit"], "Модуль живлення USB-C": ["Модуль питания USB-C", "USB-C power module"],
+  "Arduino UNO R3: контакти та документація": ["Arduino UNO R3: контакты и документация", "Arduino UNO R3: pins and documentation"], "FastLED: обмеження споживання": ["FastLED: ограничение энергопотребления", "FastLED: power limits"], "NeoPixel: живлення й підключення": ["NeoPixel: питание и подключение", "NeoPixel: power and wiring"], "Heltec WiFi Kit 32 V2: схема": ["Heltec WiFi Kit 32 V2: схема соединений", "Heltec WiFi Kit 32 V2: schematic"], "ESP32: документація GPIO та ADC": ["ESP32: документация GPIO и ADC", "ESP32: GPIO and ADC documentation"],
+};
+for (const [source, [ru, en]] of Object.entries(guideTranslations)) {
+  messages.ru[source] = ru;
+  messages.en[source] = en;
+}
+const catalogTranslations = {
+  "Адресна RGB LED-стрічка · 1 м": ["Адресная RGB LED-лента · 1 м", "Addressable RGB LED strip · 1 m"],
+  "Стартовий набір для паяння": ["Стартовый набор для пайки", "Starter soldering kit"],
+  "Філамент PLA · 1 кг": ["Филамент PLA · 1 кг", "PLA filament · 1 kg"],
+  "Набір резисторів · 600 шт.": ["Набор резисторов · 600 шт.", "Resistor kit · 600 pcs"],
+  "Плата ESP32 з OLED-дисплеєм": ["Плата ESP32 с OLED-дисплеем", "ESP32 board with OLED display"],
+  "Релейний модуль ESP32 · 2 канали": ["Релейный модуль ESP32 · 2 канала", "ESP32 relay module · 2 channels"],
+  "Плата ESP8266 NodeMCU": ["Контроллер ESP8266 NodeMCU", "ESP8266 NodeMCU board"],
+  "Arduino Nano сумісна плата": ["Совместимая плата Arduino Nano", "Arduino Nano compatible board"],
+  "Датчик BME280 · температура, вологість, тиск": ["Датчик BME280 · температура, влажность, давление", "BME280 sensor · temperature, humidity, pressure"],
+  "PIR-датчик руху HC-SR501": ["PIR-датчик движения HC-SR501", "HC-SR501 PIR motion sensor"],
+  "Водонепроникний датчик DS18B20": ["Водонепроницаемый датчик DS18B20", "Waterproof DS18B20 sensor"],
+  "Ємнісний датчик вологості ґрунту": ["Ёмкостный датчик влажности почвы", "Capacitive soil moisture sensor"],
+  "Мікросерво SG90": ["Микросервопривод SG90", "SG90 micro servo"],
+  "Драйвер двигунів L298N": ["Драйвер двигателей L298N", "L298N motor driver"],
+  "Релейний модуль · 4 канали": ["Релейный модуль · 4 канала", "Relay module · 4 channels"],
+  "Перетворювач логічних рівнів 4 канали": ["Преобразователь логических уровней · 4 канала", "4-channel logic level shifter"],
+  "Модуль зчитування microSD": ["Модуль чтения microSD", "microSD reader module"],
+  "Активний бузер-модуль": ["Модуль активного бузера", "Active buzzer module"],
+  "Arduino Mega 2560 сумісна плата": ["Совместимая плата Arduino Mega 2560", "Arduino Mega 2560 compatible board"],
+  "Arduino Pro Mini сумісна плата": ["Совместимая плата Arduino Pro Mini", "Arduino Pro Mini compatible board"],
+  "Плата ESP32-S3 DevKit": ["Контроллер ESP32-S3 DevKit", "ESP32-S3 DevKit board"],
+  "Компактна плата ESP32-C3": ["Компактная плата ESP32-C3", "Compact ESP32-C3 board"],
+  "Raspberry Pi Pico сумісна плата": ["Совместимая плата Raspberry Pi Pico", "Raspberry Pi Pico compatible board"],
+  "Плата STM32 Blue Pill": ["Контроллер STM32 Blue Pill", "STM32 Blue Pill board"],
+  "Модуль ATtiny85 USB": ["USB-модуль ATtiny85", "ATtiny85 USB module"],
+  "Плата розширення для Arduino UNO": ["Плата расширения для Arduino UNO", "Arduino UNO expansion board"],
+  "Датчик атмосферного тиску BMP280": ["Датчик атмосферного давления BMP280", "BMP280 barometric pressure sensor"],
+  "Інерційний модуль MPU-6050": ["Инерциальный модуль MPU-6050", "MPU-6050 inertial module"],
+  "Датчик освітленості BH1750": ["Датчик освещённости BH1750", "BH1750 ambient light sensor"],
+  "Датчик кольору TCS34725": ["Датчик цвета TCS34725", "TCS34725 color sensor"],
+  "Модуль термопари MAX6675": ["Модуль термопары MAX6675", "MAX6675 thermocouple module"],
+  "Модуль зважування HX711": ["Модуль взвешивания HX711", "HX711 load cell module"],
+  "Модуль датчика дощу": ["Модуль датчика дождя", "Rain sensor module"],
+  "Датчик газу MQ-2": ["Датчик газа MQ-2", "MQ-2 gas sensor"],
+  "Інфрачервоний датчик полум’я": ["Инфракрасный датчик пламени", "Infrared flame sensor"],
+  "ІЧ-датчик перешкоди": ["ИК-датчик препятствия", "IR obstacle sensor"],
+  "Модуль енкодера з кнопкою": ["Модуль энкодера с кнопкой", "Rotary encoder module with button"],
+  "Сенсорна кнопка TTP223": ["Сенсорная кнопка TTP223", "TTP223 touch button"],
+  "Модуль геркона": ["Магнитный герконовый датчик", "Reed switch module"],
+  "LCD-дисплей 1602 з I²C-модулем": ["LCD-дисплей 1602 с I²C-модулем", "1602 LCD with I²C module"],
+  "OLED-дисплей 1.3″": ["OLED-дисплей 1,3″", "1.3″ OLED display"],
+  "Кольоровий TFT-дисплей 1.8″": ["Цветной TFT-дисплей 1,8″", "1.8″ color TFT display"],
+  "Матричний дисплей 8×8 MAX7219": ["Матричный дисплей 8×8 MAX7219", "MAX7219 8×8 LED matrix display"],
+  "Чотиризначний індикатор TM1637": ["Четырёхразрядный индикатор TM1637", "TM1637 4-digit display"],
+  "Радіомодуль nRF24L01+": ["Радиомодуль nRF24L01+", "nRF24L01+ radio module"],
+  "Bluetooth-модуль HC-05": ["Модуль связи Bluetooth HC-05", "HC-05 Bluetooth module"],
+  "ІЧ-приймач для пульта": ["ИК-приёмник для пульта", "IR receiver for remote control"],
+  "Комплект радіомодулів 433 МГц": ["Комплект радиомодулей 433 МГц", "433 MHz radio module set"],
+  "Кроковий двигун NEMA 17": ["Шаговый двигатель NEMA 17", "NEMA 17 stepper motor"],
+  "Сервопривід MG996R": ["Сервопривод MG996R", "MG996R servo motor"],
+  "Кроковий двигун 28BYJ-48 з драйвером": ["Шаговый двигатель 28BYJ-48 с драйвером", "28BYJ-48 stepper motor with driver"],
+  "Мотор-редуктор постійного струму": ["Мотор-редуктор постоянного тока", "DC geared motor"],
+  "Драйвер двигунів L9110S": ["Драйвер двигателей L9110S", "L9110S motor driver"],
+  "Двовісний джойстик-модуль": ["Двухосевой модуль джойстика", "2-axis joystick module"],
+  "Пара коліс для міні-робота": ["Пара колёс для мини-робота", "Mini robot wheel pair"],
+  "Шасі робота 2WD": ["Шасси робота 2WD", "2WD robot chassis"],
+  "Модуль живлення макетної плати": ["Модуль питания для макетной платы", "Breadboard power supply module"],
+  "Понижувальний DC-DC модуль LM2596": ["Понижающий DC-DC модуль LM2596", "LM2596 buck converter module"],
+  "Підвищувальний DC-DC модуль MT3608": ["Повышающий DC-DC модуль MT3608", "MT3608 boost converter module"],
+  "Зарядний модуль TP4056 USB-C": ["Зарядный модуль TP4056 USB-C", "TP4056 USB-C charging module"],
+  "Тримач для одного акумулятора 18650": ["Держатель для одного аккумулятора 18650", "Single 18650 battery holder"],
+  "Тримач для двох акумуляторів 18650": ["Держатель для двух аккумуляторов 18650", "Dual 18650 battery holder"],
+  "Кабель-затискач для батареї 9 V": ["Кабель-клипса для батареи 9 V", "9 V battery snap connector"],
+  "Модуль вимірювання струму INA219": ["Модуль измерения тока INA219", "INA219 current sensor module"],
+  "Стабілізатор живлення 3.3 V AMS1117": ["Стабилизатор питания 3,3 V AMS1117", "AMS1117 3.3 V voltage regulator"],
+  "Набір світлодіодів 5 мм · 5 кольорів": ["Набор светодиодов 5 мм · 5 цветов", "5 mm LED assortment · 5 colors"],
+  "Набір випрямних діодів": ["Набор выпрямительных диодов", "Rectifier diode assortment"],
+  "Набір керамічних конденсаторів": ["Набор керамических конденсаторов", "Ceramic capacitor assortment"],
+  "Набір електролітичних конденсаторів": ["Набор электролитических конденсаторов", "Electrolytic capacitor assortment"],
+  "Набір малопотужних транзисторів": ["Набор маломощных транзисторов", "Low-power transistor assortment"],
+  "MOSFET-модуль керування навантаженням": ["MOSFET-модуль управления нагрузкой", "MOSFET load switch module"],
+  "Зсувний регістр 74HC595": ["Сдвиговый регистр 74HC595", "74HC595 shift register"],
+  "Набір тактових кнопок": ["Набор тактовых кнопок", "Tactile button assortment"],
+  "Набір монтажних плат": ["Набор монтажных плат", "Perfboard assortment"],
+  "Набір гребінок 2.54 мм": ["Набор штыревых разъёмов 2,54 мм", "2.54 mm pin header set"],
+  "Кабель USB-A — USB-C": ["Соединительный шнур USB-A — USB-C", "USB-A to USB-C cable"],
+  "Кабель USB-A — Micro-USB": ["Соединительный шнур USB-A — Micro-USB", "USB-A to Micro-USB cable"],
+  "Набір дротів Dupont мама–мама": ["Набор проводов Dupont мама–мама", "Dupont female-to-female jumper wires"],
+  "Набір дротів Dupont тато–мама": ["Набор проводов Dupont папа–мама", "Dupont male-to-female jumper wires"],
+  "Припій для електроніки": ["Припой для электроники", "Electronics solder wire"],
+  "Флюс для паяння": ["Флюс для пайки", "Soldering flux"],
+  "Мідна стрічка для випаювання": ["Медная оплётка для выпайки", "Desoldering wick"],
+  "Інструмент для зняття ізоляції": ["Инструмент для снятия изоляции", "Wire stripper"],
+  "Цифровий мультиметр для навчання": ["Цифровой мультиметр для обучения", "Digital multimeter for learning"],
+  "Набір термоусаджувальних трубок": ["Набор термоусадочных трубок", "Heat-shrink tubing assortment"],
+  "Філамент PETG · 1 кг": ["Филамент PETG · 1 кг", "PETG filament · 1 kg"],
+  "Гнучкий філамент TPU · 1 кг": ["Гибкий филамент TPU · 1 кг", "Flexible TPU filament · 1 kg"],
+  "Сопло для 3D-принтера 0.4 мм": ["Сопло для 3D-принтера 0,4 мм", "3D printer nozzle · 0.4 mm"],
+  "Цифровий штангенциркуль": ["Цифровой штангенциркуль", "Digital caliper"],
+  "Сумісна плата": ["Совместимая плата", "Compatible board"], "OLED-дисплей 0.96″": ["OLED-дисплей 0,96″", "0.96″ OLED display"], "Термодатчики": ["Термодатчики", "Temperature probes"],
+  "Плати ESP32": ["Платы ESP32", "ESP32 boards"], "Плати Arduino": ["Платы Arduino", "Arduino boards"], "Датчики температури й вологості": ["Датчики температуры и влажности", "Temperature and humidity sensors"], "OLED-дисплеї": ["OLED-дисплеи", "OLED displays"], "Ультразвукові датчики": ["Ультразвуковые датчики", "Ultrasonic sensors"], "Адресні LED-стрічки": ["Адресные LED-ленты", "Addressable LED strips"], "Модулі живлення": ["Модули питания", "Power modules"], "Обладнання для паяння": ["Оборудование для пайки", "Soldering equipment"], "Монтажні дроти": ["Монтажные провода", "Jumper wires"], "Набори для прототипування": ["Наборы для прототипирования", "Prototyping kits"], "Матеріали для 3D-друку": ["Материалы для 3D-печати", "3D printing materials"], "Резистори": ["Резисторы", "Resistors"],
+  "Камери й IoT-плати": ["Камеры и IoT-платы", "Cameras and IoT boards"], "Плати з дисплеями": ["Платы с дисплеями", "Boards with displays"], "Релейні модулі": ["Релейные модули", "Relay modules"], "Плати ESP8266": ["Платы ESP8266", "ESP8266 boards"], "Датчики руху": ["Датчики движения", "Motion sensors"], "Датчики вологості ґрунту": ["Датчики влажности почвы", "Soil moisture sensors"], "Сервоприводи": ["Сервоприводы", "Servo motors"], "Драйвери двигунів": ["Драйверы двигателей", "Motor drivers"], "Перетворювачі логічних рівнів": ["Преобразователи логических уровней", "Logic level shifters"], "Модулі пам’яті": ["Модули памяти", "Memory modules"], "Звукові модулі": ["Звуковые модули", "Audio modules"], "Плати RP2040": ["Платы RP2040", "RP2040 boards"], "Плати STM32": ["Платы STM32", "STM32 boards"], "Модулі ATtiny": ["Модули ATtiny", "ATtiny modules"], "Плати розширення": ["Платы расширения", "Expansion boards"], "Датчики тиску": ["Датчики давления", "Pressure sensors"], "Інерційні датчики": ["Инерциальные датчики", "Inertial sensors"], "Датчики освітленості": ["Датчики освещённости", "Light sensors"], "Датчики кольору": ["Датчики цвета", "Color sensors"], "Термодатчики": ["Термодатчики", "Temperature probes"], "Датчики ваги": ["Датчики веса", "Weight sensors"], "Датчики погоди": ["Датчики погоды", "Weather sensors"], "Датчики газу": ["Датчики газа", "Gas sensors"], "Датчики полум’я": ["Датчики пламени", "Flame sensors"], "Інфрачервоні датчики": ["Инфракрасные датчики", "Infrared sensors"], "Енкодери й керування": ["Энкодеры и управление", "Encoders and controls"], "Сенсорні модулі": ["Сенсорные модули", "Touch modules"], "Магнітні датчики": ["Магнитные датчики", "Magnetic sensors"], "Символьні дисплеї": ["Символьные дисплеи", "Character displays"], "TFT-дисплеї": ["TFT-дисплеи", "TFT displays"], "LED-дисплеї": ["LED-дисплеи", "LED displays"], "Радіомодулі": ["Радиомодули", "Radio modules"], "Bluetooth-модулі": ["Bluetooth-модули", "Bluetooth modules"], "Інфрачервоні модулі": ["Инфракрасные модули", "Infrared modules"], "Крокові двигуни": ["Шаговые двигатели", "Stepper motors"], "Двигуни": ["Двигатели", "Motors"], "Керування роботами": ["Управление роботами", "Robot control"], "Колеса й шасі": ["Колёса и шасси", "Wheels and chassis"], "DC-DC перетворювачі": ["DC-DC-преобразователи", "DC-DC converters"], "Зарядні модулі": ["Зарядные модули", "Charging modules"], "Тримачі акумуляторів": ["Держатели аккумуляторов", "Battery holders"], "Контакти для батарей": ["Контакты для батарей", "Battery connectors"], "Вимірювання живлення": ["Измерение параметров питания", "Power monitoring"], "Стабілізатори напруги": ["Стабилизаторы напряжения", "Voltage regulators"], "Світлодіоди й індикатори": ["Светодиоды и индикаторы", "LEDs and indicators"], "Діоди й транзистори": ["Диоды и транзисторы", "Diodes and transistors"], "Конденсатори": ["Конденсаторы", "Capacitors"], "Транзисторні модулі": ["Транзисторные модули", "Transistor modules"], "Цифрові мікросхеми": ["Цифровые микросхемы", "Digital ICs"], "Кнопки й перемикачі": ["Кнопки и переключатели", "Buttons and switches"], "Монтажні плати": ["Монтажные платы", "Perfboards"], "Контактні роз’єми": ["Контактные разъёмы", "Pin headers"], "USB-кабелі": ["USB-кабели", "USB cables"], "Матеріали для паяння": ["Материалы для пайки", "Soldering supplies"], "Ручний інструмент": ["Ручной инструмент", "Hand tools"], "Мультиметри": ["Мультиметры", "Multimeters"], "Монтажні матеріали": ["Монтажные материалы", "Assembly supplies"], "Запчастини для 3D-принтерів": ["Запчасти для 3D-принтеров", "3D printer parts"], "Вимірювальний інструмент": ["Измерительный инструмент", "Measuring tools"],
+};
+for (const [source, [ru, en]] of Object.entries(catalogTranslations)) {
+  messages.ru[source] = ru;
+  messages.en[source] = en;
+}
+const productDescriptionTranslations = {
+  "Компактна плата для IoT-пристроїв і прототипів: Wi-Fi, Bluetooth та роз’єми для сенсорів і модулів.": ["Компактная плата для IoT-устройств и прототипов: Wi-Fi, Bluetooth и разъёмы для датчиков и модулей.", "A compact board for IoT devices and prototypes, with Wi-Fi, Bluetooth, and connectors for sensors and modules."],
+  "Надійна плата для навчання, швидких прототипів та інтерактивних пристроїв.": ["Надёжная плата для обучения, быстрых прототипов и интерактивных устройств.", "A reliable board for learning, quick prototypes, and interactive devices."],
+  "Одноплатний комп’ютер для домашнього сервера, медіаплеєра, робота чи настільного проєкту на Linux.": ["Одноплатный компьютер для домашнего сервера, медиаплеера, робота или настольного проекта на Linux.", "A single-board computer for a home server, media player, robot, or Linux desktop project."],
+  "Цифровий датчик температури та вологості для метеостанцій, теплиць і систем розумного дому.": ["Цифровой датчик температуры и влажности для метеостанций, теплиц и систем умного дома.", "A digital temperature and humidity sensor for weather stations, greenhouses, and smart home systems."],
+  "Монохромний екран 128×64 з інтерфейсом I²C. Чітко показує вимірювання та меню пристрою.": ["Монохромный экран 128×64 с интерфейсом I²C. Чётко отображает измерения и меню устройства.", "A 128×64 monochrome display with an I²C interface for clearly showing readings and device menus."],
+  "Вимірює відстань від 2 см до 4 м. Стане у пригоді для роботів, паркувальних сенсорів та автоматизації.": ["Измеряет расстояние от 2 см до 4 м. Подходит для роботов, парковочных датчиков и автоматизации.", "Measures distances from 2 cm to 4 m. Useful for robots, parking sensors, and automation."],
+  "Стрічка з керованими RGB-світлодіодами для підсвічування та світлових інсталяцій.": ["Лента с управляемыми RGB-светодиодами для подсветки и световых инсталляций.", "A strip of individually controlled RGB LEDs for accent lighting and light installations."],
+  "Зручний модуль для живлення прототипів із роз’ємом USB-C, захистом і виходами 5 V та 3,3 V.": ["Удобный модуль питания прототипов с разъёмом USB-C, защитой и выходами 5 V и 3,3 V.", "A convenient USB-C power module for prototypes, with protection and 5 V and 3.3 V outputs."],
+  "Паяльник, підставка та витратні матеріали — усе необхідне для домашньої майстерні.": ["Паяльник, подставка и расходные материалы — всё необходимое для домашней мастерской.", "A soldering iron, stand, and consumables—essentials for a home workshop."],
+  "120 з’єднувальних дротів трьох типів для макетних плат і швидкого складання схем.": ["120 соединительных проводов трёх типов для макетных плат и быстрой сборки схем.", "120 jumper wires in three connector types for breadboards and quick circuit prototyping."],
+  "Макетна плата, дроти й базові компоненти — зручний старт для перших електронних експериментів.": ["Макетная плата, провода и базовые компоненты — удобный набор для первых экспериментов с электроникой.", "A breadboard, jumper wires, and basic components for getting started with electronics experiments."],
+  "Універсальний PLA-пластик для корпусів, тримачів та інших деталей власного проєкту.": ["Универсальный PLA-пластик для корпусов, держателей и других деталей собственного проекта.", "Versatile PLA filament for printing enclosures, brackets, and other project parts."],
+  "Популярні номінали для створення прототипів і ремонту електронних схем.": ["Популярные номиналы для создания прототипов и ремонта электронных схем.", "Common resistor values for prototyping and repairing electronic circuits."],
+  "Плата ESP32 із вбудованою камерою для відеоспостереження, розпізнавання об’єктів та IoT-пристроїв.": ["Плата ESP32 со встроенной камерой для видеонаблюдения, распознавания объектов и IoT-устройств.", "An ESP32 board with a built-in camera for video monitoring, object recognition, and IoT devices."],
+  "Компактна плата ESP32 із вбудованим OLED-екраном для автономних індикаторів і прототипів.": ["Компактная плата ESP32 со встроенным OLED-экраном для автономных индикаторов и прототипов.", "A compact ESP32 board with a built-in OLED display for standalone indicators and prototypes."],
+  "Двоканальний Wi-Fi-контролер із реле для керування побутовими пристроями та автоматизацією.": ["Двухканальный Wi-Fi-контроллер с реле для управления бытовыми устройствами и автоматизацией.", "A two-channel Wi-Fi controller with relays for appliance control and automation."],
+  "Компактна Wi-Fi-плата для IoT-пристроїв, вебкерування та домашніх автоматизацій.": ["Компактная Wi-Fi-плата для IoT-устройств, веб-управления и домашней автоматизации.", "A compact Wi-Fi board for IoT devices, web control, and home automation."],
+  "Мала плата формату Nano для компактних пристроїв, макетування та навчальних схем.": ["Небольшая плата формата Nano для компактных устройств, макетирования и учебных схем.", "A small Nano-format board for compact devices, prototyping, and learning circuits."],
+  "Комбінований цифровий сенсор для метеостанцій і моніторингу мікроклімату в приміщенні.": ["Комбинированный цифровой датчик для метеостанций и мониторинга микроклимата в помещении.", "A combined digital sensor for weather stations and indoor climate monitoring."],
+  "Інфрачервоний датчик руху для сигналізації, автоматичного освітлення та DIY-проєктів.": ["Инфракрасный датчик движения для сигнализации, автоматического освещения и DIY-проектов.", "An infrared motion sensor for alarms, automatic lighting, and DIY projects."],
+  "Цифровий температурний сенсор у металевому корпусі для рідин, теплиць і зовнішніх вимірювань.": ["Цифровой датчик температуры в металлическом корпусе для жидкостей, теплиц и наружных измерений.", "A digital temperature probe in a metal housing for liquids, greenhouses, and outdoor measurements."],
+  "Сенсор для автоматичного поливу, теплиць та навчальних проєктів із догляду за рослинами.": ["Датчик для автоматического полива, теплиц и учебных проектов по уходу за растениями.", "A sensor for automatic watering, greenhouses, and plant-care learning projects."],
+  "Легкий сервопривід для рухомих моделей, роботів і механізмів із керуванням кутом.": ["Лёгкий сервопривод для подвижных моделей, роботов и механизмов с управлением углом.", "A lightweight servo for moving models, robots, and angle-controlled mechanisms."],
+  "Двоканальний драйвер для керування напрямком і швидкістю двигунів у робототехнічних моделях.": ["Двухканальный драйвер для управления направлением и скоростью двигателей в робототехнических моделях.", "A dual-channel driver for controlling motor direction and speed in robotics models."],
+  "Чотири керовані канали для навчальних стендів та низьковольтної автоматизації.": ["Четыре управляемых канала для учебных стендов и низковольтной автоматизации.", "Four controllable channels for educational test rigs and low-voltage automation."],
+  "Допомагає з’єднати модулі з логічними рівнями 3,3 V та 5 V у цифрових схемах.": ["Помогает соединять модули с логическими уровнями 3,3 V и 5 V в цифровых схемах.", "Connects modules that use 3.3 V and 5 V logic levels in digital circuits."],
+  "Додає збереження даних на карту пам’яті для реєстраторів, метеостанцій і автономних пристроїв.": ["Добавляет сохранение данных на карту памяти для регистраторов, метеостанций и автономных устройств.", "Adds memory-card storage to data loggers, weather stations, and standalone devices."],
+  "Компактний звуковий індикатор для сповіщень, таймерів і навчальних електронних схем.": ["Компактный звуковой индикатор для оповещений, таймеров и учебных электронных схем.", "A compact audible indicator for alerts, timers, and educational circuits."],
+  "Плата з великою кількістю входів і виходів для складних навчальних макетів.": ["Плата с большим количеством входов и выходов для сложных учебных макетов.", "A board with many inputs and outputs for more complex learning projects."],
+  "Компактна плата для невеликих автономних пристроїв і вбудованих проєктів.": ["Компактная плата для небольших автономных устройств и встраиваемых проектов.", "A compact board for small standalone devices and embedded projects."],
+  "Плата нового покоління для IoT, керування периферією та прототипів.": ["Плата нового поколения для IoT, управления периферией и прототипов.", "A next-generation board for IoT, peripheral control, and prototyping."],
+  "Мала Wi-Fi-плата для компактних датчиків, контролерів та IoT-пристроїв.": ["Небольшая Wi-Fi-плата для компактных датчиков, контроллеров и IoT-устройств.", "A small Wi-Fi board for compact sensors, controllers, and IoT devices."],
+  "Компактний контролер для навчання, автоматизації та прототипування.": ["Компактный контроллер для обучения, автоматизации и прототипирования.", "A compact controller for learning, automation, and prototyping."],
+  "Навчальна плата для знайомства з мікроконтролерами STM32.": ["Учебная плата для знакомства с микроконтроллерами STM32.", "A learning board for getting started with STM32 microcontrollers."],
+  "Мініатюрний контролер для простих пристроїв та компактних прототипів.": ["Миниатюрный контроллер для простых устройств и компактных прототипов.", "A tiny controller for simple devices and compact prototypes."],
+  "Допомагає зручно під’єднувати сенсори та модулі до сумісних плат Arduino.": ["Помогает удобно подключать датчики и модули к совместимым платам Arduino.", "Makes it easier to connect sensors and modules to compatible Arduino boards."],
+  "Компактний цифровий сенсор для метеостанцій і вимірювання атмосферного тиску.": ["Компактный цифровой датчик для метеостанций и измерения атмосферного давления.", "A compact digital sensor for weather stations and barometric pressure readings."],
+  "Модуль руху для балансувальних моделей, роботів і вимірювання нахилу.": ["Датчик движения для балансирующих моделей, роботов и измерения наклона.", "A motion sensor module for balancing models, robots, and tilt measurements."],
+  "Цифровий сенсор для автоматичного керування освітленням і метеостанцій.": ["Цифровой датчик для автоматического управления освещением и метеостанций.", "A digital sensor for automatic lighting control and weather stations."],
+  "Модуль для навчальних експериментів із розпізнаванням кольору.": ["Модуль для учебных экспериментов по распознаванию цвета.", "A module for learning experiments in color detection."],
+  "Модуль вимірювання температури з сумісною термопарою типу K.": ["Модуль измерения температуры с совместимой термопарой типа K.", "A temperature measurement module for a compatible type-K thermocouple."],
+  "Підсилювач для навчальних вагових проєктів із сумісним тензодатчиком.": ["Усилитель для учебных весовых проектов с совместимым тензодатчиком.", "An amplifier for learning scales and projects with a compatible load cell."],
+  "Комплект сенсорної пластини та модуля для навчальних погодних проєктів.": ["Комплект сенсорной пластины и модуля для учебных погодных проектов.", "A sensor plate and module set for weather-related learning projects."],
+  "Навчальний сенсор для експериментів із виявленням газу та диму.": ["Учебный датчик для экспериментов по обнаружению газа и дыма.", "A learning sensor for experiments in gas and smoke detection."],
+  "Модуль для демонстраційних схем виявлення інфрачервоного випромінювання.": ["Модуль для демонстрационных схем обнаружения инфракрасного излучения.", "A module for demonstration circuits that detect infrared radiation."],
+  "Датчик для роботів, лічильників та простих систем виявлення перешкод.": ["Датчик для роботов, счётчиков и простых систем обнаружения препятствий.", "A sensor for robots, counters, and simple obstacle detection systems."],
+  "Поворотний регулятор для меню, налаштувань і керування пристроями.": ["Поворотный регулятор для меню, настроек и управления устройствами.", "A rotary control for menus, settings, and device interfaces."],
+  "Компактна сенсорна кнопка для панелей керування та інтерактивних макетів.": ["Компактная сенсорная кнопка для панелей управления и интерактивных макетов.", "A compact touch button for control panels and interactive projects."],
+  "Датчик магнітного контакту для сигналізації відкриття та навчальних схем.": ["Датчик магнитного контакта для сигнализации об открытии и учебных схем.", "A magnetic contact sensor for open/close alerts and learning circuits."],
+  "Символьний дисплей для показу показників і меню у мікроконтролерних проєктах.": ["Символьный дисплей для отображения показаний и меню в проектах с микроконтроллерами.", "A character display for showing readings and menus in microcontroller projects."],
+  "Монохромний екран для компактних індикаторів і автономних пристроїв.": ["Монохромный экран для компактных индикаторов и автономных устройств.", "A monochrome display for compact indicators and standalone devices."],
+  "Невеликий кольоровий екран для графічних інтерфейсів і навчальних пристроїв.": ["Небольшой цветной экран для графических интерфейсов и учебных устройств.", "A small color display for graphical interfaces and learning devices."],
+  "LED-матриця для простих анімацій, індикаторів та виведення символів.": ["LED-матрица для простых анимаций, индикаторов и отображения символов.", "An LED matrix for simple animations, indicators, and character display."],
+  "Модуль для відображення часу, лічильників і числових показників.": ["Модуль для отображения времени, счётчиков и числовых показаний.", "A module for displaying time, counters, and numeric readings."],
+  "Компактний радіомодуль для обміну даними між сумісними мікроконтролерними пристроями.": ["Компактный радиомодуль для обмена данными между совместимыми устройствами на микроконтроллерах.", "A compact radio module for data exchange between compatible microcontroller devices."],
+  "Послідовний Bluetooth-модуль для прототипів і керування через сумісний пристрій.": ["Последовательный Bluetooth-модуль для прототипов и управления с совместимого устройства.", "A serial Bluetooth module for prototypes and control from a compatible device."],
+  "Приймач сигналів пульта для навчальних систем дистанційного керування.": ["Приёмник сигналов пульта для учебных систем дистанционного управления.", "A remote-control signal receiver for learning projects."],
+  "Пара простих радіомодулів для демонстраційного бездротового обміну даними.": ["Пара простых радиомодулей для демонстрации беспроводного обмена данными.", "A pair of basic radio modules for demonstrating wireless data exchange."],
+  "Кроковий двигун для навчальних CNC-макетів, плотерів і механізмів.": ["Шаговый двигатель для учебных CNC-макетов, плоттеров и механизмов.", "A stepper motor for learning CNC models, plotters, and mechanisms."],
+  "Потужніший формат сервопривода для моделей і механічних прототипів.": ["Более мощный сервопривод для моделей и механических прототипов.", "A higher-torque servo for models and mechanical prototypes."],
+  "Набір двигуна та драйвера для перших проєктів із кроковим керуванням.": ["Набор двигателя и драйвера для первых проектов с шаговым управлением.", "A motor and driver set for getting started with stepper control."],
+  "Компактний мотор-редуктор для мобільних моделей та робототехніки.": ["Компактный мотор-редуктор для мобильных моделей и робототехники.", "A compact geared motor for mobile models and robotics."],
+  "Компактний модуль керування двигунами для невеликих роботів і моделей.": ["Компактный модуль управления двигателями для небольших роботов и моделей.", "A compact motor control module for small robots and models."],
+  "Аналоговий орган керування для роботів, меню та навчальних пультів.": ["Аналоговый орган управления для роботов, меню и учебных пультов.", "An analog control for robots, menus, and learning remotes."],
+  "Пара легких коліс для сумісних мотор-редукторів і саморобних моделей.": ["Пара лёгких колёс для совместимых мотор-редукторов и самодельных моделей.", "A pair of lightweight wheels for compatible geared motors and DIY models."],
+  "Основа двоколісної платформи для навчальних роботів і експериментів.": ["Основа двухколёсной платформы для учебных роботов и экспериментов.", "A two-wheel platform base for learning robots and experiments."],
+  "Модуль живлення для сумісної макетної плати з перемиканням вихідної напруги.": ["Модуль питания для совместимой макетной платы с переключением выходного напряжения.", "A breadboard power module with selectable output voltage."],
+  "Регульований понижувальний перетворювач для живлення прототипів.": ["Регулируемый понижающий преобразователь для питания прототипов.", "An adjustable buck converter for powering prototypes."],
+  "Компактний регульований підвищувальний перетворювач для макетів.": ["Компактный регулируемый повышающий преобразователь для макетов.", "A compact adjustable boost converter for prototypes."],
+  "Модуль заряджання однієї сумісної літій-іонної комірки; перед використанням перевір полярність і захист конкретної ревізії.": ["Модуль зарядки одного совместимого литий-ионного элемента; перед использованием проверь полярность и защиту конкретной ревизии.", "A charger module for one compatible lithium-ion cell. Check the polarity and protection on your specific revision before use."],
+  "Пластиковий тримач із проводами для макетів та навчальних пристроїв.": ["Пластиковый держатель с проводами для макетов и учебных устройств.", "A plastic battery holder with leads for prototypes and learning devices."],
+  "Тримач для двох сумісних комірок; схема з’єднання залежить від конкретної моделі.": ["Держатель для двух совместимых элементов; схема соединения зависит от конкретной модели.", "A holder for two compatible cells; the wiring depends on the specific model."],
+  "Контактний кабель для під’єднання батареї 9 V до макетів і навчальних схем.": ["Контактный кабель для подключения батареи 9 V к макетам и учебным схемам.", "A connector lead for attaching a 9 V battery to prototypes and learning circuits."],
+  "Модуль для навчального моніторингу струму й напруги в низьковольтних проєктах.": ["Модуль для учебного мониторинга тока и напряжения в низковольтных проектах.", "A module for monitoring current and voltage in low-voltage learning projects."],
+  "Модуль стабілізації живлення для сумісних низьковольтних прототипів.": ["Модуль стабилизации питания для совместимых низковольтных прототипов.", "A power regulation module for compatible low-voltage prototypes."],
+  "Набір світлодіодів різних кольорів для макетів та індикаторних схем.": ["Набор светодиодов разных цветов для макетов и индикаторных схем.", "A set of assorted-color LEDs for prototypes and indicator circuits."],
+  "Набір поширених діодів для навчальних схем; точні типи звіряй із комплектацією.": ["Набор распространённых диодов для учебных схем; точные типы проверь по комплектации.", "A set of common diodes for learning circuits; check the included types in the package."],
+  "Набір керамічних конденсаторів для фільтрації та навчальних прототипів.": ["Набор керамических конденсаторов для фильтрации и учебных прототипов.", "A set of ceramic capacitors for filtering and learning prototypes."],
+  "Набір радіальних конденсаторів для ремонту та макетування.": ["Набор радиальных конденсаторов для ремонта и макетирования.", "A set of radial capacitors for repairs and prototyping."],
+  "Набір малопотужних транзисторів для навчальних аналогових і цифрових схем.": ["Набор маломощных транзисторов для учебных аналоговых и цифровых схем.", "A set of low-power transistors for learning analog and digital circuits."],
+  "Транзисторний модуль для комутації сумісних низьковольтних навантажень.": ["Транзисторный модуль для коммутации совместимых низковольтных нагрузок.", "A transistor module for switching compatible low-voltage loads."],
+  "Цифрова мікросхема для розширення кількості керованих виходів у макеті.": ["Цифровая микросхема для увеличения числа управляемых выходов в макете.", "A digital IC that expands the number of controllable outputs in a prototype."],
+  "Набір компактних кнопок для прототипів, меню та керування пристроями.": ["Набор компактных кнопок для прототипов, меню и управления устройствами.", "A set of compact buttons for prototypes, menus, and device controls."],
+  "Перфоровані плати для перенесення перевірених макетних схем у компактний формат.": ["Перфорированные платы для переноса проверенных макетных схем в компактный формат.", "Perforated boards for transferring tested breadboard circuits to a compact format."],
+  "Контактні гребінки для модулів, плат розширення та власних прототипів.": ["Контактные штыревые разъёмы для модулей, плат расширения и собственных прототипов.", "Pin headers for modules, expansion boards, and custom prototypes."],
+  "Кабель для під’єднання сумісних плат і периферії; перед передаванням даних перевір сумісність.": ["Кабель для подключения совместимых плат и периферии; перед передачей данных проверь совместимость.", "A cable for compatible boards and peripherals. Check data-transfer support before use."],
+  "Кабель для живлення та під’єднання сумісних навчальних плат.": ["Кабель для питания и подключения совместимых учебных плат.", "A cable for powering and connecting compatible learning boards."],
+  "З’єднувальні дроти для макетів із контактними штирями та модульними роз’ємами.": ["Соединительные провода для макетов со штыревыми контактами и модульными разъёмами.", "Jumper wires for prototypes with pin contacts and modular connectors."],
+  "З’єднувальні дроти для сенсорів і модулів із контактними штирями.": ["Соединительные провода для датчиков и модулей со штыревыми контактами.", "Jumper wires for sensors and modules with pin contacts."],
+  "Припій для ручного монтажу електронних компонентів; склад і діаметр уточнюй у характеристиках партії.": ["Припой для ручного монтажа электронных компонентов; состав и диаметр уточняй в характеристиках партии.", "Solder wire for hand-assembling electronic components. Check the batch specifications for alloy and diameter."],
+  "Допоміжний матеріал для ручного паяння електронних компонентів.": ["Вспомогательный материал для ручной пайки электронных компонентов.", "An aid for hand-soldering electronic components."],
+  "Плетена стрічка для видалення надлишкового припою під час ремонту.": ["Плетёная лента для удаления лишнего припоя при ремонте.", "A braided wick for removing excess solder during repairs."],
+  "Ручний інструмент для підготовки проводів у майстерні та монтажних роботах.": ["Ручной инструмент для подготовки проводов в мастерской и при монтаже.", "A hand tool for preparing wires in the workshop and during assembly."],
+  "Базовий вимірювальний прилад для навчальної майстерні; межі вимірювання залежать від моделі.": ["Базовый измерительный прибор для учебной мастерской; пределы измерений зависят от модели.", "A basic measuring instrument for a learning workshop; measurement ranges depend on the model."],
+  "Набір ізоляційних трубок кількох діаметрів для акуратного оформлення з’єднань.": ["Набор изоляционных трубок нескольких диаметров для аккуратной изоляции соединений.", "A set of insulating tubes in several diameters for finishing wire connections."],
+  "Пластик для друку корпусів і деталей; параметри залежать від виробника та партії.": ["Пластик для печати корпусов и деталей; характеристики зависят от производителя и партии.", "Filament for printing enclosures and parts; specifications vary by manufacturer and batch."],
+  "Гнучкий матеріал для друку еластичних деталей на сумісному принтері.": ["Гибкий материал для печати эластичных деталей на совместимом принтере.", "A flexible filament for printing elastic parts on a compatible printer."],
+  "Змінне сопло для сумісного хотенда; перед замовленням звір різьбу та модель принтера.": ["Сменное сопло для совместимого хотэнда; перед заказом проверь резьбу и модель принтера.", "A replacement nozzle for a compatible hot end. Check the thread and printer model before ordering."],
+  "Інструмент для вимірювання деталей і перевірки розмірів 3D-друкованих моделей.": ["Инструмент для измерения деталей и проверки размеров 3D-печатных моделей.", "A tool for measuring parts and checking the dimensions of 3D-printed models."],
+};
+for (const [source, [ru, en]] of Object.entries(productDescriptionTranslations)) {
+  messages.ru[source] = ru;
+  messages.en[source] = en;
+}
+const catalogMetadataTranslations = {
+  "Температура": ["Температура", "Temperature"], "Вологість": ["Влажность", "Humidity"], "Відстань": ["Расстояние", "Distance"], "Паяння": ["Пайка", "Soldering"], "Для початківців": ["Для начинающих", "Beginner friendly"], "Макетна плата": ["Макетная плата", "Breadboard"], "1.75 мм": ["1,75 мм", "1.75 mm"], "1 кг": ["1 кг", "1 kg"], "Набір": ["Набор", "Kit"], "Камера": ["Камера", "Camera"], "Реле": ["Реле", "Relay"], "Розумний дім": ["Умный дом", "Smart home"], "Тиск": ["Давление", "Pressure"], "Рух": ["Движение", "Motion"], "Водонепроникний": ["Водонепроницаемый", "Waterproof"], "Вологість ґрунту": ["Влажность почвы", "Soil moisture"], "Ємнісний": ["Ёмкостный", "Capacitive"], "Полив": ["Полив", "Watering"], "Аналоговий": ["Аналоговый", "Analog"], "Серво": ["Сервопривод", "Servo"], "Робототехніка": ["Робототехника", "Robotics"], "Драйвер двигуна": ["Драйвер двигателя", "Motor driver"], "Робот": ["Робот", "Robot"], "H-міст": ["H-мост", "H-bridge"], "4 канали": ["4 канала", "4 channels"], "Модуль керування": ["Модуль управления", "Control module"], "Перетворювач рівнів": ["Преобразователь уровней", "Level shifter"], "Збереження даних": ["Сохранение данных", "Data storage"], "Бузер": ["Зуммер", "Buzzer"], "Звуковий сигнал": ["Звуковой сигнал", "Audio signal"], "Індикатор": ["Индикатор", "Indicator"], "Компактний": ["Компактный", "Compact"], "Роз’єми": ["Разъёмы", "Connectors"],
+  "Гіроскоп": ["Гироскоп", "Gyroscope"], "Акселерометр": ["Акселерометр", "Accelerometer"], "Освітленість": ["Освещённость", "Illuminance"], "Колір": ["Цвет", "Color"], "Термопара": ["Термопара", "Thermocouple"], "Вага": ["Вес", "Weight"], "Тензодатчик": ["Тензодатчик", "Load cell"], "Дощ": ["Дождь", "Rain"], "Погода": ["Погода", "Weather"], "Газ": ["Газ", "Gas"], "Дим": ["Дым", "Smoke"], "Полум’я": ["Пламя", "Flame"], "Інфрачервоний": ["Инфракрасный", "Infrared"], "Модуль": ["Модуль", "Module"], "ІЧ": ["ИК", "IR"], "Перешкода": ["Препятствие", "Obstacle"], "Енкодер": ["Энкодер", "Encoder"], "Кнопка": ["Кнопка", "Button"], "Сенсорна кнопка": ["Сенсорная кнопка", "Touch button"], "Цифровий вихід": ["Цифровой выход", "Digital output"], "Геркон": ["Геркон", "Reed switch"], "Магніт": ["Магнит", "Magnet"], "Двері": ["Дверь", "Door"], "Кольоровий": ["Цветной", "Color"], "Матриця": ["Матрица", "Matrix"], "4 цифри": ["4 цифры", "4 digits"], "ІЧ-приймач": ["ИК-приёмник", "IR receiver"], "Пульт": ["Пульт", "Remote control"], "433 МГц": ["433 МГц", "433 MHz"], "Передавач": ["Передатчик", "Transmitter"], "Приймач": ["Приёмник", "Receiver"],
+  "Кроковий двигун": ["Шаговый двигатель", "Stepper motor"], "3D-принтер": ["3D-принтер", "3D printer"], "Мотор": ["Мотор", "Motor"], "Редуктор": ["Редуктор", "Gearbox"], "Драйвер": ["Драйвер", "Driver"], "Двигун": ["Двигатель", "Motor"], "Джойстик": ["Джойстик", "Joystick"], "Керування": ["Управление", "Control"], "Колеса": ["Колёса", "Wheels"], "Шасі": ["Шасси", "Chassis"], "Тримач": ["Держатель", "Holder"], "2 комірки": ["2 элемента", "2 cells"], "Кабель": ["Кабель", "Cable"], "Струм": ["Ток", "Current"], "Напруга": ["Напряжение", "Voltage"], "Стабілізатор": ["Стабилизатор", "Regulator"], "5 мм": ["5 мм", "5 mm"], "Індикатори": ["Индикаторы", "Indicators"], "Діоди": ["Диоды", "Diodes"], "Електроніка": ["Электроника", "Electronics"], "Керамічні": ["Керамические", "Ceramic"], "Електролітичні": ["Электролитические", "Electrolytic"], "Транзистори": ["Транзисторы", "Transistors"], "Керування навантаженням": ["Управление нагрузкой", "Load switching"], "Зсувний регістр": ["Сдвиговый регистр", "Shift register"], "Кнопки": ["Кнопки", "Buttons"], "Тактові": ["Тактовые", "Tactile"], "Перфоплата": ["Перфоплата", "Perfboard"], "Монтаж": ["Монтаж", "Assembly"], "Прототип": ["Прототип", "Prototype"], "Гребінки": ["Штыревые разъёмы", "Pin headers"], "2.54 мм": ["2,54 мм", "2.54 mm"], "Мама–мама": ["мама–мама", "female-to-female"], "Тато–мама": ["папа–мама", "male-to-female"], "Припій": ["Припой", "Solder"], "Флюс": ["Флюс", "Flux"], "Випаювання": ["Выпайка", "Desoldering"], "Мідна стрічка": ["Медная оплётка", "Copper wick"], "Ремонт": ["Ремонт", "Repair"], "Стрипер": ["Стриппер", "Wire stripper"], "Провід": ["Провод", "Wire"], "Інструмент": ["Инструмент", "Tool"], "Мультиметр": ["Мультиметр", "Multimeter"], "Опір": ["Сопротивление", "Resistance"], "Вимірювання": ["Измерения", "Measurement"], "Термоусадка": ["Термоусадка", "Heat shrink"], "Ізоляція": ["Изоляция", "Insulation"], "Гнучкий": ["Гибкий", "Flexible"], "Сопло": ["Сопло", "Nozzle"], "0.4 мм": ["0,4 мм", "0.4 mm"], "Штангенциркуль": ["Штангенциркуль", "Caliper"],
+  "5 V через USB": ["Питание от USB 5 V", "5 V via USB"], "Залежить від ревізії": ["Зависит от ревизии", "Depends on board revision"], "240 МГц": ["240 МГц", "240 MHz"], "16 МГц": ["16 МГц", "16 MHz"], "32 КБ": ["32 КБ", "32 KB"], "4 ГБ": ["4 ГБ", "4 GB"], "Цифровий": ["Цифровой", "Digital"], "2–400 см": ["2–400 см", "2–400 cm"], "60 світлодіодів/м": ["60 светодиодов/м", "60 LEDs/m"], "1 м": ["1 м", "1 m"], "20 см": ["20 см", "20 cm"], "Від короткого замикання": ["От короткого замыкания", "Short-circuit protection"], "60 Вт": ["60 Вт", "60 W"], "0,25 Вт": ["0,25 Вт", "0.25 W"], "Паяльник, підставка": ["Паяльник, подставка", "Soldering iron, stand"],
+  "тато–тато / мама–мама / тато–мама": ["папа–папа / мама–мама / папа–мама", "male-to-male / female-to-female / male-to-female"], "PIR, інфрачервоний": ["PIR, инфракрасный", "PIR, infrared"], "Ємнісний": ["Ёмкостный", "Capacitive"], "Мікросерво": ["Микросервопривод", "Micro servo"], "H-міст": ["H-мост", "H-bridge"], "Двонапрямний": ["Двунаправленный", "Bidirectional"], "Активний зумер": ["Активный зуммер", "Active buzzer"], "830 контактів": ["830 контактов", "830 tie points"], "1,75 мм": ["1,75 мм", "1.75 mm"], "Температура, вологість, тиск": ["Температура, влажность, давление", "Temperature, humidity, pressure"], "Цифрові й аналогові": ["Цифровые и аналоговые", "Digital and analog"], "Метеостанції": ["Метеостанции", "Weather stations"], "Контроль ґрунту": ["Контроль почвы", "Soil monitoring"], "Звукові сповіщення": ["Звуковые оповещения", "Audio alerts"], "Аналоговий": ["Аналоговый", "Analog"], "Цифровий сигнал": ["Цифровой сигнал", "Digital signal"], "Чутливість і затримка": ["Чувствительность и задержка", "Sensitivity and delay"], "Приблизно 1 м": ["Примерно 1 м", "Approx. 1 m"], "Металевий зонд": ["Металлический зонд", "Metal probe"], "Моделі й робототехніка": ["Модели и робототехника", "Models and robotics"], "Навчальні стенди": ["Учебные стенды", "Learning test rigs"], "Запис даних": ["Запись данных", "Data logging"], "За специфікацією модуля": ["Согласно спецификации модуля", "According to module specifications"], "Цифрові входи": ["Цифровые входы", "Digital inputs"], "I²C та цифрові сигнали": ["I²C и цифровые сигналы", "I²C and digital signals"], "Карта microSD": ["Карта microSD", "microSD card"], "Частота": ["Частота", "Frequency"], "Пам’ять": ["Память", "Memory"], "Інтерфейс": ["Интерфейс", "Interface"], "Діагональ": ["Диагональ", "Diagonal"], "Роздільна здатність": ["Разрешение", "Resolution"], "Діапазон": ["Диапазон", "Range"], "Кут": ["Угол", "Angle"], "Щільність": ["Плотность", "Density"], "Довжина": ["Длина", "Length"], "Вхід": ["Вход", "Input"], "Виходи": ["Выходы", "Outputs"], "Захист": ["Защита", "Protection"], "Потужність": ["Мощность", "Power"], "Регулювання": ["Регулировка", "Adjustment"], "Комплектація": ["Комплектация", "In the box"], "Кількість": ["Количество", "Quantity"], "Тип": ["Тип", "Type"], "Дроти": ["Провода", "Wires"], "Діаметр": ["Диаметр", "Diameter"], "Температура друку": ["Температура печати", "Print temperature"], "Допуск": ["Допуск", "Tolerance"], "Дисплей": ["Дисплей", "Display"], "Кількість каналів": ["Количество каналов", "Number of channels"], "Мікроконтролер": ["Микроконтроллер", "Microcontroller"], "Параметри": ["Параметры", "Parameters"], "Вихід": ["Выход", "Output"], "Корпус": ["Корпус", "Housing"], "Застосування": ["Применение", "Use"], "Канали": ["Каналы", "Channels"], "Живлення двигунів": ["Питание двигателей", "Motor supply"], "Рівні": ["Уровни", "Logic levels"], "Інтерфейси": ["Интерфейсы", "Interfaces"], "Носій": ["Носитель", "Storage"], "Формат": ["Формат", "Format"], "Модель": ["Модель", "Model"],
+};
+for (const [source, [ru, en]] of Object.entries(catalogMetadataTranslations)) {
+  messages.ru[source] = ru;
+  messages.en[source] = en;
+}
+const productPageTranslations = {
+  "Артикул": ["Артикул", "SKU"], "Характеристики": ["Характеристики", "Specifications"], "До цього проєкту": ["Для этого проекта", "For this project"], "Схожі товари": ["Похожие товары", "Similar products"], "До категорії": ["К категории", "View category"], "Відгуки": ["Отзывы", "Reviews"],
+  "Фото для ознайомлення зі сторінки виробника або продавця; воно не підтверджує фактичну позицію магазину. Відповідність конкретного товару та комплектацію NEXLAB ще не підтвердив.": ["Иллюстрация с сайта производителя или продавца; она не подтверждает наличие именно этого товара в магазине. NEXLAB ещё не проверил соответствие и комплектацию.", "Illustrative image from a manufacturer or seller; it does not confirm that this exact item is stocked. NEXLAB has not verified the product match or package contents."],
+  "Показано схематичну ілюстрацію; фотографію фактичного товару ще не додано.": ["Показана схематическая иллюстрация; фотография фактического товара ещё не добавлена.", "A schematic illustration is shown; a photo of the actual item has not been added yet."],
+  "Досвід спільноти": ["Опыт сообщества", "Community feedback"], "Відгуків поки немає. Поділися враженнями першим.": ["Отзывов пока нет. Поделись впечатлениями первым.", "No reviews yet. Be the first to share your thoughts."], "Відгуки з’являться після підключення сервера магазину.": ["Отзывы появятся после подключения сервера магазина.", "Reviews will appear when the store server is connected."], "Фото (необов’язково)": ["Фото (необязательно)", "Photo (optional)"], "Опублікувати": ["Опубликовать", "Publish"], "Що варто знати іншим?": ["Что стоит знать другим?", "What should others know?"], "Обери оцінку.": ["Выбери оценку.", "Select a rating."], "Напиши кілька слів про товар.": ["Напиши несколько слов о товаре.", "Write a few words about the product."], "Вкажи коректне HTTPS-посилання або залиш поле порожнім.": ["Укажи корректную HTTPS-ссылку или оставь поле пустым.", "Enter a valid HTTPS link or leave this field empty."], "Відгук опубліковано.": ["Отзыв опубликован.", "Review published."], "Не вдалося зберегти відгук.": ["Не удалось сохранить отзыв.", "Could not save the review."], "Або HTTPS-посилання": ["Или HTTPS-ссылка", "Or HTTPS link"], "JPG, PNG або WebP, до 12 МБ. Фото буде зменшено перед збереженням.": ["JPG, PNG или WebP, до 12 МБ. Фото будет уменьшено перед сохранением.", "JPG, PNG, or WebP, up to 12 MB. The photo is resized before saving."], "Фото завелике. Обери файл до 12 МБ; перед збереженням його буде стиснуто.": ["Фото слишком большое. Выбери файл до 12 МБ; перед сохранением он будет сжат.", "Photo is too large. Choose a file up to 12 MB; it will be compressed before saving."], "Підтримуються справжні фото JPG, PNG або WebP.": ["Поддерживаются настоящие фото JPG, PNG или WebP.", "Use a valid JPG, PNG, or WebP image."], "Цей браузер не зміг підготувати фото. Спробуй інший файл або HTTPS-посилання.": ["Этот браузер не смог подготовить фото. Попробуй другой файл или HTTPS-ссылку.", "This browser could not prepare the photo. Try another file or an HTTPS link."], "Обери файл фото або посилання, не обидва варіанти.": ["Выбери файл фото или ссылку, но не оба варианта.", "Choose either an image file or a link, not both."], "Додай фото файлом або HTTPS-посиланням.": ["Добавь фото файлом или HTTPS-ссылкой.", "Add a photo file or an HTTPS link."],
+  "Ти вже залишав відгук про цей товар.": ["Ты уже оставлял отзыв об этом товаре.", "You have already reviewed this product."],
+};
+for (const [source, [ru, en]] of Object.entries(productPageTranslations)) {
+  messages.ru[source] = ru;
+  messages.en[source] = en;
+}
+const pageTranslations = {
+  "Про нас — NEXLAB": ["О нас — NEXLAB", "About — NEXLAB"],
+  "Адмінпанель — NEXLAB": ["Панель администратора — NEXLAB", "Admin panel — NEXLAB"],
+  "Кошик — NEXLAB": ["Корзина — NEXLAB", "Cart — NEXLAB"],
+  "Оформлення — NEXLAB": ["Оформление заказа — NEXLAB", "Checkout — NEXLAB"],
+  "Проєкти спільноти — NEXLAB": ["Проекты сообщества — NEXLAB", "Community projects — NEXLAB"],
+  "Порівняння товарів — NEXLAB": ["Сравнение товаров — NEXLAB", "Product comparison — NEXLAB"],
+  "Контакти — NEXLAB": ["Контакты — NEXLAB", "Contact — NEXLAB"],
+  "Доставка — NEXLAB": ["Доставка — NEXLAB", "Shipping — NEXLAB"],
+  "Обране — NEXLAB": ["Избранное — NEXLAB", "Favorites — NEXLAB"],
+  "Вхід — NEXLAB": ["Вход — NEXLAB", "Sign in — NEXLAB"],
+  "Мої проєкти — NEXLAB": ["Мои проекты — NEXLAB", "My projects — NEXLAB"],
+  "Немає з’єднання — NEXLAB": ["Нет соединения — NEXLAB", "You're offline — NEXLAB"],
+  "Мої замовлення — NEXLAB": ["Мои заказы — NEXLAB", "My orders — NEXLAB"],
+  "Оплата — NEXLAB": ["Оплата — NEXLAB", "Payment — NEXLAB"],
+  "Конфіденційність — NEXLAB": ["Конфиденциальность — NEXLAB", "Privacy — NEXLAB"],
+  "Товар — NEXLAB": ["Товар — NEXLAB", "Product — NEXLAB"],
+  "Мій профіль — NEXLAB": ["Мой профиль — NEXLAB", "My profile — NEXLAB"],
+  "DIY-проєкт — NEXLAB": ["DIY-проект — NEXLAB", "DIY project — NEXLAB"],
+  "Реєстрація — NEXLAB": ["Регистрация — NEXLAB", "Sign up — NEXLAB"],
+  "Повернення — NEXLAB": ["Возврат — NEXLAB", "Returns — NEXLAB"],
+  "Гарантія — NEXLAB": ["Гарантия — NEXLAB", "Warranty — NEXLAB"],
+  "Завантажуємо інформацію…": ["Загружаем информацию…", "Loading information…"],
+  "Завантаження панелі керування…": ["Загружаем панель управления…", "Loading admin panel…"],
+  "Зв’язатися з нами": ["Связаться с нами", "Contact us"],
+  "Готуємо каталог компонентів": ["Готовим каталог компонентов", "Preparing the component catalog"],
+  "Незабаром тут з’являться товари, фільтри за категоріями та ціною. Якщо сторінка не оновлюється, перезавантаж її.": ["Скоро здесь появятся товары и фильтры по категориям и цене. Если страница не обновляется, перезагрузите её.", "Products and category and price filters will appear here soon. If the page does not update, reload it."],
+  "Переглянути категорії": ["Посмотреть категории", "Browse categories"],
+  "Оформлення": ["Оформление заказа", "Checkout"],
+  "Демонстраційний сайт: заявки не є реальними замовленнями. Не вводь справжні персональні дані.": ["Демонстрационный сайт: заявки не являются реальными заказами. Не вводите настоящие персональные данные.", "Demo site: submissions are not real orders. Do not enter real personal information."],
+  "Нова пошта": ["Новая почта", "Nova Poshta"],
+  "Укрпошта": ["Укрпочта", "Ukrposhta"],
+  "Післяплата": ["Наложенный платёж", "Cash on delivery"],
+  "Навчальна спільнота NEXLAB: публікуй свої збірки та ділися досвідом.": ["Учебное сообщество NEXLAB: публикуй свои сборки и делись опытом.", "NEXLAB learning community: share your builds and experience."],
+  "Назва збірки": ["Название сборки", "Build title"],
+  "Опис": ["Описание", "Description"],
+  "Фото з пристрою": ["Фото с устройства", "Upload a photo"],
+  "Або посилання на фото HTTPS": ["Или ссылка на фото HTTPS", "Or photo link (HTTPS)"],
+  "Посилання на схему (необов’язково)": ["Ссылка на схему (необязательно)", "Schematic link (optional)"],
+  "Посилання на код HTTPS": ["Ссылка на код HTTPS", "Code link (HTTPS)"],
+  "Публікуй лише власні проєкти й матеріали, на які маєш право. Фото можна завантажити з пристрою або додати за HTTPS-посиланням.": ["Публикуй только собственные проекты и материалы, на которые у тебя есть права. Фото можно загрузить с устройства или добавить по HTTPS-ссылке.", "Only publish projects and materials you own or have permission to share. Upload a photo from your device or add an HTTPS link."],
+  "JPG, PNG або WebP, до 12 МБ. Фото буде зменшено перед збереженням.": ["JPG, PNG или WebP, до 12 МБ. Фото будет уменьшено перед сохранением.", "JPG, PNG, or WebP, up to 12 MB. The photo is resized before saving."],
+  "Завантажуємо проєкти спільноти…": ["Загружаем проекты сообщества…", "Loading community projects…"],
+  "Завантажуємо порівняння…": ["Загружаем сравнение…", "Loading comparison…"],
+  "Збережені компоненти": ["Сохранённые компоненты", "Saved components"],
+  "Товари, які стануть у пригоді для наступного проєкту.": ["Товары, которые пригодятся для следующего проекта.", "Parts to consider for your next project."],
+  "Тут зберігатимуться обрані товари": ["Здесь будут сохранённые товары", "Your saved products will appear here"],
+  "Позначай компоненти сердечком у каталозі — вони з’являться на цій сторінці.": ["Добавляй компоненты в избранное в каталоге — они появятся на этой странице.", "Add products to your favorites in the catalog and they will appear here."],
+  "Arduino та ESP32": ["Arduino и ESP32", "Arduino and ESP32"],
+  "Філамент і приладдя": ["Филамент и принадлежности", "Filament and accessories"],
+  "Плата з Wi-Fi та Bluetooth для прототипів і IoT-пристроїв.": ["Плата с Wi-Fi и Bluetooth для прототипов и IoT-устройств.", "A Wi-Fi and Bluetooth board for prototypes and IoT devices."],
+  "Надійна плата для навчання, експериментів і перших пристроїв.": ["Надёжная плата для обучения, экспериментов и первых устройств.", "A reliable board for learning, experiments, and first devices."],
+  "Вимірюй температуру та вологість у кімнаті чи теплиці.": ["Измеряй температуру и влажность в комнате или теплице.", "Measure temperature and humidity in a room or greenhouse."],
+  "Компактний екран для показників сенсорів і меню проєкту.": ["Компактный экран для показаний датчиков и меню проекта.", "A compact display for sensor readings and project menus."],
+  "Збери пристрій, який вимірює температуру та вологість і показує їх на екрані.": ["Собери устройство, которое измеряет температуру и влажность и показывает их на экране.", "Build a device that measures temperature and humidity and displays the readings."],
+  "Переглянути проєкт ↗": ["Посмотреть проект ↗", "View project ↗"],
+  "Побудуй мобільного робота, який помічає перешкоди й оминає їх.": ["Собери мобильного робота, который обнаруживает и объезжает препятствия.", "Build a mobile robot that detects and avoids obstacles."],
+  "Звернися до адміністратора магазину: він може видати тимчасовий пароль у панелі керування. Після входу зміни його в профілі.": ["Обратись к администратору магазина: он может выдать временный пароль в панели управления. После входа измени его в профиле.", "Contact the store administrator for a temporary password through the admin panel. Change it in your profile after signing in."],
+  "Твоя майстерня": ["Твоя мастерская", "Your workshop"],
+  "Зберігай ідеї та повертайся до складання будь-коли.": ["Сохраняй идеи и возвращайся к сборке в любое время.", "Save ideas and pick up where you left off any time."],
+  "Завантажуємо твою майстерню": ["Загружаем твою мастерскую", "Loading your workshop"],
+  "Тут з’являться збережені проєкти, їхній прогрес і потрібні компоненти.": ["Здесь появятся сохранённые проекты, их прогресс и нужные компоненты.", "Your saved projects, progress, and required components will appear here."],
+  "Немає з’єднання": ["Нет соединения", "You're offline"],
+  "Перевір інтернет і спробуй оновити сторінку. Каталог та інструкції, які вже відкривалися на цьому пристрої, можуть бути доступні без мережі. Оформлення замовлень і дані акаунта потребують з’єднання.": ["Проверь подключение к интернету и попробуй обновить страницу. Каталог и инструкции, которые уже открывались на этом устройстве, могут быть доступны без сети. Для оформления заказов и работы с аккаунтом нужно подключение.", "Check your internet connection and try reloading. The catalog and guides opened on this device may be available offline. Checkout and account data require a connection."],
+  "Історія покупок": ["История покупок", "Order history"],
+  "Статуси та склад твоїх замовлень.": ["Статусы и состав твоих заказов.", "Order statuses and item details."],
+  "Завантажуємо твої замовлення. Тут будуть дати, суми та статуси.": ["Загружаем твои заказы. Здесь появятся даты, суммы и статусы.", "Loading your orders. Dates, totals, and statuses will appear here."],
+  "КАРТКА ТОВАРУ": ["КАРТОЧКА ТОВАРА", "PRODUCT DETAILS"],
+  "Готуємо опис товару": ["Готовим описание товара", "Preparing product details"],
+  "Тут будуть фотографії, ціна, наявність, характеристики та відгуки. Поки обираєш — переглянь інші компоненти каталогу.": ["Здесь будут фотографии, цена, наличие, характеристики и отзывы. Пока выбираешь, посмотри другие товары каталога.", "Photos, price, availability, specifications, and reviews will appear here. Browse other catalog items in the meantime."],
+  "Особистий простір": ["Личное пространство", "Your account"],
+  "Мій профіль": ["Мой профиль", "My profile"],
+  "Завантажуємо дані облікового запису та особисті налаштування.": ["Загружаем данные аккаунта и личные настройки.", "Loading your account details and personal settings."],
+  "Ще мить — готуємо профіль.": ["Ещё немного — готовим профиль.", "Just a moment — setting up your profile."],
+  "МАЙСТЕРНЯ NEXLAB": ["МАСТЕРСКАЯ NEXLAB", "NEXLAB WORKSHOP"],
+  "Готуємо інструкцію до проєкту": ["Готовим инструкцию к проекту", "Preparing the project guide"],
+  "На цій сторінці з’явиться опис складання, список компонентів і їхня вартість.": ["На этой странице появятся инструкция по сборке, список компонентов и их стоимость.", "The build guide, component list, and estimated cost will appear on this page."],
+  "ЗБИРАЙ · ТЕСТУЙ · ПОВТОРЮЙ": ["СОБИРАЙ · ТЕСТИРУЙ · ПОВТОРЯЙ", "BUILD · TEST · REPEAT"],
+  "Закрити": ["Закрыть", "Close"],
+  "Номер та адреса відділення": ["Номер и адрес отделения", "Branch number and address"],
+  "Що робить проєкт, які компоненти використав, чого навчився?": ["Что делает проект, какие компоненты ты использовал и чему научился?", "What does the project do, which components did you use, and what did you learn?"],
+  "GitHub, Gist або інше HTTPS-посилання": ["GitHub, Gist или другая HTTPS-ссылка", "GitHub, Gist, or another HTTPS link"],
+  "Проєкти учасників": ["Проекты участников", "Member projects"],
+  "Швидкий старт у NEXLAB": ["Быстрый старт в NEXLAB", "Get started with NEXLAB"],
+  "Наші переваги": ["Наши преимущества", "Why choose us"],
+  "Каталог DIY-проєктів": ["Каталог DIY-проектов", "DIY project catalog"],
+  "NEXLAB — електроніка для твоїх ідей": ["NEXLAB — электроника для твоих идей", "NEXLAB — electronics for your ideas"],
+  "Власні DIY-збірки спільноти NEXLAB: фото, схеми, код, відгуки та оцінки.": ["DIY-сборки сообщества NEXLAB: фото, схемы, код, отзывы и оценки.", "NEXLAB community DIY builds: photos, schematics, code, reviews, and ratings."],
+  "Як навчальний демонстраційний сайт NEXLAB зберігає тестові дані.": ["Как учебный демонстрационный сайт NEXLAB хранит тестовые данные.", "How the NEXLAB educational demo site stores test data."],
+  "DIY-проєкти NEXLAB з переліком компонентів, схемами та стартовим кодом.": ["DIY-проекты NEXLAB со списками компонентов, схемами и стартовым кодом.", "NEXLAB DIY projects with component lists, schematics, and starter code."],
+};
+for (const [source, [ru, en]] of Object.entries(pageTranslations)) {
+  messages.ru[source] = ru;
+  messages.en[source] = en;
+}
+const adminTranslations = {
+  "очікує рішення": ["ожидает решения", "awaiting a decision"],
+  "прийнято": ["принято", "accepted"],
+  "відхилено": ["отклонено", "rejected"],
+  "Firebase не має захищеного серверного складу: після прийняття скоригуй залишки вручну.": ["В Firebase нет защищённого серверного склада: после принятия заявки скорректируй остатки вручную.", "Firebase does not provide a protected server inventory. Adjust stock manually after accepting the return."],
+  "Номер відстеження": ["Номер отслеживания", "Tracking number"],
+  "Введи перед відправленням": ["Введи перед отправкой", "Enter before shipping"],
+  "Зберегти": ["Сохранить", "Save"],
+  "Ціна, ₴": ["Цена, ₴", "Price, ₴"],
+  "Ілюстрація": ["Иллюстрация", "Illustration"],
+  "Залишок": ["Остаток", "Stock"],
+  "Товар": ["Товар", "Product"],
+  "Каталог і склад": ["Каталог и склад", "Catalog and inventory"],
+  "NEXLAB · КЕРУВАННЯ МАГАЗИНОМ": ["NEXLAB · УПРАВЛЕНИЕ МАГАЗИНОМ", "NEXLAB · STORE ADMIN"],
+  "Оновити": ["Обновить", "Refresh"],
+  "Огляд": ["Обзор", "Overview"],
+  "Купони й набори": ["Купоны и наборы", "Coupons and bundles"],
+  "Товари": ["Товары", "Products"],
+  "Журнал складу": ["Журнал склада", "Inventory log"],
+  "＋ Додати товар": ["＋ Добавить товар", "＋ Add product"],
+  "Користувачі": ["Пользователи", "Users"],
+  "замовлень": ["заказов", "orders"],
+  "позицій": ["позиций", "items"],
+  "облікових записів": ["учётных записей", "accounts"],
+  "Роль": ["Роль", "Role"],
+  "Вибрати JSON-файл каталогу": ["Выбрать JSON-файл каталога", "Choose catalog JSON file"],
+  "Назва, бренд або артикул": ["Название, бренд или артикул", "Name, brand, or SKU"],
+  "Ім’я або електронна пошта": ["Имя или электронная почта", "Name or email"],
+  "Товар, ім’я або текст": ["Товар, имя или текст", "Product, name, or text"],
+  "Номер, ім’я, місто": ["Номер, имя, город", "Order number, name, or city"],
+  "Назва або опис": ["Название или описание", "Name or description"],
+  "Статус": ["Статус", "Status"],
+  "Зберегти зміни": ["Сохранить изменения", "Save changes"],
+  "Створити товар": ["Создать товар", "Create product"],
+  "Зберегти проєкт": ["Сохранить проект", "Save project"],
+  "Створити проєкт": ["Создать проект", "Create project"],
+  "Зберегти купон": ["Сохранить купон", "Save coupon"],
+  "＋ Створити купон": ["＋ Создать купон", "＋ Create coupon"],
+  "Номер": ["Номер", "Number"],
+  "Дата": ["Дата", "Date"],
+  "Клієнт": ["Клиент", "Customer"],
+  "Телефон": ["Телефон", "Phone"],
+  "Місто": ["Город", "City"],
+  "Адреса": ["Адрес", "Address"],
+  "Перевізник": ["Перевозчик", "Carrier"],
+  "Відстеження": ["Отслеживание", "Tracking"],
+  "Купон": ["Купон", "Coupon"],
+  "Знижка": ["Скидка", "Discount"],
+  "Товари": ["Товары", "Items"],
+  "Сума": ["Сумма", "Total"],
+  "DIY · ПОКРОКОВІ ЗБІРКИ": ["DIY · ПОШАГОВЫЕ СБОРКИ", "DIY · STEP-BY-STEP BUILDS"],
+  "Прийняти повернення": ["Принять возврат", "Accept return"],
+  "Відхилити": ["Отклонить", "Reject"],
+  "Коментар:": ["Комментарий:", "Comment:"],
+  "Заявка з GitHub Pages: перед підтвердженням перевір ціни та залишки вручну.": ["Заявка с GitHub Pages: перед подтверждением проверь цены и остатки вручную.", "GitHub Pages request: check prices and stock manually before confirming."],
+  "Позначай повернення лише після фактичного отримання товару.": ["Отмечай возврат только после фактического получения товара.", "Mark an order as returned only after receiving the items."],
+  "Замовлень без скасувань": ["Заказы без отмен", "Orders excluding cancellations"],
+  "Сума активних замовлень": ["Сумма активных заказов", "Active order value"],
+  "в обробці та доставлені": ["в обработке и доставленные", "processing and delivered"],
+  "Середній чек": ["Средний чек", "Average order value"],
+  "за вибраний період": ["за выбранный период", "for selected period"],
+  "Унікальних клієнтів": ["Уникальных клиентов", "Unique customers"],
+  "Найактивніші клієнти": ["Самые активные клиенты", "Top customers"],
+  "За цей період замовлень немає.": ["За этот период заказов нет.", "No orders in this period."],
+  "Популярні товари": ["Популярные товары", "Popular products"],
+  "За цей період проданих товарів немає.": ["За этот период товары не продавались.", "No products were sold in this period."],
+  "Назва товару": ["Название товара", "Product name"],
+  "Бренд": ["Бренд", "Brand"],
+  "Підкатегорія": ["Подкатегория", "Subcategory"],
+  "Модель / SKU": ["Модель / SKU", "Model / SKU"],
+  "Стара ціна, ₴": ["Старая цена, ₴", "Old price, ₴"],
+  "Залишок, шт.": ["Остаток, шт.", "Stock, pcs"],
+  "Фото товару: HTTPS URL, кожне з нового рядка": ["Фото товара: HTTPS URL, каждое с новой строки", "Product photos: HTTPS URLs, one per line"],
+  "Також можна вказати шлях assets/images/...": ["Также можно указать путь assets/images/...", "You can also enter a path such as assets/images/..."],
+  "Теги через кому": ["Теги через запятую", "Tags, separated by commas"],
+  "Характеристики — по одній «назва: значення» на рядок": ["Характеристики — по одной «название: значение» на строку", "Specifications — one “name: value” pair per line"],
+  "Показувати на головній": ["Показывать на главной", "Show on home page"],
+  "Позначити як новинку": ["Отметить как новинку", "Mark as new"],
+  "Видалити товар": ["Удалить товар", "Delete product"],
+  "Оновити залишок": ["Обновить остаток", "Update stock"],
+  "Товар не знайдено:": ["Товар не найден:", "Product not found:"],
+  "Назва проєкту": ["Название проекта", "Project name"],
+  "Знижка за комплект, %": ["Скидка за комплект, %", "Bundle discount, %"],
+  "Автоматично застосовується, якщо покупець додає всі деталі проєкту.": ["Применяется автоматически, если покупатель добавляет все детали проекта.", "Applied automatically when the customer adds every project component."],
+  "Кожен крок — з нового рядка; до 20 кроків.": ["Каждый шаг — с новой строки; не более 20 шагов.", "One step per line; up to 20 steps."],
+  "Склад проєкту": ["Состав проекта", "Project components"],
+  "＋ Додати компонент": ["＋ Добавить компонент", "＋ Add component"],
+  "Видалити проєкт": ["Удалить проект", "Delete project"],
+  "Код купона": ["Код купона", "Coupon code"],
+  "Знижка, %": ["Скидка, %", "Discount, %"],
+  "Мінімальна сума кошика, ₴": ["Минимальная сумма корзины, ₴", "Minimum cart total, ₴"],
+  "Ліміт використань": ["Лимит использований", "Usage limit"],
+  "Діє до": ["Действует до", "Valid until"],
+  "Активний купон": ["Активный купон", "Active coupon"],
+  "Дані ще не оновлювалися": ["Данные ещё не обновлялись", "Data has not been refreshed yet"],
+  "ПОТОЧНИЙ СТАН МАГАЗИНУ": ["ТЕКУЩЕЕ СОСТОЯНИЕ МАГАЗИНА", "CURRENT STORE STATUS"],
+  "ЗАМОВЛЕННЯ ТА ПОКУПЦІ": ["ЗАКАЗЫ И ПОКУПАТЕЛИ", "ORDERS AND CUSTOMERS"],
+  "Аналітика замовлень": ["Аналитика заказов", "Order analytics"],
+  "Період": ["Период", "Period"],
+  "7 днів": ["7 дней", "7 days"],
+  "30 днів": ["30 дней", "30 days"],
+  "Увесь час": ["Всё время", "All time"],
+  "ОБСЛУГОВУВАННЯ": ["ОБСЛУЖИВАНИЕ", "ORDER MANAGEMENT"],
+  "Експорт CSV": ["Экспорт CSV", "Export CSV"],
+  "Усі статуси": ["Все статусы", "All statuses"],
+  "За цими умовами замовлень не знайдено.": ["По этим условиям заказы не найдены.", "No orders match these filters."],
+  "СКЛАД": ["СКЛАД", "INVENTORY"],
+  "Журнал руху залишків": ["Журнал движения остатков", "Stock movement log"],
+  "Останні зміни: резервування замовлення, скасування, повернення та ручне коригування.": ["Последние изменения: резервирование заказа, отмена, возврат и ручная корректировка.", "Recent changes: order reservations, cancellations, returns, and manual adjustments."],
+  "ЗАОХОЧЕННЯ ПОКУПКИ": ["СТИМУЛИРОВАНИЕ ПОКУПОК", "PROMOTIONS"],
+  "Купони перевіряються під час оформлення, а знижка комплекту діє лише коли в кошику є всі компоненти проєкту.": ["Купоны проверяются при оформлении, а скидка на комплект действует, только если в корзине есть все компоненты проекта.", "Coupons are validated at checkout. Bundle discounts apply only when the cart contains every project component."],
+  "АСОРТИМЕНТ І ЗАЛИШКИ": ["АССОРТИМЕНТ И ОСТАТКИ", "CATALOG AND STOCK"],
+  "Зміни одразу зберігаються в базі магазину.": ["Изменения сразу сохраняются в базе магазина.", "Changes are saved to the store database immediately."],
+  "Експорт JSON": ["Экспорт JSON", "Export JSON"],
+  "Імпорт JSON": ["Импорт JSON", "Import JSON"],
+  "Файл має бути меншим за 2 МБ.": ["Файл должен быть меньше 2 МБ.", "The file must be smaller than 2 MB."],
+  "JSON-масив товарів або об’єкт із полем products. Можна редагувати файл експорту; один пакет — до 200 товарів.": ["JSON-массив товаров или объект с полем products. Можно редактировать экспортированный файл; один пакет — до 200 товаров.", "Use a JSON product array or an object with a products field. You can edit an exported file; one batch can contain up to 200 products."],
+  "Імпорт триває…": ["Импорт выполняется…", "Importing…"],
+  "Файл має містити до 200 коректних товарів: унікальні артикули, назви, ціни, залишки й фото. Каталог не змінено.": ["Файл должен содержать до 200 корректных товаров: уникальные артикулы, названия, цены, остатки и фото. Каталог не изменён.", "The file must contain up to 200 valid products with unique SKUs, names, prices, stock, and photos. The catalog was not changed."],
+  "Для імпорту потрібна роль менеджера каталогу.": ["Для импорта нужна роль менеджера каталога.", "Catalog manager access is required to import products."],
+  "Не вдалося підтвердити результат. Імпорт атомарний: пакет оновлюється повністю або не змінюється. Онови список і перевір каталог.": ["Не удалось подтвердить результат. Импорт атомарный: пакет обновляется полностью или не изменяется. Обнови список и проверь каталог.", "Could not confirm the result. The import is atomic: the full batch is applied or nothing changes. Refresh and check the catalog."],
+  "Товарів за цим запитом не знайдено.": ["По этому запросу товары не найдены.", "No products match this search."],
+  "Керуй описом, складністю та компонентами; ціна комплекту рахується з актуальних цін товарів.": ["Управляй описанием, сложностью и компонентами; цена комплекта рассчитывается по текущим ценам товаров.", "Manage the description, difficulty, and components. Kit prices use current product prices."],
+  "＋ Створити проєкт": ["＋ Создать проект", "＋ Create project"],
+  "Проєктів за цим запитом не знайдено.": ["По этому запросу проекты не найдены.", "No projects match this search."],
+  "ВИГЛЯД І УМОВИ МАГАЗИНУ": ["ВНЕШНИЙ ВИД И УСЛОВИЯ МАГАЗИНА", "STORE APPEARANCE AND POLICIES"],
+  "Налаштування магазину": ["Настройки магазина", "Store settings"],
+  "Ці дані показуються покупцям у шапці сайту, оформленні замовлення та інформаційних сторінках.": ["Эти данные показываются покупателям в шапке сайта, оформлении заказа и информационных разделах.", "Customers see these details in the site header, checkout, and information pages."],
+  "Назва та контакти": ["Название и контакты", "Name and contact details"],
+  "Назва магазину": ["Название магазина", "Store name"],
+  "Ім’я продавця": ["Имя продавца", "Seller name"],
+  "Телефон підтримки": ["Телефон поддержки", "Support phone"],
+  "Гарантія, місяців": ["Гарантия, месяцев", "Warranty, months"],
+  "Доставка й оплата": ["Доставка и оплата", "Shipping and payment"],
+  "Способи доставки": ["Способы доставки", "Shipping methods"],
+  "По одному на рядок: ідентифікатор | назва. Ідентифікатор використовується у збережених замовленнях.": ["По одному на строку: идентификатор | название. Идентификатор используется в сохранённых заказах.", "One per line: id | name. The id is stored with each order."],
+  "Способи оплати": ["Способы оплаты", "Payment methods"],
+  "По одному на рядок: ідентифікатор | назва.": ["По одному на строку: идентификатор | название.", "One per line: id | name."],
+  "Пояснення щодо доставки": ["Пояснение по доставке", "Shipping details"],
+  "Примітка про ціни": ["Примечание о ценах", "Pricing note"],
+  "Інформація для покупців": ["Информация для покупателей", "Customer information"],
+  "Повідомлення про статус магазину": ["Сообщение о статусе магазина", "Store status notice"],
+  "Інструкція щодо повернення": ["Инструкция по возврату", "Return instructions"],
+  "Зберегти налаштування": ["Сохранить настройки", "Save settings"],
+  "ЗВОРОТНИЙ ЗВ’ЯЗОК": ["ОБРАТНАЯ СВЯЗЬ", "CUSTOMER FEEDBACK"],
+  "Відгуків за цим запитом не знайдено.": ["По этому запросу отзывы не найдены.", "No reviews match this search."],
+  "ОБЛІКОВІ ЗАПИСИ": ["УЧЁТНЫЕ ЗАПИСИ", "ACCOUNTS"],
+  "Користувачів за цим запитом не знайдено.": ["По этому запросу пользователи не найдены.", "No users match this search."],
+  "Потрібно опрацювати": ["Требуют обработки", "Need attention"],
+  "Товари в каталозі": ["Товары в каталоге", "Products in catalog"],
+  "Мало на складі": ["Мало на складе", "Low stock"],
+  "менше 5 одиниць": ["меньше 5 единиц", "fewer than 5 units"],
+  "Сума замовлень": ["Сумма заказов", "Order value"],
+  "без скасованих і повернених": ["без отменённых и возвращённых", "excluding cancelled and returned"],
+  "Є завдання, що потребують уваги": ["Есть задачи, требующие внимания", "Items need your attention"],
+  "Переглянути": ["Посмотреть", "Review"],
+  "Усе спокійно": ["Всё спокойно", "All clear"],
+  "Немає замовлень в обробці або товарів із критично малим залишком.": ["Нет заказов в обработке или товаров с критически низким остатком.", "No orders are processing and no products are critically low on stock."],
+  "Замовлень поки немає.": ["Заказов пока нет.", "No orders yet."],
+  "Історії руху залишків ще немає. На GitHub Pages без серверних функцій журнал обмежений.": ["Истории движения остатков пока нет. На GitHub Pages без серверных функций журнал ограничен.", "No stock movements yet. The log is limited on GitHub Pages without server functions."],
+  "Відгуків поки немає.": ["Отзывов пока нет.", "No reviews yet."],
+  "Зберегти роль": ["Сохранить роль", "Save role"],
+  "Користувачів поки немає.": ["Пользователей пока нет.", "No users yet."],
+  "Роль оновлено.": ["Роль обновлена.", "Role updated."],
+};
+for (const [source, [ru, en]] of Object.entries(adminTranslations)) {
+  messages.ru[source] = ru;
+  messages.en[source] = en;
+}
+const commerceAndLearningTranslations = {
+  "Якщо запущений сервер і створюється тестовий обліковий запис, сайт отримує ім’я, адресу електронної пошти та пароль. Пароль зберігається у вигляді криптографічного хешу. Під час входу використовується сесійний cookie. У демонстраційному оформленні замовлення форма також містить ім’я отримувача, телефон, місто, адресу доставки, перевізника, спосіб оплати та дані товарів у замовленні. Для відгуків можуть зберігатися оцінка, текст і фото; для збірок спільноти — опис, фото та посилання на схему й код; для збережених проєктів — їхні ідентифікатори.": ["Если запущен сервер и создаётся тестовая учётная запись, сайт получает имя, адрес электронной почты и пароль. Пароль хранится в виде криптографического хеша. При входе используется сессионный cookie. В форме демонстрационного заказа также указываются имя получателя, телефон, город, адрес доставки, перевозчик, способ оплаты и товары. В отзывах могут храниться оценка, текст и фото; в сборках сообщества — описание, фото и ссылки на схему и код; в сохранённых проектах — их идентификаторы.", "When the server is running and a demo account is created, the site receives a name, email address, and password. Passwords are stored as cryptographic hashes, and sign-in uses a session cookie. The demo checkout also includes the recipient's name, phone, city, delivery address, carrier, payment method, and items. Reviews may store ratings, text, and photos; community builds may store descriptions, photos, and links to schematics and code; saved projects store their IDs."],
+  "Разом": ["Итого", "Total"],
+  "Ти вже оцінив цей проєкт.": ["Ты уже оценил этот проект.", "You have already rated this project."],
+  "Купон можна застосувати під час оформлення. Доставка оплачується окремо за тарифом перевізника.": ["Купон можно применить при оформлении заказа. Доставка оплачивается отдельно по тарифам перевозчика.", "Apply coupons at checkout. Shipping is charged separately at the carrier's rate."],
+  "дохід після знижок": ["доход после скидок", "revenue after discounts"],
+  "Демо-код NEXLAB10 дає 10% знижки на товари від 1 000 ₴.": ["Демо-код NEXLAB10 даёт скидку 10% на товары от 1 000 ₴.", "Demo code NEXLAB10 takes 10% off items totaling at least UAH 1,000."],
+  "Не вдалося відкрити каталог. Онови сторінку або повідом команді NEXLAB.": ["Не удалось открыть каталог. Обнови страницу или сообщи команде NEXLAB.", "Could not open the catalog. Reload the page or contact the NEXLAB team."],
+  "☷ Фільтри": ["☷ Фильтры", "☷ Filters"],
+  "Усі бренди": ["Все бренды", "All brands"],
+  "Від 4,0": ["От 4,0", "4.0 and up"],
+  "Від 4,5": ["От 4,5", "4.5 and up"],
+  "Від 4,8": ["От 4,8", "4.8 and up"],
+  "Зміни пошуковий запит або скинь фільтри, щоб переглянути інші товари.": ["Измени поисковый запрос или сбрось фильтры, чтобы увидеть другие товары.", "Change your search or clear filters to see other products."],
+  "Це заявка на замовлення. Магазин перевірить актуальні ціни й наявність перед підтвердженням.": ["Это заявка на заказ. Магазин проверит актуальные цены и наличие перед подтверждением.", "This is an order request. The store will verify current prices and availability before confirming it."],
+  "Відкрити схему ↗": ["Открыть схему ↗", "Open schematic ↗"],
+  "Переглянути код ↗": ["Посмотреть код ↗", "View code ↗"],
+  "Збірку видалено або посилання застаріло.": ["Сборка удалена или ссылка устарела.", "This build was removed or its link has expired."],
+  "До спільноти": ["К сообществу", "Back to the community"],
+  "Ще немає оцінок. Стань першим, хто поділиться враженням.": ["Оценок пока нет. Поделись впечатлением первым.", "No ratings yet. Be the first to share your thoughts."],
+  "Очікує відповіді автора збірки.": ["Ожидает ответа автора сборки.", "Waiting for a reply from the project author."],
+  "Питань поки немає.": ["Вопросов пока нет.", "No questions yet."],
+  "Поставити запитання": ["Задать вопрос", "Ask a question"],
+  "Не вдалося завантажити проєкти": ["Не удалось загрузить проекты", "Could not load projects"],
+  "Завантажити ще проєкти": ["Загрузить ещё проекты", "Load more projects"],
+  "Фото тимчасово недоступне": ["Фото временно недоступно", "Photo temporarily unavailable"],
+  "Поки немає товарів для порівняння": ["Пока нет товаров для сравнения", "No products to compare yet"],
+  "Додай до чотирьох товарів у каталозі й порівняй характеристики поруч.": ["Добавь до четырёх товаров из каталога и сравни их характеристики.", "Add up to four products from the catalog to compare them side by side."],
+  "Відкрити каталог": ["Открыть каталог", "Open catalog"],
+  "ОБЕРИ СВОЇ КОМПОНЕНТИ": ["ВЫБЕРИ СВОИ КОМПОНЕНТЫ", "CHOOSE YOUR COMPONENTS"],
+  "Порівняй ціни, наявність і характеристики поруч.": ["Сравни цены, наличие и характеристики.", "Compare prices, availability, and specifications side by side."],
+  "Очистити список": ["Очистить список", "Clear list"],
+  "Характеристика": ["Характеристика", "Specification"],
+  "Прибрати": ["Убрать", "Remove"],
+  "Немає з’єднання. Доступні лише збережені сторінки й локальний каталог.": ["Нет соединения. Доступны только сохранённые страницы и локальный каталог.", "You're offline. Only cached pages and the local catalog are available."],
+  "Детальніше": ["Подробнее", "More details"],
+  "З’єднання відновлено. Онови дані перед оформленням замовлення.": ["Соединение восстановлено. Обнови данные перед оформлением заказа.", "Connection restored. Refresh the data before checkout."],
+  "Оновити сторінку": ["Обновить страницу", "Reload page"],
+  "Не вдалося завантажити дані Firebase. Перевір з’єднання, створення Firestore та опубліковані правила firebase/firestore.rules.": ["Не удалось загрузить данные Firebase. Проверь соединение, создание Firestore и опубликованные правила firebase/firestore.rules.", "Could not load Firebase data. Check the connection, Firestore database, and published firebase/firestore.rules."],
+  "Не вдалося з’єднатися з магазином. Запусти сервер NEXLAB і онови сторінку.": ["Не удалось подключиться к магазину. Запусти сервер NEXLAB и обнови страницу.", "Could not connect to the store. Start the NEXLAB server and reload the page."],
+  "Заявку на повернення надіслано": ["Заявка на возврат отправлена", "Return request submitted"],
+  "Попередню заявку відхилено": ["Предыдущая заявка отклонена", "Previous request was rejected"],
+  "Потрібно повернути товар?": ["Нужно вернуть товар?", "Need to return an item?"],
+  "Подати заявку на повернення": ["Подать заявку на возврат", "Request a return"],
+  "Товар не знайдено": ["Товар не найден", "Product not found"],
+  "Можливо, його вже немає в каталозі.": ["Возможно, его уже нет в каталоге.", "It may no longer be in the catalog."],
+  "Повідомити, коли з’явиться": ["Сообщить, когда появится", "Notify me when available"],
+  "Керуй даними облікового запису та своїми проєктами.": ["Управляй данными аккаунта и своими проектами.", "Manage your account details and projects."],
+  "Основна інформація": ["Основная информация", "Basic information"],
+  "Дата реєстрації": ["Дата регистрации", "Registration date"],
+  "Безпека": ["Безопасность", "Security"],
+  "Змінити пароль": ["Изменить пароль", "Change password"],
+  "Поточний пароль": ["Текущий пароль", "Current password"],
+  "Новий пароль": ["Новый пароль", "New password"],
+  "Підтвердження нового пароля": ["Подтверждение нового пароля", "Confirm new password"],
+  "Вийти з облікового запису": ["Выйти из учётной записи", "Sign out"],
+  "Знижка на повний комплект": ["Скидка на полный комплект", "Complete kit discount"],
+  "Частини компонентів зараз немає в наявності. Можна додати доступні, а решту відкрити в каталозі.": ["Некоторых компонентов сейчас нет в наличии. Добавь доступные, а остальные найди в каталоге.", "Some components are out of stock. Add the available items and browse the catalog for the rest."],
+  "Компонент недоступний": ["Компонент недоступен", "Component unavailable"],
+  "Товар більше не представлений у каталозі.": ["Товара больше нет в каталоге.", "This product is no longer in the catalog."],
+  "Інструкція тимчасово недоступна. Перевір адресу сторінки або спробуй пізніше.": ["Инструкция временно недоступна. Проверь адрес страницы или попробуй позже.", "The guide is temporarily unavailable. Check the page address or try again later."],
+  "Прибрати з майстерні": ["Убрать из мастерской", "Remove from workshop"],
+  "Не вдалося завантажити майстерню": ["Не удалось загрузить мастерскую", "Could not load your workshop"],
+  "Завантажуємо твою майстерню…": ["Загружаем твою мастерскую…", "Loading your workshop…"],
+  "Магазин перевірить ціни й наявність перед підтвердженням.": ["Магазин проверит цены и наличие перед подтверждением.", "The store will verify prices and availability before confirming."],
+  "Воно очікує підтвердження магазину.": ["Заказ ожидает подтверждения магазина.", "It is awaiting store confirmation."],
+  "Номер відстеження:": ["Номер отслеживания:", "Tracking number:"],
+  "403 / НЕМАЄ ДОСТУПУ": ["403 / НЕТ ДОСТУПА", "403 / ACCESS DENIED"],
+  "Доступ заборонено": ["Доступ запрещён", "Access denied"],
+  "Для доступу до панелі потрібна роль співробітника.": ["Для доступа к панели нужна роль сотрудника.", "Staff access is required to open this panel."],
+  "Повернутися до магазину": ["Вернуться в магазин", "Return to store"],
+  "⚙ Панель керування": ["⚙ Панель управления", "⚙ Admin panel"],
+  "Переглянути всі результати →": ["Посмотреть все результаты →", "View all results →"],
+  "Нічого не знайдено. Спробуй іншу назву.": ["Ничего не найдено. Попробуй другое название.", "No results found. Try another search."],
+  "Загальні кроки для старту. Перед підключенням перевір напругу, розташування контактів і сумісність усіх компонентів.": ["Общие шаги для начала. Перед подключением проверь напряжение, расположение контактов и совместимость компонентов.", "General setup steps. Check voltage, pin positions, and component compatibility before connecting anything."],
+  "Склад набору": ["Состав набора", "Kit contents"],
+  "Увесь каталог": ["Весь каталог", "Full catalog"],
+  "Тимчасово немає в наявності": ["Временно нет в наличии", "Temporarily out of stock"],
+  "Деталі товару ↗": ["Детали товара ↗", "Product details ↗"],
+  "Проєкт збережено в твоїй майстерні.": ["Проект сохранён в твоей мастерской.", "Project saved to your workshop."],
+  "Не вдалося зберегти проєкт. Спробуй ще раз.": ["Не удалось сохранить проект. Попробуй ещё раз.", "Could not save the project. Try again."],
+  "Зараз немає доступних компонентів для додавання.": ["Сейчас нет доступных компонентов для добавления.", "No components are currently available to add."],
+  "Не вдалося зберегти прогрес. Перевір з’єднання та спробуй ще раз.": ["Не удалось сохранить прогресс. Проверь соединение и попробуй ещё раз.", "Could not save your progress. Check your connection and try again."],
+  "Проєкт прибрано з майстерні.": ["Проект удалён из мастерской.", "Project removed from your workshop."],
+  "Не вдалося прибрати проєкт. Спробуй ще раз.": ["Не удалось удалить проект. Попробуй ещё раз.", "Could not remove the project. Try again."],
+};
+for (const [source, [ru, en]] of Object.entries(commerceAndLearningTranslations)) {
+  messages.ru[source] = ru;
+  messages.en[source] = en;
+}
+
+const translatedSource = new Map();
+const normalizedSource = new Map();
+for (const language of ["ru", "en"]) {
+  for (const [source, translated] of Object.entries(messages[language])) {
+    if (!translatedSource.has(translated)) translatedSource.set(translated, source);
+    const normalized = source.toLocaleLowerCase("uk-UA");
+    if (!normalizedSource.has(normalized)) normalizedSource.set(normalized, source);
+  }
+}
 
 let locale = "uk";
 const intlLocales = { uk: "uk-UA", ru: "ru-RU", en: "en-US" };
@@ -222,16 +878,10 @@ try {
 
 function sourceFor(value) {
   if (Object.hasOwn(messages.ru, value) || Object.hasOwn(messages.en, value)) return value;
-  for (const language of ["ru", "en"]) {
-    const source = Object.keys(messages[language]).find((key) => messages[language][key] === value);
-    if (source) return source;
-  }
+  const source = translatedSource.get(value);
+  if (source) return source;
   const normalized = value.toLocaleLowerCase("uk-UA");
-  for (const language of ["ru", "en"]) {
-    const source = Object.keys(messages[language]).find((key) => key.toLocaleLowerCase("uk-UA") === normalized);
-    if (source) return source;
-  }
-  return value;
+  return normalizedSource.get(normalized) || value;
 }
 
 export function translateText(value, language = locale) {
@@ -245,6 +895,19 @@ export function translateText(value, language = locale) {
       ? translated.toLocaleUpperCase(language === "ru" ? "ru-RU" : "en-US")
       : translated;
   }
+  if (language === "uk") return key;
+  const diagramLabel = value.match(/^Схема з’єднань (.+)$/);
+  if (diagramLabel) return `${language === "ru" ? "Схема соединений" : "Wiring diagram"} ${translateText(diagramLabel[1], language)}`;
+  const productPhotoAlt = value.match(/^(.+) — фото для ознайомлення$/);
+  if (productPhotoAlt) return `${translateText(productPhotoAlt[1], language)} — ${language === "ru" ? "иллюстративное фото" : "illustrative photo"}`;
+  const sku = value.match(/^Артикул (.+)$/);
+  if (sku) return `${language === "ru" ? "Артикул" : "SKU"} ${sku[1]}`;
+  const pieceCount = value.match(/^(\d+) шт\.$/);
+  if (pieceCount) return language === "ru" ? `${pieceCount[1]} шт.` : `${pieceCount[1]} pcs`;
+  const detailStockCount = value.match(/^✓ Є в наявності · (\d+) шт\.$/);
+  if (detailStockCount) return `✓ ${language === "ru" ? "В наличии" : "In stock"} · ${detailStockCount[1]} ${language === "ru" ? "шт." : "pcs"}`;
+  const stockCount = value.match(/^Є в наявності · (\d+) шт\.$/);
+  if (stockCount) return `${language === "ru" ? "В наличии" : "In stock"} · ${stockCount[1]} ${language === "ru" ? "шт." : "pcs"}`;
   const welcome = value.match(/^Раді бачити знову, (.+)$/);
   if (welcome) return `${language === "ru" ? "Рады видеть снова" : "Welcome back"}, ${welcome[1]}`;
   const registered = value.match(/^Обліковий запис створено, (.+)$/);
@@ -258,16 +921,62 @@ export function translateText(value, language = locale) {
   const addToCart = value.match(/^Додати (.+) до кошика$/);
   if (addToCart) {
     const [verb, suffix] = language === "ru" ? ["Добавить", "в корзину"] : ["Add", "to cart"];
-    return `${verb} ${addToCart[1]} ${suffix}`;
+    return `${verb} ${translateText(addToCart[1], language)} ${suffix}`;
   }
   const details = value.match(/^Докладніше: (.+)$/);
-  if (details) return `${language === "ru" ? "Подробнее" : "Details"}: ${details[1]}`;
+  if (details) return `${language === "ru" ? "Подробнее" : "Details"}: ${translateText(details[1], language)}`;
   const count = value.match(/^Знайдено (\d+) товарів$/);
   if (count) return language === "ru" ? `Найдено ${count[1]} товаров` : `${count[1]} products found`;
+  const imported = value.match(/^Імпортовано товарів: (\d+)\.$/);
+  if (imported) return language === "ru" ? `Импортировано товаров: ${imported[1]}.` : `Products imported: ${imported[1]}.`;
   const updated = value.match(/^Оновлено о (.+)$/);
   if (updated) return `${language === "ru" ? "Обновлено в" : "Updated at"} ${updated[1]}`;
   const projectCount = value.match(/^(\d+) проєктів$/);
   if (projectCount) return language === "ru" ? `${projectCount[1]} проектов` : `${projectCount[1]} projects`;
+  const footerCopyright = value.match(/^© (\d{4}) NEXLAB · Електроніка та DIY$/);
+  if (footerCopyright) return `© ${footerCopyright[1]} NEXLAB · ${language === "ru" ? "Электроника и DIY" : "Electronics and DIY"}`;
+  const projectKit = value.match(/^(\d+) компоненти · ≈ (.+)$/);
+  if (projectKit) {
+    const quantity = Number(projectKit[1]);
+    const russianNoun = quantity % 10 === 1 && quantity % 100 !== 11
+      ? "компонент"
+      : quantity % 10 >= 2 && quantity % 10 <= 4 && (quantity % 100 < 12 || quantity % 100 > 14)
+        ? "компонента"
+        : "компонентов";
+    return language === "ru"
+      ? `${quantity} ${russianNoun} · ≈ ${projectKit[2]}`
+      : `${quantity} components · ≈ ${projectKit[2]}`;
+  }
+  const pageMetaDescription = value.match(/^(.+) — NEXLAB — електроніка та DIY-проєкти NEXLAB\.$/);
+  if (pageMetaDescription) return `${translateText(pageMetaDescription[1], language)} — NEXLAB — ${language === "ru" ? "электроника и DIY-проекты NEXLAB." : "NEXLAB electronics and DIY projects."}`;
+  const adminReturnRequest = value.match(/^Заявка на повернення · (.+)$/);
+  if (adminReturnRequest) return `${language === "ru" ? "Заявка на возврат" : "Return request"} · ${translateText(adminReturnRequest[1], language)}`;
+  const adminOrderDate = value.match(/^Замовлення · (.+)$/);
+  if (adminOrderDate) return `${language === "ru" ? "Заказ" : "Order"} · ${adminOrderDate[1]}`;
+  const orderItemsCount = value.match(/^Склад замовлення \((\d+)\)$/);
+  if (orderItemsCount) return `${language === "ru" ? "Состав заказа" : "Order items"} (${orderItemsCount[1]})`;
+  const statusHistoryCount = value.match(/^Історія статусу \((\d+)\)$/);
+  if (statusHistoryCount) return `${language === "ru" ? "История статусов" : "Status history"} (${statusHistoryCount[1]})`;
+  const adminGreeting = value.match(/^Вітаємо, (.+)\. Тут можна стежити за замовленнями, каталогом і клієнтами\.$/);
+  if (adminGreeting) return language === "ru"
+    ? `Добро пожаловать, ${adminGreeting[1]}. Здесь можно следить за заказами, каталогом и клиентами.`
+    : `Welcome, ${adminGreeting[1]}. Track orders, the catalog, and customers here.`;
+  const orderShortCount = value.match(/^(\d+) замовл\.$/);
+  if (orderShortCount) return language === "ru" ? `${orderShortCount[1]} заказов` : `${orderShortCount[1]} orders`;
+  const productUnitCount = value.match(/^(\d+) од\.$/);
+  if (productUnitCount) return language === "ru" ? `${productUnitCount[1]} шт.` : `${productUnitCount[1]} pcs`;
+  const returnedOrderCount = value.match(/^(\d+) повернено$/);
+  if (returnedOrderCount) return language === "ru" ? `${returnedOrderCount[1]} возвращено` : `${returnedOrderCount[1]} returned`;
+  const orderSavedNotice = value.match(/^Замовлення збережено\. (.+)$/);
+  if (orderSavedNotice) return `${language === "ru" ? "Заказ сохранён." : "Order saved."} ${translateText(orderSavedNotice[1], language)}`;
+  const trackingNumber = value.match(/^Номер відстеження: (.+)$/);
+  if (trackingNumber) return `${language === "ru" ? "Номер отслеживания" : "Tracking number"}: ${trackingNumber[1]}`;
+  const taskProgress = value.match(/^(\d+) із (\d+) завдань виконано$/);
+  if (taskProgress) return language === "ru"
+    ? `${taskProgress[1]} из ${taskProgress[2]} заданий выполнено`
+    : `${taskProgress[1]} of ${taskProgress[2]} tasks complete`;
+  const learningProgress = value.match(/^Прогрес навчання: (.+)$/);
+  if (learningProgress) return `${language === "ru" ? "Прогресс обучения" : "Learning progress"}: ${translateText(learningProgress[1], language)}`;
   const projectEyebrow = value.match(/^Майстерня NEXLAB \/ (.+) · ~([\d.,]+) (?:год\.|ч\.|hr)$/);
   if (projectEyebrow) {
     const level = translateText(projectEyebrow[1], language);
@@ -288,8 +997,9 @@ export function translateText(value, language = locale) {
   const categoryAndBrand = value.match(/^(.+?)(\s·\s)(.+)$/);
   if (categoryAndBrand) {
     const translatedCategory = translateText(categoryAndBrand[1], language);
-    if (translatedCategory !== categoryAndBrand[1])
-      return `${translatedCategory}${categoryAndBrand[2]}${categoryAndBrand[3]}`;
+    const translatedBrand = translateText(categoryAndBrand[3], language);
+    if (translatedCategory !== categoryAndBrand[1] || translatedBrand !== categoryAndBrand[3])
+      return `${translatedCategory}${categoryAndBrand[2]}${translatedBrand}`;
   }
   return value;
 }
@@ -329,6 +1039,18 @@ function translateTree(root) {
 
 export function currentLanguage() {
   return locale;
+}
+
+export function formatProductCount(count, language = locale) {
+  const selectedLanguage = supported.has(language) ? language : "uk";
+  const plural = new Intl.PluralRules(intlLocales[selectedLanguage]).select(count);
+  const forms = {
+    uk: { one: "товар", few: "товари", many: "товарів", other: "товару" },
+    ru: { one: "товар", few: "товара", many: "товаров", other: "товара" },
+    en: { one: "product", other: "products" },
+  }[selectedLanguage];
+  if (selectedLanguage === "en") return `${count} ${forms[plural] || forms.other} found`;
+  return `${selectedLanguage === "uk" ? "Знайдено" : "Найдено"} ${count} ${forms[plural] || forms.other}`;
 }
 
 export function formatNumber(value, options = {}) {

@@ -22,10 +22,11 @@
           <form class="profile-panel community-project-form" data-community-project-form>
             <label>Назва збірки<input name="title" maxlength="120" required></label>
             <label>Опис<textarea name="description" rows="4" maxlength="2000" required placeholder="Що робить проєкт, які компоненти використав, чого навчився?"></textarea></label>
-            <label>Посилання на фото HTTPS<input name="photoUrl" type="url" pattern="https://.*" maxlength="2000" placeholder="https://…" required></label>
+            <label>Фото з пристрою<input name="photoFile" type="file" accept="image/jpeg,image/png,image/webp"><small>JPG, PNG або WebP, до 12 МБ. Фото буде зменшено перед збереженням.</small></label>
+            <label>Або посилання на фото HTTPS<input name="photoUrl" type="url" pattern="https://.*" maxlength="2000" placeholder="https://…"></label>
             <label>Посилання на схему (необов’язково)<input name="schematicUrl" type="url" pattern="https://.*" maxlength="2000" placeholder="https://…"></label>
             <label>Посилання на код HTTPS<input name="codeUrl" type="url" pattern="https://.*" maxlength="2000" placeholder="GitHub, Gist або інше HTTPS-посилання" required></label>
-            <p class="form-note">Публікуй лише власні проєкти й матеріали, на які маєш право. Фото та код зберігаються за зовнішніми HTTPS-посиланнями.</p>
+            <p class="form-note">Публікуй лише власні проєкти й матеріали, на які маєш право. Фото можна завантажити з пристрою або додати за HTTPS-посиланням.</p>
             <button class="button button-primary" type="submit">Опублікувати</button><p role="status" data-community-form-status></p>
           </form>
         </details>

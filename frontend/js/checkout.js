@@ -172,6 +172,8 @@ export async function initializeCheckout(settings = shopConfig) {
       location.href = "orders.html?created=" + encodeURIComponent(order.id);
     } catch (error) {
       const messages = {
+        PRODUCT_NOT_FOUND:
+          "Каталог товарів ще не синхронізований із базою замовлень. Адміністратору потрібно ініціалізувати каталог у Firebase; спробуй пізніше.",
         OUT_OF_STOCK:
           "Кількість товарів змінилася. Перевір оновлене замовлення та підтвердь його ще раз.",
         PRICE_CHANGED:

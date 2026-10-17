@@ -46,42 +46,41 @@ export async function loadFirebaseAdminData(permissions = {}) {
 }
 
 export async function saveFirebaseProduct(product) {
-  const { db, firestoreSdk } = await getFirebaseServices();
   const previous = await getFirebaseDocument("products", product.id);
-  const change = product.stock - (previous?.stock || 0);
-  const batch = firestoreSdk.writeBatch(db);
-  const productRef = firestoreSdk.doc(db, "products", product.id);
   const { id: _id, ...productData } = product;
-  batch.set(productRef, productData);
-  if (change) {
-    const movementId = crypto.randomUUID();
-    batch.set(firestoreSdk.doc(db, "inventory_movements", movementId), {
-      productId: product.id,
-      quantityChange: change,
-      reason: previous && !previous.deleted ? "manual_adjustment" : "initial_stock",
-      date: new Date().toISOString(),
-    });
-  }
-  await batch.commit();
+  const targetStock = Number(product.stock);
+  if (!Number.isInteger(targetStock) || targetStock < 0 || targetStock > 100000)
+    throw new Error("INVALID_STOCK");
+  const savedStock = Number.isInteger(previous?.stock) ? previous.stock : 0;
+  await saveFirebaseDocument("products", product.id, {
+    ...productData,
+    stock: savedStock,
+  });
+  if (targetStock !== savedStock)
+    await saveFirebaseStock(product.id, targetStock, previous ? "manual_adjustment" : "initial_stock");
   return product;
 }
 
-export async function saveFirebaseStock(id, stock) {
-  const { db, firestoreSdk } = await getFirebaseServices();
-  const previous = await getFirebaseDocument("products", id);
-  const change = Number(stock) - Number(previous?.stock || 0);
-  const batch = firestoreSdk.writeBatch(db);
-  batch.update(firestoreSdk.doc(db, "products", id), { stock: Number(stock) });
-  if (change) {
-    batch.set(firestoreSdk.doc(db, "inventory_movements", crypto.randomUUID()), {
-      productId: id,
-      quantityChange: change,
-      reason: "manual_adjustment",
-      date: new Date().toISOString(),
-    });
+export async function importFirebaseCatalog(products) {
+  const { functions, functionsSdk } = await getFirebaseServices();
+  const callable = functionsSdk.httpsCallable(functions, "importCatalog");
+  try {
+    return (await callable({ products })).data;
+  } catch (error) {
+    const mapped = new Error(error.details?.message || error.details || error.message || "CATALOG_IMPORT_FAILED");
+    mapped.code = error.code;
+    throw mapped;
   }
-  await batch.commit();
-  return { id, stock: Number(stock) };
+}
+
+export async function saveFirebaseStock(id, stock, reason = "manual_adjustment") {
+  const { functions, functionsSdk } = await getFirebaseServices();
+  const callable = functionsSdk.httpsCallable(functions, "adjustStock");
+  try {
+    return (await callable({ productId: id, targetStock: Number(stock), reason })).data;
+  } catch (error) {
+    throw new Error(error.details?.message || error.details || error.message || "STOCK_UPDATE_FAILED");
+  }
 }
 
 export async function updateFirebaseUserRole(id, role) {
@@ -127,31 +126,21 @@ export async function removeFirebaseReview(id) {
 }
 
 export async function updateFirebaseOrderStatus(id, update) {
-  await updateFirebaseDocument("orders", id, update);
+  const { functions, functionsSdk } = await getFirebaseServices();
+  const callable = functionsSdk.httpsCallable(functions, "updateOrder");
+  try {
+    return (await callable({ orderId: id, status: update.status, trackingNumber: update.trackingNumber })).data;
+  } catch (error) {
+    throw new Error(error.details?.message || error.details || error.message || "ORDER_UPDATE_FAILED");
+  }
 }
 
 export async function reviewFirebaseOrderReturn(id, decision, note = "") {
-  const { auth } = await getFirebaseServices();
-  const order = await getFirebaseDocument("orders", id);
-  if (!order) throw new Error("ORDER_NOT_FOUND");
-  if (order.status !== "delivered" || order.returnRequest?.status !== "requested")
-    throw new Error("RETURN_NOT_PENDING");
-  const reviewedAt = new Date().toISOString();
-  const returnRequest = {
-    ...order.returnRequest,
-    status: decision,
-    reviewedAt,
-    reviewedBy: auth.currentUser?.displayName || auth.currentUser?.email || "Адміністратор",
-    decisionNote: String(note || "").trim(),
-  };
-  const update = { returnRequest };
-  if (decision === "accepted") {
-    update.status = "returned";
-    update.statusHistory = [
-      ...(Array.isArray(order.statusHistory) ? order.statusHistory : []),
-      { status: "returned", date: reviewedAt, note: "Повернення прийнято після отримання товару" },
-    ];
+  const { functions, functionsSdk } = await getFirebaseServices();
+  const callable = functionsSdk.httpsCallable(functions, "reviewOrderReturn");
+  try {
+    return (await callable({ orderId: id, decision, note })).data;
+  } catch (error) {
+    throw new Error(error.details?.message || error.details || error.message || "RETURN_UPDATE_FAILED");
   }
-  await updateFirebaseDocument("orders", id, update);
-  return { ...order, ...update };
 }
