@@ -51,9 +51,9 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   for (const check of checks)
     console.log(`${check.ready ? "OK" : "MISSING"} ${check.name}: ${check.detail}`);
   if (checks.some((check) => !check.ready)) {
-    console.error("To activate the hosted store, first deploy Firestore rules and Cloud Functions:");
-    console.error(`  firebase deploy --project ${firebaseConfig.projectId} --only firestore:rules,functions`);
-    console.error("Then seed the demo catalog and settings:");
+    console.error("To finish Firebase setup, deploy Cloud Functions (requires the Blaze billing plan):");
+    console.error(`  npx --yes firebase-tools@latest deploy --project ${firebaseConfig.projectId} --only functions`);
+    console.error("Then seed the demo catalog and settings with Google Cloud CLI credentials:");
     console.error("  gcloud auth application-default login");
     console.error("  npm run seed --prefix functions");
     console.error("Finally run npm run check:firebase again.");
