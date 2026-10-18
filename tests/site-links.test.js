@@ -75,6 +75,29 @@ test("compact navigation follows the CSS-controlled menu toggle", async () => {
   assert.doesNotMatch(ui, /matchMedia\("\(max-width:/);
 });
 
+test("account menu reports its expanded state and restores focus on Escape", async () => {
+  const ui = await readFile(join(root, "js", "ui.js"), "utf8");
+  assert.match(ui, /data-account-toggle aria-expanded="false" aria-controls="header-account-menu"/);
+  assert.match(ui, /id="header-account-menu" data-account-dropdown hidden/);
+  assert.match(ui, /accountToggle\?\.setAttribute\("aria-expanded", "false"\)/);
+  assert.match(ui, /if \(returnFocus\) accountToggle\?\.focus\(\)/);
+  assert.match(ui, /closeAccountMenu\(true\)/);
+  assert.match(ui, /if \(!event\.target\.closest\("\.account-control"\)\)\s*\{\s*closeAccountMenu\(\);/);
+});
+
+test("header search keeps its combobox and listbox ARIA target connected", async () => {
+  const ui = await readFile(join(root, "js", "ui.js"), "utf8");
+  const styles = await readFile(join(root, "css", "header.css"), "utf8");
+  assert.match(ui, /class="header-search-submit" type="submit"[^>]*aria-label="Шукати товар"/);
+  assert.match(ui, /event\.target\.closest\("\[data-header-search-submit\]"\)[\s\S]*searchInput\.focus\(\)/);
+  assert.match(styles, /\.header-search-submit:focus-visible\s*\{/);
+  assert.match(ui, /role="combobox"[^>]*aria-controls="header-search-listbox"/);
+  assert.match(ui, /id="header-search-listbox" role="listbox"/);
+  assert.match(ui, /const searchListbox = searchResults\?\.querySelector\("#header-search-listbox"\)/);
+  assert.match(ui, /searchListbox\.innerHTML = ""/);
+  assert.match(ui, /searchInput\.setAttribute\("aria-expanded", "true"\)/);
+});
+
 test("restock alerts refresh stock and update an already open product page", async () => {
   const [notifications, productPage] = await Promise.all([
     readFile(join(root, "js", "stock-alert-notifications.js"), "utf8"),
@@ -105,6 +128,23 @@ test("mobile commerce controls keep usable touch targets", async () => {
   assert.match(theme, /\.tool-link\s*\{[^}]*min-width:\s*24px[^}]*height:\s*32px/s);
   assert.match(product, /\.remove-button\s*\{[^}]*min-height:\s*32px/s);
   assert.match(style, /\.breadcrumbs a\s*\{[^}]*min-height:\s*24px/s);
+});
+
+test("product quantity changes are announced to screen readers", async () => {
+  const productPage = await readFile(join(root, "js", "product-page.js"), "utf8");
+  assert.match(productPage, /<span data-detail-quantity-value aria-live="polite" aria-atomic="true">1<\/span>/);
+  assert.match(productPage, /root\.querySelector\("\[data-detail-quantity-value\]"\)\.textContent = quantity/);
+});
+
+test("mobile product gallery cannot cover product information while scrolling", async () => {
+  const productStyles = await readFile(join(root, "css", "product.css"), "utf8");
+  assert.match(productStyles, /\.detail-gallery\s*\{\s*position:\s*sticky;\s*top:\s*100px;/);
+  assert.match(productStyles, /@media \(max-width: 700px\)\s*\{\s*\.product-detail\s*\{\s*display:\s*block;\s*\}\s*\.detail-gallery\s*\{\s*position:\s*relative;\s*top:\s*auto;\s*\}\s*\}/);
+});
+
+test("Firebase setup diagnostics are shown to admins, not public shoppers", async () => {
+  const main = await readFile(join(root, "js", "main.js"), "utf8");
+  assert.match(main, /if \(dataWarnings\.length && document\.querySelector\("\[data-admin-content\]"\)\)/);
 });
 
 test("public pages share the NEXLAB card and private pages stay out of search results", async () => {

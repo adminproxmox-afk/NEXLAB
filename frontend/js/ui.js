@@ -59,7 +59,7 @@ export function renderSharedLayout(settings = { name: "NEXLAB" }) {
         <a href="${prefix}projects.html" ${path === "projects.html" || path === "project.html" ? 'aria-current="page"' : ""}>Проєкти</a><a href="${prefix}community.html" ${path === "community.html" ? 'aria-current="page"' : ""}>Спільнота</a><a href="${prefix}catalog.html?tag=sale" ${new URLSearchParams(location.search).get("tag") === "sale" ? 'aria-current="page"' : ""}>Акції</a>
       </nav>
       <div class="header-tools">
-        <div class="header-search-wrap"><form class="header-search" data-header-search role="search"><span aria-hidden="true">⌕</span><input type="search" placeholder="Шукати товар" aria-label="Пошук товарів" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="header-search-listbox" aria-expanded="false"></form><div class="header-search-results" data-header-search-results role="region" aria-label="Результати пошуку" aria-live="polite" hidden></div></div>
+        <div class="header-search-wrap"><form class="header-search" data-header-search role="search"><button class="header-search-submit" type="submit" data-header-search-submit aria-label="Шукати товар"><span aria-hidden="true">⌕</span></button><input type="search" placeholder="Шукати товар" aria-label="Пошук товарів" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="header-search-listbox" aria-expanded="false"></form><div class="header-search-results" data-header-search-results role="region" aria-label="Результати пошуку" aria-live="polite" hidden><p data-header-search-message></p><div id="header-search-listbox" role="listbox" aria-label="Підказки пошуку"></div></div></div>
         <a class="tool-link" href="${prefix}favorites.html" aria-label="Обране">♡<span class="tool-count" data-favorite-count hidden>0</span></a>
         <a class="tool-link" href="${prefix}compare.html" aria-label="Порівняння товарів">⇄<span class="tool-count" data-comparison-count hidden>0</span></a>
         <a class="tool-link" href="${prefix}cart.html" aria-label="Кошик">▣<span class="tool-count" data-cart-count hidden>0</span></a>
@@ -109,7 +109,7 @@ function renderHeaderAccount() {
     );
     return;
   }
-  root.innerHTML = `<div class="account-control"><button class="account-toggle" type="button" data-account-toggle aria-expanded="false"><span class="account-avatar">${safe(user.name.slice(0, 1).toUpperCase())}</span><span>${safe(user.name)}</span><span aria-hidden="true">⌄</span></button><nav class="account-dropdown" data-account-dropdown hidden aria-label="Меню облікового запису"><a href="${prefix}profile.html">Профіль</a><a href="${prefix}orders.html">Мої замовлення</a><a href="${prefix}favorites.html">Обране</a><a href="${prefix}my-projects.html">Мої проєкти</a><a href="${prefix}profile.html#settings">Налаштування</a>${hasAdminAccess() ? `<a class="admin-menu-link" href="${prefix}admin/index.html">⚙ Панель керування</a>` : ""}<button type="button" data-header-logout>Вийти</button></nav></div>`;
+  root.innerHTML = `<div class="account-control"><button class="account-toggle" type="button" data-account-toggle aria-expanded="false" aria-controls="header-account-menu"><span class="account-avatar">${safe(user.name.slice(0, 1).toUpperCase())}</span><span>${safe(user.name)}</span><span aria-hidden="true">⌄</span></button><nav class="account-dropdown" id="header-account-menu" data-account-dropdown hidden aria-label="Меню облікового запису"><a href="${prefix}profile.html">Профіль</a><a href="${prefix}orders.html">Мої замовлення</a><a href="${prefix}favorites.html">Обране</a><a href="${prefix}my-projects.html">Мої проєкти</a><a href="${prefix}profile.html#settings">Налаштування</a>${hasAdminAccess() ? `<a class="admin-menu-link" href="${prefix}admin/index.html">⚙ Панель керування</a>` : ""}<button type="button" data-header-logout>Вийти</button></nav></div>`;
 }
 
 export function updateHeaderCounts() {
@@ -154,6 +154,14 @@ export function bindLayoutEvents() {
     toggle.setAttribute("aria-label", "Відкрити меню");
     if (returnFocus) toggle.focus();
   };
+  const closeAccountMenu = (returnFocus = false) => {
+    const menu = document.querySelector("[data-account-dropdown]");
+    const accountToggle = document.querySelector("[data-account-toggle]");
+    if (!menu || menu.hidden) return;
+    menu.hidden = true;
+    accountToggle?.setAttribute("aria-expanded", "false");
+    if (returnFocus) accountToggle?.focus();
+  };
   toggle?.addEventListener("click", () => {
     if (!nav) return;
     const open = nav.classList.toggle("is-open");
@@ -169,7 +177,10 @@ export function bindLayoutEvents() {
       closeMobileNav();
   });
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeMobileNav(true);
+    if (event.key === "Escape") {
+      closeMobileNav(true);
+      closeAccountMenu(true);
+    }
   });
   window.addEventListener("resize", () => {
     if (!isCompactHeader()) closeMobileNav();
@@ -177,6 +188,8 @@ export function bindLayoutEvents() {
   const search = document.querySelector("[data-header-search]");
   const searchWrap = search?.closest(".header-search-wrap");
   const searchResults = document.querySelector("[data-header-search-results]");
+  const searchMessage = searchResults?.querySelector("[data-header-search-message]");
+  const searchListbox = searchResults?.querySelector("#header-search-listbox");
   const searchInput = search?.querySelector("input");
   let searchRequest = 0;
   let activeSearchOption = -1;
@@ -195,11 +208,13 @@ export function bindLayoutEvents() {
   search?.addEventListener("click", (event) => {
     if (
       isCompactHeader() &&
-      !search.classList.contains("is-open")
+      !search.classList.contains("is-open") &&
+      event.target.closest("[data-header-search-submit]") &&
+      !searchInput.value.trim()
     ) {
       event.preventDefault();
       search.classList.add("is-open");
-      search.querySelector("input").focus();
+      searchInput.focus();
     }
   });
   searchInput?.addEventListener("focus", () => search.classList.add("is-open"));
@@ -210,7 +225,8 @@ export function bindLayoutEvents() {
     searchInput.removeAttribute("aria-activedescendant");
     if (query.length < 2) {
       closeSearchResults();
-      searchResults.innerHTML = "";
+      searchMessage.textContent = "";
+      searchListbox.innerHTML = "";
       return;
     }
     let products;
@@ -218,16 +234,22 @@ export function bindLayoutEvents() {
       products = await getProducts();
     } catch {
       if (request !== searchRequest) return;
-      searchResults.innerHTML = '<p class="search-empty">Не вдалося завантажити каталог. Перевір з’єднання й спробуй ще раз.</p>';
+      searchMessage.className = "search-empty";
+      searchMessage.textContent = "Не вдалося завантажити каталог. Перевір з’єднання й спробуй ще раз.";
+      searchListbox.innerHTML = "";
       searchResults.hidden = false;
       searchInput.setAttribute("aria-expanded", "true");
       return;
     }
     if (request !== searchRequest) return;
     const found = searchProducts(products, query).slice(0, 5);
-    searchResults.innerHTML = found.length
-      ? `<p>${formatProductCount(found.length)}</p><div id="header-search-listbox" role="listbox" aria-label="Підказки пошуку">${found.map((product, index) => `<a id="header-search-option-${index}" role="option" aria-selected="false" tabindex="-1" href="${prefix}product.html?id=${encodeURIComponent(product.id)}"><span>${safe(product.category)}</span><strong>${safe(product.name)}</strong><b>${formatMoney(product.price)}</b></a>`).join("")}<a id="header-search-option-all" class="search-all" role="option" aria-selected="false" tabindex="-1" href="${prefix}catalog.html?q=${encodeURIComponent(event.target.value.trim())}">Переглянути всі результати →</a></div>`
-      : `<p class="search-empty">Нічого не знайдено. Спробуй іншу назву.</p><div id="header-search-listbox" role="listbox" aria-label="Підказки пошуку"></div>`;
+    searchMessage.className = found.length ? "" : "search-empty";
+    searchMessage.textContent = found.length
+      ? formatProductCount(found.length)
+      : "Нічого не знайдено. Спробуй іншу назву.";
+    searchListbox.innerHTML = found.length
+      ? `${found.map((product, index) => `<a id="header-search-option-${index}" role="option" aria-selected="false" tabindex="-1" href="${prefix}product.html?id=${encodeURIComponent(product.id)}"><span>${safe(product.category)}</span><strong>${safe(product.name)}</strong><b>${formatMoney(product.price)}</b></a>`).join("")}<a id="header-search-option-all" class="search-all" role="option" aria-selected="false" tabindex="-1" href="${prefix}catalog.html?q=${encodeURIComponent(event.target.value.trim())}">Переглянути всі результати →</a>`
+      : "";
     searchResults.hidden = false;
     searchInput.setAttribute("aria-expanded", "true");
   });
@@ -287,8 +309,7 @@ export function bindLayoutEvents() {
       return;
     }
     if (!event.target.closest(".account-control")) {
-      const menu = document.querySelector("[data-account-dropdown]");
-      if (menu) menu.hidden = true;
+      closeAccountMenu();
     }
     if (event.target.closest("[data-header-logout]")) {
       await logout();

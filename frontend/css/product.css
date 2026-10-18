@@ -636,13 +636,6 @@
 .detail-specs div {
   display: flex;
 }
-@media (max-width: 700px) {
-  .detail-gallery {
-    position: relative;
-    top: auto;
-  }
-}
-
 /* Keep the gallery beside the full product content so sticky positioning can
    follow the description and reviews instead of stopping at the first row. */
 .detail-content {
@@ -653,11 +646,7 @@
     display: block;
   }
   .detail-gallery {
-    position: sticky;
-    z-index: 3;
-    top: 76px;
-    margin-bottom: 24px;
-    padding-bottom: 8px;
-    background: var(--bg);
+    position: relative;
+    top: auto;
   }
 }

@@ -62,6 +62,26 @@ test("shared UI translations work in Ukrainian, Russian and English", () => {
   assert.equal(translateText("Немає з’єднання", "en"), "You're offline");
 });
 
+test("language changes update the document language before reloading", async () => {
+  const originalDocument = globalThis.document;
+  const originalLocation = globalThis.location;
+  const documentStub = { documentElement: { lang: "uk" } };
+  let reloads = 0;
+  globalThis.document = documentStub;
+  globalThis.location = { reload() { reloads += 1; } };
+  try {
+    const { setLanguage } = await import(`../frontend/js/i18n.js?lang-test=${Date.now()}`);
+    setLanguage("en");
+    assert.equal(documentStub.documentElement.lang, "en");
+    assert.equal(reloads, 1);
+  } finally {
+    if (originalDocument === undefined) delete globalThis.document;
+    else globalThis.document = originalDocument;
+    if (originalLocation === undefined) delete globalThis.location;
+    else globalThis.location = originalLocation;
+  }
+});
+
 test("translation leaves unsupported locales and unknown copy unchanged", () => {
   assert.equal(translateText("Нова фраза", "en"), "Нова фраза");
   assert.equal(translateText("Каталог", "fr"), "Каталог");

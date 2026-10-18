@@ -275,7 +275,7 @@ async function start() {
     getFirebaseCatalogWarning(),
     getFirebaseProjectsWarning(),
   ].filter(Boolean);
-  if (dataWarnings.length)
+  if (dataWarnings.length && document.querySelector("[data-admin-content]"))
     document
       .querySelector("main")
       ?.insertAdjacentHTML(

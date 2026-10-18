@@ -91,7 +91,27 @@
 .header-search span {
   font-size: 17px;
 }
+.header-search-submit {
+  display: grid;
+  width: 24px;
+  height: 32px;
+  flex: 0 0 24px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--accent-bright);
+  cursor: pointer;
+}
+.header-search-submit:hover {
+  color: var(--text);
+}
+.header-search-submit:focus-visible {
+  outline: 2px solid var(--accent-bright);
+  outline-offset: 1px;
+}
 .header-search input {
+  min-width: 0;
   width: 100%;
   border: 0;
   outline: 0;
@@ -335,6 +355,11 @@
   }
   .header-search span {
     font-size: 19px;
+  }
+  .header-search-submit {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
   }
   .header-search input {
     position: absolute;
