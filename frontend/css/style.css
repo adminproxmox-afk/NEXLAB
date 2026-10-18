@@ -18,6 +18,7 @@
   --line: #303833;
   --accent: #57cdb3;
   --accent-bright: #8be4d0;
+  --accent-ink: #09231e;
   --green: #a7d982;
   --radius: 14px;
   --mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
@@ -97,7 +98,7 @@ button {
 }
 .button-primary {
   background: var(--accent);
-  color: #171613;
+  color: var(--accent-ink);
 }
 .button-primary:hover {
   background: var(--accent-bright);
@@ -957,12 +958,12 @@ button {
   --focus: var(--accent-bright);
 }
 .button-primary {
-  color: #09231e;
+  color: var(--accent-ink);
 }
 .auth-header-actions .auth-register-link {
   border-color: #397e6e;
   background: var(--accent);
-  color: #09231e;
+  color: var(--accent-ink);
 }
 .favorite-button.is-favorite {
   color: var(--accent-bright);
@@ -1025,4 +1026,17 @@ button {
 }
 .pad {
   fill: #78cbb0;
+}
+
+
+@media (min-width: 701px) and (max-width: 1000px) {
+  .hero h1 {
+    font-size: clamp(64px, 8vw, 80px);
+  }
+}
+
+@media (max-width: 420px) {
+  .hero h1 {
+    font-size: clamp(58px, 18vw, 74px);
+  }
 }

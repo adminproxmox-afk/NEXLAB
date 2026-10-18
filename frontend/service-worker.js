@@ -1,4 +1,4 @@
-const CACHE_NAME = "nexlab-shell-v18";
+const CACHE_NAME = "nexlab-shell-v19";
 const OFFLINE_PAGE = new URL("offline.html", self.registration.scope).href;
 const MANIFEST_URL = new URL("offline-assets.json", self.registration.scope).href;
 

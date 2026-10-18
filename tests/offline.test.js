@@ -78,7 +78,7 @@ function createOfflineWorker(fetcher = async () => { throw new TypeError("offlin
 
 test("offline worker serves cached API modules and firmware while reporting API outages as JSON", async () => {
   const worker = createOfflineWorker();
-  const cache = await worker.caches.open("nexlab-shell-v18");
+  const cache = await worker.caches.open("nexlab-shell-v19");
   await cache.put("https://nexlab.test/NEXLAB/api/firebaseAuth.js", new Response("cached auth module"));
   await cache.put("https://nexlab.test/NEXLAB/guides/weather-station.ino", new Response("cached firmware"));
 
@@ -103,7 +103,7 @@ test("offline worker returns a NEXLAB placeholder for uncached product images", 
 
 test("offline navigation uses cached pages and redirects unknown routes to the offline page", async () => {
   const worker = createOfflineWorker();
-  const cache = await worker.caches.open("nexlab-shell-v18");
+  const cache = await worker.caches.open("nexlab-shell-v19");
   await cache.put("https://nexlab.test/NEXLAB/index.html", new Response("cached home"));
   await cache.put("https://nexlab.test/NEXLAB/offline.html", new Response("offline page"));
 
@@ -116,7 +116,7 @@ test("offline navigation uses cached pages and redirects unknown routes to the o
 test("offline navigation returns a cached page before a slow background refresh", async () => {
   let finishNetwork;
   const worker = createOfflineWorker(() => new Promise((resolve) => { finishNetwork = resolve; }));
-  const cache = await worker.caches.open("nexlab-shell-v18");
+  const cache = await worker.caches.open("nexlab-shell-v19");
   await cache.put("https://nexlab.test/NEXLAB/catalog.html", new Response("cached catalog"));
 
   const response = await worker.request("https://nexlab.test/NEXLAB/catalog.html", {

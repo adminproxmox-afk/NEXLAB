@@ -371,28 +371,48 @@ export const products = [
 
 // Локальні фото з карток виробників/продавців. Пояснення про репрезентативний характер показуємо в інтерфейсі.
 export const productPhotos = {
-  "esp32-devkit": ["assets/images/products/esp32-devkit.jpg"],
+  "esp32-devkit": ["assets/images/products/esp32-devkit.webp"],
   "arduino-uno": [
-    "assets/images/products/arduino-uno-front.jpg",
-    "assets/images/products/arduino-uno-back.jpg",
+    "assets/images/products/arduino-uno-front.webp",
+    "assets/images/products/arduino-uno-back.webp",
   ],
-  "raspberry-pi-5": ["assets/images/products/raspberry-pi-5.png"],
-  dht22: ["assets/images/products/dht22.jpg"],
-  "oled-096": ["assets/images/products/oled-096.jpg"],
-  "hc-sr04": ["assets/images/products/hc-sr04.jpg"],
-  "rgb-strip": ["assets/images/products/rgb-strip.jpg"],
-  "usb-c-power": ["assets/images/products/usb-c-power.jpg"],
-  "solder-kit": ["assets/images/products/solder-kit.jpg"],
-  "jumper-wires": ["assets/images/products/jumper-wires.jpg"],
-  "breadboard-kit": ["assets/images/products/breadboard-kit.jpg"],
-  "pla-filament": ["assets/images/products/pla-filament.jpg"],
-  "resistor-pack": ["assets/images/products/resistor-pack.png"],
-  "esp32-cam": ["assets/images/products/ai-thinker-esp32-cam.jpg"],
-  "esp32-oled": ["assets/images/products/esp32-oled.jpg"],
-  "esp32-relay": ["assets/images/products/esp32-relay.jpg"],
+  "raspberry-pi-5": ["assets/images/products/raspberry-pi-5.webp"],
+  dht22: ["assets/images/products/dht22.webp"],
+  "oled-096": ["assets/images/products/oled-096.webp"],
+  "hc-sr04": ["assets/images/products/hc-sr04.webp"],
+  "rgb-strip": ["assets/images/products/rgb-strip.webp"],
+  "usb-c-power": ["assets/images/products/usb-c-power.webp"],
+  "solder-kit": ["assets/images/products/solder-kit.webp"],
+  "jumper-wires": ["assets/images/products/jumper-wires.webp"],
+  "breadboard-kit": ["assets/images/products/breadboard-kit.webp"],
+  "pla-filament": ["assets/images/products/pla-filament.webp"],
+  "resistor-pack": ["assets/images/products/resistor-pack.webp"],
+  "esp32-cam": ["assets/images/products/ai-thinker-esp32-cam.webp"],
+  "esp32-oled": ["assets/images/products/esp32-oled.webp"],
+  "esp32-relay": ["assets/images/products/esp32-relay.webp"],
   ...Object.fromEntries(Object.entries(catalogPhotoMap).map(([id, path]) => [id, [path]])),
   ...Object.fromEntries(catalogExpansion.map(({ id, images }) => [id, images])),
 };
+
+const catalogImageByStem = new Map(
+  [
+    ...Object.values(catalogPhotoMap),
+    ...Object.values(productPhotos).flat(),
+  ].map((path) => [
+    path.split("/").pop().replace(/\.[^.]+$/, "").toLowerCase(),
+    path,
+  ]),
+);
+
+export function resolveProductImage(image) {
+  if (typeof image !== "string") return image;
+  const match = image.match(
+    /^assets\/images\/(?:[\w.-]+\/)*([\w.-]+)\.(?:jpg|jpeg|png|webp)$/i,
+  );
+  return match
+    ? catalogImageByStem.get(match[1].toLowerCase()) || image
+    : image;
+}
 // Catalog metadata.
 const details = {
   "esp32-devkit": [
@@ -813,7 +833,9 @@ export const projects = [
 
 // Общая лаконичная иллюстрация помогает держать карточки цельными, пока не добавлены фото товаров.
 export function productArt(product, large = false, view = 0) {
-  const photo = product.images?.[view] || product.images?.[0];
+  const photo = resolveProductImage(
+    product.images?.[view] || product.images?.[0],
+  );
   const safe = (value) =>
     String(value ?? "").replace(
       /[&<>"']/g,

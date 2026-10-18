@@ -1,4 +1,7 @@
 [
+  "assets/images/app-icon-512.png",
+  "assets/images/app-icon-192.png",
+  "manifest.webmanifest",
   "about.html",
   "admin/index.html",
   "api/authService.js",

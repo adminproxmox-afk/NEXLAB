@@ -6,9 +6,10 @@
   --surface-3: #e5ede7;
   --text: #1c2a22;
   --muted: #53645a;
-  --faint: #77867d;
+  --faint: #66766c;
   --line: #d5e0d8;
   --accent: #16816a;
+  --accent-ink: #ffffff;
   --accent-bright: #116d59;
   --green: #367a40;
   --surface-raised: #ffffff;
@@ -21,10 +22,6 @@
     radial-gradient(900px 500px at 92% -12%, #16816a0d, transparent 58%),
     var(--bg);
   color: var(--text);
-}
-
-:root[data-theme="light"] body * {
-  color: #33483b;
 }
 
 :root[data-theme="light"] :is(
@@ -318,4 +315,132 @@
   .theme-toggle {
     font-size: 17px;
   }
+}
+
+
+/* Light surfaces keep the hero illustration and primary actions readable. */
+:root[data-theme="light"] .button-primary,
+:root[data-theme="light"] .auth-header-actions .auth-register-link {
+  color: var(--accent-ink);
+}
+:root[data-theme="light"] .hero-art {
+  background: radial-gradient(ellipse at 54% 49%, #e3f2e8 0%, #eef6f0 44%, transparent 76%);
+}
+:root[data-theme="light"] .board {
+  filter: drop-shadow(0 14px 22px #285c3925);
+}
+:root[data-theme="light"] .pcb {
+  fill: #d8e9dc;
+  stroke: #638a6c;
+}
+:root[data-theme="light"] .chip {
+  fill: #f4f8f4;
+  stroke: #78927d;
+}
+:root[data-theme="light"] .chip-inner {
+  fill: #e8f1e9;
+  stroke: #9cae9f;
+}
+:root[data-theme="light"] .pins,
+:root[data-theme="light"] .trace {
+  stroke: #27896d;
+}
+:root[data-theme="light"] .pad,
+:root[data-theme="light"] .port {
+  fill: #27896d;
+}
+:root[data-theme="light"] .port {
+  stroke: #176b55;
+}
+:root[data-theme="light"] .led {
+  fill: #568e37;
+}
+:root[data-theme="light"] .led-muted {
+  fill: #84968a;
+}
+:root[data-theme="light"] .chip-text {
+  fill: #203a2b;
+}
+:root[data-theme="light"] .chip-sub {
+  fill: #4e6555;
+}
+:root[data-theme="light"] .art-label {
+  color: #314b39;
+}
+:root[data-theme="light"] .art-label-top span,
+:root[data-theme="light"] .art-label-bottom {
+  color: #536d5b;
+}
+:root[data-theme="light"] .art-orbit {
+  border-color: #4f8c6528;
+}
+
+:root[data-theme="light"] .hero-lead {
+  color: var(--muted);
+}
+:root[data-theme="light"] .text-link {
+  color: var(--text);
+}
+
+:root[data-theme="light"] .sort-select select {
+  border-color: var(--line);
+  background: #ffffff;
+  color: var(--text);
+}
+:root[data-theme="light"] .add-button {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+:root[data-theme="light"] .add-button:hover {
+  border-color: var(--accent-bright);
+  background: var(--accent-bright);
+  color: var(--accent-ink);
+}
+:root[data-theme="light"] :is(.favorite-button, .compare-toggle) {
+  border-color: #cbd9ce;
+  background: #ffffffed;
+  color: #365344;
+}
+:root[data-theme="light"] :is(.favorite-button.is-favorite, .compare-toggle.is-compared) {
+  border-color: #9ecdb9;
+  background: #e7f4ee;
+  color: var(--accent-bright);
+}
+:root[data-theme="light"] .product-tag {
+  background: #e7f4ee;
+  color: #264b3a;
+}
+:root[data-theme="light"] .product-art:not(.product-photo) {
+  background: radial-gradient(ellipse at 50% 54%, #e0efe4 0%, #edf5ef 52%, #f7faf7 88%);
+}
+:root[data-theme="light"] .product-art svg {
+  filter: drop-shadow(0 8px 10px #285c3922);
+}
+
+:root[data-theme="light"] .auth-header-actions a:not(.auth-register-link) {
+  border-color: var(--line);
+  background: #ffffff;
+  color: var(--text);
+}
+:root[data-theme="light"] .account-toggle {
+  color: var(--text);
+}
+:root[data-theme="light"] .sort-select {
+  color: var(--muted);
+}
+
+:root[data-theme="light"] .filter-mobile-toggle {
+  border-color: var(--line);
+  background: #ffffff;
+  color: var(--text);
+}
+:root[data-theme="light"] .filter-mobile-toggle:hover,
+:root[data-theme="light"] .filter-mobile-toggle[aria-expanded="true"] {
+  border-color: #a8d4c2;
+  background: #e7f4ee;
+  color: var(--accent-bright);
+}
+:root[data-theme="light"] .sort-select {
+  background: transparent;
 }

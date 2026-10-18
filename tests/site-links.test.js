@@ -58,6 +58,23 @@ test("every HTML page declares a language and a main landmark with a focusable s
   assert.match(styles, /:focus-visible\s*\{/);
 });
 
+test("every page links to a valid installable app manifest and offline icons", async () => {
+  const manifest = JSON.parse(await readFile(join(root, "manifest.webmanifest"), "utf8"));
+  const offlineAssets = JSON.parse(await readFile(join(root, "offline-assets.json"), "utf8"));
+  assert.equal(manifest.start_url, "./index.html");
+  assert.equal(manifest.scope, "./");
+  assert.equal(manifest.display, "standalone");
+  for (const icon of manifest.icons) {
+    assert.equal(existsSync(join(root, icon.src)), true, icon.src);
+    assert.ok(offlineAssets.includes(icon.src), `${icon.src} should be cached offline`);
+  }
+  assert.ok(offlineAssets.includes("manifest.webmanifest"));
+  for (const source of htmlFiles()) {
+    const html = await readFile(source, "utf8");
+    assert.match(html, /<link rel="manifest" href="(?:\.\.\/)?manifest\.webmanifest"\s*\/>/, source);
+  }
+});
+
 test("admin navigation hides links for sections the current role cannot access", async () => {
   const [css, admin] = await Promise.all([
     readFile(join(root, "css/fixes.css"), "utf8"),

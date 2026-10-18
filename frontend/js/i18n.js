@@ -1,5 +1,5 @@
 const storageKey = "nexlab-language";
-const supported = new Set(["uk", "ru", "en"]);
+const supported = new Set(["uk", "en"]);
 const messages = {
   uk: {},
   ru: {
@@ -949,7 +949,7 @@ for (const language of ["ru", "en"]) {
 }
 
 let locale = "uk";
-const intlLocales = { uk: "uk-UA", ru: "ru-RU", en: "en-US" };
+const intlLocales = { uk: "uk-UA", en: "en-US" };
 try {
   const saved = localStorage.getItem(storageKey);
   if (supported.has(saved)) locale = saved;
@@ -1148,11 +1148,10 @@ export function formatProductCount(count, language = locale) {
   const plural = new Intl.PluralRules(intlLocales[selectedLanguage]).select(count);
   const forms = {
     uk: { one: "товар", few: "товари", many: "товарів", other: "товару" },
-    ru: { one: "товар", few: "товара", many: "товаров", other: "товара" },
     en: { one: "product", other: "products" },
   }[selectedLanguage];
   if (selectedLanguage === "en") return `${count} ${forms[plural] || forms.other} found`;
-  return `${selectedLanguage === "uk" ? "Знайдено" : "Найдено"} ${count} ${forms[plural] || forms.other}`;
+  return `Знайдено ${count} ${forms[plural] || forms.other}`;
 }
 
 export function formatNumber(value, options = {}) {

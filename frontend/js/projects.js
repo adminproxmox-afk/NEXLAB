@@ -9,6 +9,7 @@ import { toast } from "./notifications.js";
 import { money, projectCover, safe } from "./project-ui.js";
 import { isFirebaseConfigured } from "../api/firebaseAuth.js";
 import { getProjectSteps } from "./project-guides.js";
+import { resolveProductImage } from "./products.js";
 
 export async function initializeMyProjects() {
   const root = document.querySelector("[data-my-projects]");
@@ -51,7 +52,7 @@ export async function initializeMyProjects() {
               const product = products.find(
                 (entry) => entry.id === item.productId,
               );
-              return `<label><input type="checkbox" data-project-check="${index}" ${checklist[index] ? "checked" : ""}><span class="my-project-check-photo">${product?.images?.[0] ? `<img src="${safe(product.images[0])}" alt="" loading="lazy" decoding="async">` : ""}</span><span class="my-project-check-name">${safe(product?.name || item.productId)}${item.quantity > 1 ? ` · ${item.quantity} шт.` : ""}</span><span class="my-project-checkmark" aria-hidden="true">✓</span></label>`;
+              return `<label><input type="checkbox" data-project-check="${index}" ${checklist[index] ? "checked" : ""}><span class="my-project-check-photo">${product?.images?.[0] ? `<img src="${safe(resolveProductImage(product.images[0]))}" alt="" loading="lazy" decoding="async">` : ""}</span><span class="my-project-check-name">${safe(product?.name || item.productId)}${item.quantity > 1 ? ` · ${item.quantity} шт.` : ""}</span><span class="my-project-checkmark" aria-hidden="true">✓</span></label>`;
             })
             .join(
               "",

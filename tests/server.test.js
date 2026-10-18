@@ -127,12 +127,15 @@ test("static pages, scripts and assets work; private files are inaccessible", as
       "/checkout.html",
       "/delivery.html",
       "/sitemap.xml",
+      "/manifest.webmanifest",
       "/js/main.js",
       "/api/client.js",
       "/guides/weather-station.ino",
-      "/assets/images/products/arduino-uno-front.jpg",
+      "/assets/images/products/arduino-uno-front.webp",
     ])
       assert.equal((await fetch(f.origin + path)).status, 200, path);
+    const appManifest = await fetch(f.origin + "/manifest.webmanifest");
+    assert.match(appManifest.headers.get("content-type"), /application\/manifest\+json/);
     for (const path of [
       "/server/app.js",
       "/.env",
@@ -152,6 +155,8 @@ test("static pages, scripts and assets work; private files are inaccessible", as
     assert.ok(offlineAssets.includes("index.html"));
     assert.ok(offlineAssets.includes("offline.html"));
     assert.ok(offlineAssets.includes("service-worker.js"));
+    assert.ok(offlineAssets.includes("manifest.webmanifest"));
+    assert.ok(offlineAssets.includes("assets/images/app-icon-192.png"));
     const offlineResponses = await Promise.all(
       offlineAssets.map((asset) => fetch(`${f.origin}/${asset}`)),
     );
@@ -175,8 +180,8 @@ test("legacy catalog photo paths are repaired to their existing product assets",
     const response = await fetch(f.origin + "/api/products");
     assert.equal(response.status, 200);
     const saved = (await response.json()).products.find((item) => item.id === product.id);
-    assert.deepEqual(saved.images, ["assets/images/products/esp32-devkit.jpg"]);
-    assert.equal((await fetch(f.origin + "/assets/images/products/esp32-devkit.jpg")).status, 200);
+    assert.deepEqual(saved.images, ["assets/images/products/esp32-devkit.webp"]);
+    assert.equal((await fetch(f.origin + "/assets/images/products/esp32-devkit.webp")).status, 200);
   } finally {
     await f.close();
   }

@@ -51,11 +51,13 @@ function normalizeCatalogImages(productId, images) {
   const canonicalImages = catalogImagesById.get(productId) || [];
   if (!Array.isArray(images)) return [];
   return images.map((image) => {
-    const legacyRootPath = typeof image === "string"
-      ? image.match(/^assets\/images\/([^/]+)$/)
+    const catalogImage = typeof image === "string"
+      ? image.match(/^assets\/images\/(?:[\w.-]+\/)*([\w.-]+)\.(?:jpg|jpeg|png|webp)$/i)
       : null;
-    if (!legacyRootPath) return image;
-    return canonicalImages.find((path) => path.endsWith(`/${legacyRootPath[1]}`)) || image;
+    if (!catalogImage) return image;
+    return canonicalImages.find((path) =>
+      path.split("/").pop().replace(/\.[^.]+$/, "").toLowerCase() === catalogImage[1].toLowerCase(),
+    ) || image;
   });
 }
 const publicUser = (user) =>
@@ -1568,6 +1570,7 @@ export async function createApp({
         relative = decoded === "/" ? "index.html" : decoded.replace(/^\//, "");
       const permitted =
         /^[^/]+\.html$/.test(relative) ||
+        /^manifest\.webmanifest$/.test(relative) ||
         /^offline-assets\.json$/.test(relative) ||
         /^sitemap\.xml$/.test(relative) ||
         /^service-worker\.js$/.test(relative) ||
@@ -1588,6 +1591,7 @@ export async function createApp({
       const mime = {
         ".html": "text/html; charset=utf-8",
         ".json": "application/json; charset=utf-8",
+        ".webmanifest": "application/manifest+json; charset=utf-8",
         ".xml": "application/xml; charset=utf-8",
         ".js": "text/javascript; charset=utf-8",
         ".css": "text/css; charset=utf-8",

@@ -71,11 +71,9 @@ export async function initializeProjectsDirectory() {
     if (language === "en") {
       count.textContent = `${visible.length} project${visible.length === 1 ? "" : "s"}`;
     } else {
-      const locale = language === "ru" ? "ru-RU" : "uk-UA";
+      const locale = "uk-UA";
       const form = new Intl.PluralRules(locale).select(visible.length);
-      const nouns = language === "ru"
-        ? { one: "проект", few: "проекта", many: "проектов", other: "проекта" }
-        : { one: "проєкт", few: "проєкти", many: "проєктів", other: "проєкту" };
+      const nouns = { one: "проєкт", few: "проєкти", many: "проєктів", other: "проєкту" };
       count.textContent = `${visible.length} ${nouns[form]}`;
     }
     grid.innerHTML = visible.length

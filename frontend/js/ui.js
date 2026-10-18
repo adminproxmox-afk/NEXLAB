@@ -63,7 +63,7 @@ export function renderSharedLayout(settings = { name: "NEXLAB" }) {
         <a class="tool-link" href="${prefix}favorites.html" aria-label="Обране">♡<span class="tool-count" data-favorite-count hidden>0</span></a>
         <a class="tool-link" href="${prefix}compare.html" aria-label="Порівняння товарів">⇄<span class="tool-count" data-comparison-count hidden>0</span></a>
         <a class="tool-link" href="${prefix}cart.html" aria-label="Кошик">▣<span class="tool-count" data-cart-count hidden>0</span></a>
-        <select class="language-select" data-language-select aria-label="Мова сайту"><option value="uk" ${currentLanguage() === "uk" ? "selected" : ""}>UA</option><option value="ru" ${currentLanguage() === "ru" ? "selected" : ""}>RU</option><option value="en" ${currentLanguage() === "en" ? "selected" : ""}>EN</option></select>
+        <select class="language-select" data-language-select aria-label="Мова сайту"><option value="uk" ${currentLanguage() === "uk" ? "selected" : ""}>UA</option><option value="en" ${currentLanguage() === "en" ? "selected" : ""}>EN</option></select>
         <button class="theme-toggle" type="button" data-theme-toggle aria-label="Перемкнути на ${lightTheme ? "темну" : "світлу"} тему" title="${lightTheme ? "Темна" : "Світла"} тема"><span aria-hidden="true">${lightTheme ? "☾" : "☼"}</span></button>
         <div class="header-account" data-header-account></div>
       </div>
