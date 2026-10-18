@@ -70,6 +70,16 @@ export async function initializeProductPage() {
       .join(
         "",
       )}</div></section><section class="review-section" data-reviews></section></div>`;
+  window.addEventListener("nexlab:stock-restocked", (event) => {
+    const update = event.detail?.products?.find((item) => item.productId === product.id);
+    if (!update || !Number.isInteger(update.stock) || update.stock < 1) return;
+    product.stock = update.stock;
+    const stockLabel = root.querySelector(".detail-stock");
+    stockLabel?.classList.remove("detail-out");
+    if (stockLabel) stockLabel.textContent = `✓ Є в наявності · ${update.stock} шт.`;
+    root.querySelector("[data-detail-add]")?.removeAttribute("disabled");
+    root.querySelector("[data-stock-alert]")?.remove();
+  });
   await initializeReviews(product);
   let quantity = 1;
   root.addEventListener("click", (event) => {

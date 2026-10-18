@@ -11,6 +11,9 @@ test("offline manifest includes every new browser feature module", () => {
     "api/orderNotificationState.js",
     "api/stockAlertState.js",
     "api/imageUpload.js",
+    "faq.html",
+    "js/i18n.js",
+    "js/offline-page.js",
     "js/admin-analytics.js",
     "js/auth-redirect.js",
     "js/order-notifications.js",
@@ -18,7 +21,7 @@ test("offline manifest includes every new browser feature module", () => {
   ]) assert.ok(offlineAssets.includes(path), `${path} must be cached for offline use`);
 });
 
-function createOfflineWorker() {
+function createOfflineWorker(fetcher = async () => { throw new TypeError("offline"); }) {
   const handlers = new Map();
   const stores = new Map();
   const caches = {
@@ -46,7 +49,7 @@ function createOfflineWorker() {
   vm.runInNewContext(source, {
     self,
     caches,
-    fetch: async () => { throw new TypeError("offline"); },
+    fetch: fetcher,
     URL,
     Response,
     Request,
@@ -58,16 +61,16 @@ function createOfflineWorker() {
   });
   return {
     caches,
-    async request(url, { destination = "", method = "GET" } = {}) {
+    async request(url, { destination = "", method = "GET", mode = "cors", waitForBackground = true } = {}) {
       let responsePromise;
       const background = [];
       handlers.get("fetch")({
-        request: { url, method, destination, mode: "cors", headers: { has: () => false } },
+        request: { url, method, destination, mode, headers: { has: () => false } },
         respondWith(value) { responsePromise = Promise.resolve(value); },
         waitUntil(value) { background.push(value); },
       });
       const response = await responsePromise;
-      await Promise.allSettled(background);
+      if (waitForBackground) await Promise.allSettled(background);
       return response;
     },
   };
@@ -75,7 +78,7 @@ function createOfflineWorker() {
 
 test("offline worker serves cached API modules and firmware while reporting API outages as JSON", async () => {
   const worker = createOfflineWorker();
-  const cache = await worker.caches.open("nexlab-shell-v6");
+  const cache = await worker.caches.open("nexlab-shell-v18");
   await cache.put("https://nexlab.test/NEXLAB/api/firebaseAuth.js", new Response("cached auth module"));
   await cache.put("https://nexlab.test/NEXLAB/guides/weather-station.ino", new Response("cached firmware"));
 
@@ -96,4 +99,32 @@ test("offline worker returns a NEXLAB placeholder for uncached product images", 
   assert.equal(image.status, 200);
   assert.match(image.headers.get("content-type"), /image\/svg\+xml/);
   assert.match(await image.text(), /NEXLAB · OFFLINE/);
+});
+
+test("offline navigation uses cached pages and redirects unknown routes to the offline page", async () => {
+  const worker = createOfflineWorker();
+  const cache = await worker.caches.open("nexlab-shell-v18");
+  await cache.put("https://nexlab.test/NEXLAB/index.html", new Response("cached home"));
+  await cache.put("https://nexlab.test/NEXLAB/offline.html", new Response("offline page"));
+
+  const response = await worker.request("https://nexlab.test/NEXLAB/project-not-cached.html", { mode: "navigate" });
+
+  assert.equal(response.status, 302);
+  assert.equal(response.headers.get("location"), "https://nexlab.test/NEXLAB/offline.html");
+});
+
+test("offline navigation returns a cached page before a slow background refresh", async () => {
+  let finishNetwork;
+  const worker = createOfflineWorker(() => new Promise((resolve) => { finishNetwork = resolve; }));
+  const cache = await worker.caches.open("nexlab-shell-v18");
+  await cache.put("https://nexlab.test/NEXLAB/catalog.html", new Response("cached catalog"));
+
+  const response = await worker.request("https://nexlab.test/NEXLAB/catalog.html", {
+    mode: "navigate",
+    waitForBackground: false,
+  });
+
+  assert.equal(await response.text(), "cached catalog");
+  assert.equal(typeof finishNetwork, "function");
+  finishNetwork(new Response("fresh catalog", { status: 200 }));
 });

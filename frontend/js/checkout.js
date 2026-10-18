@@ -21,6 +21,35 @@ const safe = (value) =>
         char
       ],
   );
+
+export function checkoutErrorMessage(error, firebaseEnabled = isFirebaseConfigured()) {
+  const messages = {
+    PRODUCT_NOT_FOUND:
+      "Каталог товарів ще не синхронізований із базою замовлень. Адміністратору потрібно ініціалізувати каталог у Firebase; спробуй пізніше.",
+    OUT_OF_STOCK:
+      "Кількість товарів змінилася. Перевір оновлене замовлення та підтвердь його ще раз.",
+    PRICE_CHANGED:
+      "Ціна товарів змінилася. Перевір оновлену суму перед підтвердженням.",
+    UNAUTHENTICATED: "Сесія завершилася. Увійди ще раз.",
+    INVALID_PHONE: "Перевір номер телефону.",
+    COUPON_INVALID: "Купон більше не діє або його ліміт використань вичерпано. Перевір кошик і застосуй інший купон.",
+    COUPON_MINIMUM_NOT_MET: "Сума кошика більше не відповідає умовам купона.",
+  };
+  if (messages[error?.message]) return messages[error.message];
+  if (
+    error?.message === "BACKEND_UNAVAILABLE" ||
+    error?.message === "INVALID_SERVER_RESPONSE" ||
+    error?.status >= 500 ||
+    ["deadline-exceeded", "functions/deadline-exceeded", "unavailable", "functions/unavailable"].includes(error?.code)
+  )
+    return "Сервер не підтвердив результат. Перевір замовлення в історії; якщо його там немає, повтори оформлення — запит не створить дублікат.";
+  if (firebaseEnabled && ["functions/not-found", "not-found"].includes(error?.code))
+    return "Оформлення замовлень у Firebase ще не налаштовано: серверна функція не опублікована. Для локального демо запусти сайт командою npm start.";
+  if (["permission-denied", "firestore/permission-denied"].includes(error?.code))
+    return "Firebase відхилив запис. Опублікуй актуальні правила з firebase/firestore.rules у Firebase Console і спробуй знову.";
+  return "Не вдалося зберегти замовлення. Спробуй ще раз.";
+}
+
 export async function initializeCheckout(settings = shopConfig) {
   const form = document.querySelector("[data-checkout-form]");
   if (!form) return;
@@ -171,24 +200,7 @@ export async function initializeCheckout(settings = shopConfig) {
       clearCart();
       location.href = "orders.html?created=" + encodeURIComponent(order.id);
     } catch (error) {
-      const messages = {
-        PRODUCT_NOT_FOUND:
-          "Каталог товарів ще не синхронізований із базою замовлень. Адміністратору потрібно ініціалізувати каталог у Firebase; спробуй пізніше.",
-        OUT_OF_STOCK:
-          "Кількість товарів змінилася. Перевір оновлене замовлення та підтвердь його ще раз.",
-        PRICE_CHANGED:
-          "Ціна товарів змінилася. Перевір оновлену суму перед підтвердженням.",
-        UNAUTHENTICATED: "Сесія завершилася. Увійди ще раз.",
-        INVALID_PHONE: "Перевір номер телефону.",
-        COUPON_INVALID: "Купон більше не діє або його ліміт використань вичерпано. Перевір кошик і застосуй інший купон.",
-        COUPON_MINIMUM_NOT_MET: "Сума кошика більше не відповідає умовам купона.",
-      };
-      message.textContent =
-        messages[error.message] ||
-        (error.code === "permission-denied" ||
-        error.code === "firestore/permission-denied"
-          ? "Firebase відхилив запис. Опублікуй актуальні правила з firebase/firestore.rules у Firebase Console і спробуй знову."
-          : "Не вдалося зберегти замовлення. Спробуй ще раз.");
+      message.textContent = checkoutErrorMessage(error);
       if (["COUPON_INVALID", "COUPON_MINIMUM_NOT_MET"].includes(error.message)) {
         appliedCoupon = null;
         couponMessage.textContent = messages[error.message];

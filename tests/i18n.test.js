@@ -3,8 +3,10 @@ import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { formatProductCount, translateText } from "../frontend/js/i18n.js";
+import { checkoutErrorMessage } from "../frontend/js/checkout.js";
 import { projectGuides } from "../frontend/js/project-guides.js";
 import { products } from "../frontend/js/products.js";
+import { shopConfig } from "../frontend/js/shop-config.js";
 
 function htmlFiles(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -51,6 +53,13 @@ test("shared UI translations work in Ukrainian, Russian and English", () => {
   assert.equal(translateText("позицій доступно", "en"), "parts available");
   assert.equal(translateText("~2 год.", "en"), "~2 hr");
   assert.equal(translateText("DIY-проєкти", "ru"), "DIY-проекты");
+  assert.equal(translateText("Компоненти, інструменти й ідеї для електронних проєктів.", "en"), "Components, tools, and ideas for electronics projects.");
+  assert.equal(translateText("Реальні продажі ще не відкриті. Порядок повернення магазин має заповнити до приймання замовлень.", "ru"), "Реальные продажи ещё не открыты. Магазин должен указать порядок возврата до начала приёма заказов.");
+  assert.equal(translateText("Для навчального макета щодо повернення можна звернутися телефоном +380684467143. Місто відправлення — Вінниця; фактичну адресу повернення та порядок пересилання не визначено.", "en"), "For this demo, contact +380684467143 about returns. The dispatch city is Vinnytsia; no actual return address or shipping process has been set.");
+  assert.equal(translateText("Для навчального макета: +380684467143; підготуйте номер замовлення, назву товару та опис проблеми. Фактичний процес гарантійного обслуговування не налаштований.", "ru"), "Для учебного макета: +380684467143; подготовьте номер заказа, название товара и описание проблемы. Фактическое гарантийное обслуживание не настроено.");
+  assert.equal(translateText("4 компонента у наборі", "ru"), "4 компонента в наборе");
+  assert.equal(translateText("4 компонента у наборі", "en"), "4 components in the kit");
+  assert.equal(translateText("Немає з’єднання", "en"), "You're offline");
 });
 
 test("translation leaves unsupported locales and unknown copy unchanged", () => {
@@ -60,12 +69,33 @@ test("translation leaves unsupported locales and unknown copy unchanged", () => 
 
 test("checkout and account feedback is localized, including dynamic values", () => {
   assert.equal(translateText("Каталог товарів ще не синхронізований із базою замовлень. Адміністратору потрібно ініціалізувати каталог у Firebase; спробуй пізніше.", "en"), "The catalog is not synchronized with the order database yet. An administrator needs to initialize the Firebase catalog; please try again later.");
+  assert.equal(translateText("Оформлення замовлень у Firebase ще не налаштовано: серверна функція не опублікована. Для локального демо запусти сайт командою npm start.", "ru"), "Оформление заказов в Firebase ещё не настроено: серверная функция не опубликована. Для локального демо запусти сайт командой npm start.");
+  assert.equal(translateText("Оформлення замовлень у Firebase ще не налаштовано: серверна функція не опублікована. Для локального демо запусти сайт командою npm start.", "en"), "Firebase checkout is not set up yet: the server function has not been deployed. For the local demo, start the site with npm start.");
   assert.equal(translateText("Введи коректну адресу електронної пошти.", "en"), "Enter a valid email address.");
   assert.equal(translateText("Кількість товарів змінилася. Перевір оновлене замовлення та підтвердь його ще раз.", "en"), "Item availability changed. Review the updated order and submit it again.");
+  assert.equal(translateText("Сервер не підтвердив результат. Перевір замовлення в історії; якщо його там немає, повтори оформлення — запит не створить дублікат.", "en"), "The server did not confirm the result. Check your order history; if the order is not there, try checkout again—the request will not create a duplicate.");
+  assert.equal(translateText("Сервер не підтвердив результат. Перевір замовлення в історії; якщо його там немає, повтори оформлення — запит не створить дублікат.", "ru"), "Сервер не подтвердил результат. Проверьте заказ в истории; если его там нет, повторите оформление — запрос не создаст дубликат.");
   assert.equal(translateText("Додано 2 шт. — решта недоступна", "ru"), "Добавлено 2 шт. — остальное недоступно");
   assert.equal(translateText("Купон застосовано: знижка 10% (125 ₴).", "en"), "Coupon applied: 10% off (125 ₴).");
   assert.equal(translateText("Твій кошик поки порожній", "en"), "Your cart is empty for now");
   assert.equal(translateText("Вхід до облікового запису NEXLAB.", "ru"), "Вход в учётную запись NEXLAB.");
+});
+
+test("checkout explains when Firebase order functions are not deployed", () => {
+  const missingFunction = "Оформлення замовлень у Firebase ще не налаштовано: серверна функція не опублікована. Для локального демо запусти сайт командою npm start.";
+  const uncertainOrder = "Сервер не підтвердив результат. Перевір замовлення в історії; якщо його там немає, повтори оформлення — запит не створить дублікат.";
+  assert.equal(checkoutErrorMessage({ code: "functions/not-found" }, true), missingFunction);
+  assert.equal(checkoutErrorMessage({ code: "functions/not-found" }, false), "Не вдалося зберегти замовлення. Спробуй ще раз.");
+  assert.equal(checkoutErrorMessage({ message: "BACKEND_UNAVAILABLE" }), uncertainOrder);
+  assert.equal(checkoutErrorMessage({ status: 500 }), uncertainOrder);
+  assert.equal(checkoutErrorMessage({ code: "functions/deadline-exceeded" }), uncertainOrder);
+  assert.match(checkoutErrorMessage({ code: "permission-denied" }, true), /firebase\/firestore\.rules/);
+});
+
+test("footer community and demo newsletter copy is localized", () => {
+  assert.equal(translateText("Оновлення майстерні", "en"), "Workshop updates");
+  assert.equal(translateText("Демо-форма: використай тестову адресу. Email не зберігається й листи не надсилаються.", "ru"), "Демо-форма: используй тестовый адрес. Email не сохраняется, письма не отправляются.");
+  assert.equal(translateText("Демо-підписку перевірено: адресу не збережено й не надіслано.", "en"), "Demo signup checked: the address was not stored or sent.");
 });
 
 test("home, community, shipping, privacy, and build guides localize page copy", () => {
@@ -77,6 +107,8 @@ test("home, community, shipping, privacy, and build guides localize page copy", 
   assert.equal(translateText("Контактні дані для навчального макета.", "en"), "Contact details for this educational demo.");
   assert.equal(translateText("Умови доставки наведені як навчальний приклад; сайт не приймає реальні замовлення.", "en"), "Shipping terms are an educational example; this site does not accept real orders.");
   assert.equal(translateText("Платіжний сервіс не підключений, дані банківських карток сайт не запитує. Не вводь номер картки, CVV, пароль чи код підтвердження. Хостинг може обробляти технічні дані запитів відповідно до власних правил; це залежить від платформи, на якій розміщено сайт.", "en"), "No payment service is connected, and the site does not request bank card details. Do not enter a card number, CVV, password, or verification code. The hosting provider may process technical request data under its own policies; this depends on the hosting platform.");
+  assert.match(translateText("Кошик, порівняння, обране, мова й тема зберігаються у сховищі браузера; ключ повторної спроби оформлення — лише у поточній вкладці. Локальний сервер NEXLAB зберігає демо-дані у SQLite в папці data. Опублікована версія має конфігурацію Firebase і за замовчуванням використовує Firebase Authentication та Cloud Firestore для облікових записів і доступних функцій. Демо-замовлення зі зміною складських залишків працюють лише за наявності розгорнутих захищених Cloud Functions. GitHub Pages роздає статичні файли й сам не запускає Node.js-сервер.", "ru"), /Firebase Authentication и Cloud Firestore/);
+  assert.match(translateText("Онлайн-платіжний сервіс не підключений, сайт не запитує дані банківських карток. Для опублікованої версії використовуються GitHub Pages і налаштований у коді проєкт Firebase; Google/Firebase може обробляти дані, необхідні для увімкнених сервісів, за власними правилами. Не вводь номер картки, CVV, пароль чи код підтвердження.", "en"), /Google\/Firebase may process data/);
   assert.equal(translateText("Вимкни ESP32 та переконайся, що OLED має інтерфейс I²C і адресу 0x3C.", "en"), "Power off the ESP32 and confirm that the OLED uses I²C and address 0x3C.");
 });
 
@@ -170,6 +202,7 @@ test("admin workspace labels and dynamic order details localize", () => {
 });
 
 test("commerce, community, offline, and learning states localize", () => {
+  assert.equal(translateText("Фото, схеми, код і відгуки до DIY-збірок учасників NEXLAB.", "en"), "Photos, schematics, code, and reviews for NEXLAB community DIY builds.");
   assert.equal(translateText("Купон можна застосувати під час оформлення. Доставка оплачується окремо за тарифом перевізника.", "en"), "Apply coupons at checkout. Shipping is charged separately at the carrier's rate.");
   assert.equal(translateText("Поки немає товарів для порівняння", "ru"), "Пока нет товаров для сравнения");
   assert.equal(translateText("Ще немає оцінок. Стань першим, хто поділиться враженням.", "en"), "No ratings yet. Be the first to share your thoughts.");
@@ -182,6 +215,28 @@ test("commerce, community, offline, and learning states localize", () => {
   assert.equal(translateText("Не вдалося зберегти прогрес. Перевір з’єднання та спробуй ще раз.", "ru"), "Не удалось сохранить прогресс. Проверь соединение и попробуй ещё раз.");
   assert.equal(translateText("Тимчасово немає в наявності", "en"), "Temporarily out of stock");
   assert.equal(translateText("Склад набору", "ru"), "Состав набора");
+});
+
+test("payment information and product illustrations localize", () => {
+  assert.equal(translateText("Схематична ілюстрація", "en"), "Schematic illustration");
+  assert.equal(
+    translateText("Онлайн-оплата не підключена; справжні платежі через сайт не приймаються.", "ru"),
+    "Онлайн-оплата не подключена; настоящие платежи через сайт не принимаются.",
+  );
+  const methods = shopConfig.paymentMethods.map((item) => item.name).join(", ");
+  assert.equal(
+    translateText(`Спосіб «${methods}» наведено у формі лише як демонстраційний приклад. Магазин не підтверджує його для реальних продажів.`, "en"),
+    "Method “Cash on delivery” is listed in the form for demonstration only. The store does not support it for real sales.",
+  );
+  const amount = `${shopConfig.priceNote} Перед реальним замовленням магазин має показати повну суму, вартість доставки й можливі комісії до підтвердження покупки.`;
+  assert.equal(
+    translateText(amount, "ru"),
+    "Демонстрационные цены. Перед запуском продаж магазин должен подтвердить цены и наличие товаров. Перед реальным заказом магазин должен показать полную сумму, стоимость доставки и возможные комиссии до подтверждения покупки.",
+  );
+  assert.equal(
+    translateText("Платіжний сервіс не підключений. Не надсилай номер картки, CVV, паролі чи коди підтвердження через цей сайт або контакти магазину.", "en"),
+    "No payment service is connected. Do not send card numbers, CVVs, passwords, or verification codes through this site or store contacts.",
+  );
 });
 
 test("product result counts use the correct plural form in all supported languages", () => {
@@ -201,4 +256,14 @@ test("photo upload guidance, validation, and privacy copy are localized", () => 
   assert.equal(translateText("Підтримуються справжні фото JPG, PNG або WebP.", "en"), "Use a valid JPG, PNG, or WebP image.");
   assert.equal(translateText("Обери файл фото або посилання, не обидва варіанти.", "ru"), "Выбери файл фото или ссылку, но не оба варианта.");
   assert.notEqual(translateText("Якщо запущений сервер і створюється тестовий обліковий запис, сайт отримує ім’я, адресу електронної пошти та пароль. Пароль зберігається у вигляді криптографічного хешу. Під час входу використовується сесійний cookie. У демонстраційному оформленні замовлення форма також містить ім’я отримувача, телефон, місто, адресу доставки, перевізника, спосіб оплати та дані товарів у замовленні. Для відгуків можуть зберігатися оцінка, текст і фото; для збірок спільноти — опис, фото та посилання на схему й код; для збережених проєктів — їхні ідентифікатори.", "en"), "Якщо запущений сервер і створюється тестовий обліковий запис, сайт отримує ім’я, адресу електронної пошти та пароль. Пароль зберігається у вигляді криптографічного хешу. Під час входу використовується сесійний cookie. У демонстраційному оформленні замовлення форма також містить ім’я отримувача, телефон, місто, адресу доставки, перевізника, спосіб оплати та дані товарів у замовленні. Для відгуків можуть зберігатися оцінка, текст і фото; для збірок спільноти — опис, фото та посилання на схему й код; для збережених проєктів — їхні ідентифікатори.");
+});
+
+test("restock subscription and availability feedback is localized", () => {
+  assert.equal(translateText("Стежимо за наявністю", "ru"), "Следим за наличием");
+  assert.equal(translateText("Стежимо за наявністю", "en"), "Watching availability");
+  assert.equal(translateText("Повідомимо в цьому акаунті, коли товар з’явиться.", "en"), "We’ll notify you in this account when the item is back.");
+  assert.equal(translateText("Товар уже є в наявності.", "ru"), "Товар уже есть в наличии.");
+  assert.equal(translateText("Повідомлення на пристрої", "en"), "Device notifications");
+  assert.equal(translateText("Увімкнути сповіщення", "ru"), "Включить уведомления");
+  assert.equal(translateText("Сповіщення працюватимуть, поки сайт відкрито в браузері.", "en"), "Notifications work while the site is open in your browser.");
 });

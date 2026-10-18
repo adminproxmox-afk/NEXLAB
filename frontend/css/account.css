@@ -41,7 +41,10 @@
 }
 .auth-inline-links a,
 .auth-inline-links button {
-  padding: 0;
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  padding: 3px 0;
   border: 0;
   background: none;
   color: var(--accent-bright);
@@ -257,6 +260,26 @@
 .profile-form .button {
   justify-self: start;
   margin-top: 3px;
+}
+.profile-notification-settings {
+  display: grid;
+  justify-items: start;
+  gap: 9px;
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line, #303833);
+}
+.profile-notification-settings h3,
+.profile-notification-settings p {
+  margin: 0;
+}
+.profile-notification-settings > p:not(.eyebrow) {
+  max-width: 58ch;
+  color: var(--muted, #9aa39d);
+  line-height: 1.6;
+}
+.profile-notification-settings [role="status"]:empty {
+  display: none;
 }
 .logout-button {
   justify-self: start;

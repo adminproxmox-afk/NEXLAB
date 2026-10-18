@@ -245,7 +245,7 @@ export async function initializeAdmin() {
   const root = document.querySelector("[data-admin-content]");
   if (!root || !hasAdminAccess()) return;
   root.innerHTML = `<div class="admin-title-row"><div><p class="eyebrow">NEXLAB · КЕРУВАННЯ МАГАЗИНОМ</p><h1>Панель керування</h1><p>Вітаємо, ${safe(getCurrentUser()?.name || "Адміністратор")}. Тут можна стежити за замовленнями, каталогом і клієнтами.</p></div><div class="admin-dashboard-actions"><span data-admin-updated>Дані ще не оновлювалися</span><button class="button button-quiet" type="button" data-admin-refresh><span aria-hidden="true">↻</span> Оновити</button></div></div>
-    <div class="admin-workspace"><nav class="admin-section-nav" aria-label="Розділи панелі"><a href="#admin-overview">Огляд</a><a href="#admin-orders-section">Замовлення <span data-admin-nav-orders>0</span></a><a href="#admin-promotions-section">Купони й набори</a><a href="#admin-products-section">Товари</a><a href="#admin-inventory-section">Журнал складу</a><a href="#admin-products-section" data-admin-open-product>＋ Додати товар</a><a href="#admin-projects-section">Проєкти</a><a href="#admin-settings-section">Налаштування</a><a href="#admin-reviews-section">Відгуки</a><a href="#admin-users-section">Користувачі</a></nav><div class="admin-workspace-content">
+    <div class="admin-workspace"><nav class="admin-section-nav" aria-label="Розділи панелі"><a href="#admin-overview" aria-controls="admin-overview">Огляд</a><a href="#admin-orders-section" aria-controls="admin-orders-section">Замовлення <span data-admin-nav-orders>0</span></a><a href="#admin-promotions-section" aria-controls="admin-promotions-section">Купони й набори</a><a href="#admin-products-section" aria-controls="admin-products-section">Товари</a><a href="#admin-inventory-section" aria-controls="admin-inventory-section">Журнал складу</a><a href="#admin-products-section" aria-controls="admin-products-section" data-admin-open-product>＋ Додати товар</a><a href="#admin-projects-section" aria-controls="admin-projects-section">Проєкти</a><a href="#admin-settings-section" aria-controls="admin-settings-section">Налаштування</a><a href="#admin-reviews-section" aria-controls="admin-reviews-section">Відгуки</a><a href="#admin-users-section" aria-controls="admin-users-section">Користувачі</a></nav><div class="admin-workspace-content">
     <p class="service-error" role="alert" data-admin-error hidden></p>
     <section class="admin-overview" id="admin-overview" aria-labelledby="admin-summary-title"><div class="admin-section-heading"><div><p class="eyebrow">ПОТОЧНИЙ СТАН МАГАЗИНУ</p><h2 id="admin-summary-title">Огляд</h2></div></div><div class="admin-metrics" data-admin-metrics></div><div class="admin-attention" data-admin-attention></div><div class="admin-analytics-heading"><div><p class="eyebrow">ЗАМОВЛЕННЯ ТА ПОКУПЦІ</p><h3>Аналітика замовлень</h3></div><label>Період<select data-order-analytics-period><option value="7">7 днів</option><option value="30" selected>30 днів</option><option value="all">Увесь час</option></select></label></div><div data-order-analytics></div></section>
     <section class="admin-section" id="admin-orders-section"><div class="admin-section-heading"><div><p class="eyebrow">ОБСЛУГОВУВАННЯ</p><h2>Замовлення</h2></div><div class="admin-order-tools"><label class="admin-search"><span aria-hidden="true">⌕</span><input type="search" data-order-search-input placeholder="Номер, ім’я, місто" aria-label="Пошук замовлень"></label><button class="button button-quiet" type="button" data-export-orders>Експорт CSV</button></div></div><div class="admin-filter-row"><label>Статус<select data-order-status-filter><option value="all">Усі статуси</option><option value="processing">В обробці</option><option value="confirmed">Підтверджено</option><option value="shipped">Передано перевізнику</option><option value="delivered">Доставлено</option><option value="cancelled">Скасовано</option><option value="returned">Повернення прийнято</option></select></label><span data-admin-order-count></span></div><div class="admin-order-list" data-admin-orders></div><p class="admin-filter-empty" data-order-empty hidden>За цими умовами замовлень не знайдено.</p></section>
@@ -288,7 +288,7 @@ export async function initializeAdmin() {
     root.querySelector(".admin-import-button")?.setAttribute("hidden", "");
   }
   const defaultSection = adminSections.find((section) => sectionAllowed(section.id))?.id || "admin-products-section";
-  function activateAdminSection() {
+  function activateAdminSection({ focusHeading = false } = {}) {
     const requestedId = window.location.hash.slice(1);
     const activeId = adminSections.some((section) => section.id === requestedId && sectionAllowed(section.id))
       ? requestedId
@@ -300,9 +300,16 @@ export async function initializeAdmin() {
       if (link.hash === `#${activeId}`) link.setAttribute("aria-current", "page");
       else link.removeAttribute("aria-current");
     });
+    if (focusHeading) {
+      const heading = root.querySelector(`#${activeId} h2`);
+      if (heading) {
+        heading.tabIndex = -1;
+        heading.focus({ preventScroll: true });
+      }
+    }
   }
-  window.addEventListener("hashchange", activateAdminSection);
-  window.addEventListener("popstate", activateAdminSection);
+  window.addEventListener("hashchange", () => activateAdminSection({ focusHeading: true }));
+  window.addEventListener("popstate", () => activateAdminSection({ focusHeading: true }));
   activateAdminSection();
   const errorBox = root.querySelector("[data-admin-error]");
   let analyticsOrders = [];

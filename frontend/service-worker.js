@@ -1,4 +1,4 @@
-const CACHE_NAME = "nexlab-shell-v6";
+const CACHE_NAME = "nexlab-shell-v18";
 const OFFLINE_PAGE = new URL("offline.html", self.registration.scope).href;
 const MANIFEST_URL = new URL("offline-assets.json", self.registration.scope).href;
 
@@ -81,15 +81,23 @@ self.addEventListener("fetch", (event) => {
 
   if (request.mode === "navigate") {
     event.respondWith((async () => {
+      const cache = await caches.open(CACHE_NAME);
+      const cached = await cache.match(request, { ignoreSearch: true });
+      if (cached) {
+        const update = fetchWithTimeout(request, 8000).then(async (response) => {
+          if (response.ok) await cache.put(request, response.clone());
+          return response;
+        });
+        event.waitUntil(update.catch(() => {}));
+        return cached;
+      }
       try {
-        const response = await fetchWithTimeout(request);
+        const response = await fetchWithTimeout(request, 8000);
         if (response.ok) {
-          const cache = await caches.open(CACHE_NAME);
           await cache.put(request, response.clone());
         }
         return response;
       } catch {
-        const cache = await caches.open(CACHE_NAME);
         const scopeUrl = new URL(self.registration.scope);
         const relativePath = url.pathname.startsWith(scopeUrl.pathname)
           ? url.pathname.slice(scopeUrl.pathname.length)
@@ -99,9 +107,7 @@ self.addEventListener("fetch", (event) => {
           : "index.html";
         return (await cache.match(request, { ignoreSearch: true }))
           || (await cache.match(new URL(fallbackPath, self.registration.scope).href, { ignoreSearch: true }))
-          || (await cache.match(new URL("index.html", self.registration.scope).href))
-          || (await cache.match(OFFLINE_PAGE))
-          || Response.error();
+          || Response.redirect(OFFLINE_PAGE, 302);
       }
     })());
     return;

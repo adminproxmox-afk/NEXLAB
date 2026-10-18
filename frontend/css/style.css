@@ -707,10 +707,16 @@ button {
 }
 .breadcrumbs {
   display: flex;
+  align-items: center;
   gap: 11px;
   margin-bottom: 27px;
   color: #929d94;
   font-size: 11px;
+}
+.breadcrumbs a {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
 }
 .breadcrumbs a:hover {
   color: var(--accent-bright);

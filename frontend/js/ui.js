@@ -82,8 +82,9 @@ export function renderSharedLayout(settings = { name: "NEXLAB" }) {
     footer.innerHTML = `<footer class="site-footer"><div class="footer-main wrap">
     <div class="footer-brand"><a class="brand" href="${prefix}index.html"><span class="brand-mark">${storeName.slice(0, 1)}</span>${storeName}</a><p>Електроніка й інструменти для тих, хто перетворює ідеї на пристрої.</p><a class="footer-contact" href="${prefix}contacts.html">Зв’язатися з командою</a></div>
     <div class="footer-column"><strong>Каталог</strong><a href="${prefix}catalog.html?category=Електронні%20компоненти">Електронні компоненти</a><a href="${prefix}catalog.html?category=Мікроконтролери">Мікроконтролери</a><a href="${prefix}catalog.html?category=Інструменти">Інструменти</a><a href="${prefix}catalog.html?category=Комп’ютери">Комп’ютери</a><a href="${prefix}catalog.html?category=3D-друк">3D-друк</a></div>
-    <div class="footer-column"><strong>Покупцям</strong><a href="${prefix}delivery.html">Доставка</a><a href="${prefix}payment.html">Оплата</a><a href="${prefix}warranty.html">Гарантія</a><a href="${prefix}returns.html">Повернення</a></div>
-    <div class="footer-column"><strong>Компанія</strong><a href="${prefix}about.html">Про нас</a><a href="${prefix}contacts.html">Контакти</a><a href="${prefix}privacy.html">Конфіденційність</a><a href="https://github.com/adminproxmox-afk/NEXLAB" target="_blank" rel="noreferrer">GitHub · код проєкту ↗</a>${hasAdminAccess() ? `<a href="${prefix}admin/index.html">Для команди</a>` : ""}</div>
+    <div class="footer-column"><strong>Покупцям</strong><a href="${prefix}delivery.html">Доставка</a><a href="${prefix}payment.html">Оплата</a><a href="${prefix}faq.html">Поширені запитання</a><a href="${prefix}warranty.html">Гарантія</a><a href="${prefix}returns.html">Повернення</a></div>
+    <div class="footer-column"><strong>Компанія</strong><a href="${prefix}about.html">Про нас</a><a href="${prefix}contacts.html">Контакти</a><a href="${prefix}privacy.html">Конфіденційність</a><a href="https://github.com/adminproxmox-afk/NEXLAB" target="_blank" rel="noreferrer">GitHub · код проєкту ↗</a>${hasAdminAccess() ? `<a href="${prefix}admin/index.html">Для команди</a>` : ""}<strong class="footer-community-title">Спільнота</strong><a href="${prefix}community.html">Проєкти учасників</a><a href="${prefix}projects.html">Навчальні проєкти</a></div>
+    <section class="footer-newsletter" aria-labelledby="footer-newsletter-title"><strong id="footer-newsletter-title">Оновлення майстерні</strong><p>Нові проєкти та навчальні матеріали NEXLAB.</p><form data-demo-newsletter><label class="visually-hidden" for="footer-newsletter-email">Тестова адреса електронної пошти</label><input id="footer-newsletter-email" type="email" name="email" autocomplete="email" placeholder="demo@example.com" required><button type="submit">Спробувати демо</button></form><small>Демо-форма: використай тестову адресу. Email не зберігається й листи не надсилаються.</small><p class="footer-newsletter-status" data-newsletter-status role="status" aria-live="polite" hidden></p></section>
   </div><div class="footer-bottom wrap"><span>© ${new Date().getFullYear()} ${storeName}</span><span>Збирай. Перевіряй. Запускай.</span></div></footer>`;
   if (!document.querySelector("[data-auth-gate]"))
     document.body.insertAdjacentHTML(
@@ -133,8 +134,19 @@ export function bindLayoutEvents() {
   document.querySelector("[data-language-select]")?.addEventListener("change", (event) => {
     setLanguage(event.currentTarget.value);
   });
+  document.querySelector("[data-demo-newsletter]")?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    if (!form.reportValidity()) return;
+    const status = form.parentElement.querySelector("[data-newsletter-status]");
+    status.textContent = "Демо-підписку перевірено: адресу не збережено й не надіслано.";
+    status.hidden = false;
+    form.reset();
+  });
   const toggle = document.querySelector("[data-menu-toggle]");
   const nav = document.querySelector("[data-mobile-nav]");
+  const isCompactHeader = () =>
+    toggle && getComputedStyle(toggle).display !== "none";
   const closeMobileNav = (returnFocus = false) => {
     if (!toggle || !nav || !nav.classList.contains("is-open")) return;
     nav.classList.remove("is-open");
@@ -153,14 +165,14 @@ export function bindLayoutEvents() {
     closeMobileNav();
   });
   nav?.addEventListener("click", (event) => {
-    if (event.target.closest("a") && window.matchMedia("(max-width: 700px)").matches)
+    if (event.target.closest("a") && isCompactHeader())
       closeMobileNav();
   });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") closeMobileNav(true);
   });
   window.addEventListener("resize", () => {
-    if (!window.matchMedia("(max-width: 700px)").matches) closeMobileNav();
+    if (!isCompactHeader()) closeMobileNav();
   }, { passive: true });
   const search = document.querySelector("[data-header-search]");
   const searchWrap = search?.closest(".header-search-wrap");
@@ -182,7 +194,7 @@ export function bindLayoutEvents() {
   });
   search?.addEventListener("click", (event) => {
     if (
-      window.matchMedia("(max-width: 700px)").matches &&
+      isCompactHeader() &&
       !search.classList.contains("is-open")
     ) {
       event.preventDefault();

@@ -550,7 +550,7 @@ export async function createApp({
     res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
     res.setHeader(
       "Content-Security-Policy",
-      "default-src 'self'; img-src 'self' https:; style-src 'self' 'unsafe-inline'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'",
+      "default-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'",
     );
     try {
       const url = new URL(req.url, "http://localhost"),
@@ -1569,6 +1569,7 @@ export async function createApp({
       const permitted =
         /^[^/]+\.html$/.test(relative) ||
         /^offline-assets\.json$/.test(relative) ||
+        /^sitemap\.xml$/.test(relative) ||
         /^service-worker\.js$/.test(relative) ||
         /^(favicon\.(svg|ico)|apple-touch-icon\.png)$/.test(relative) ||
         /^admin\/index\.html$/.test(relative) ||
@@ -1587,6 +1588,7 @@ export async function createApp({
       const mime = {
         ".html": "text/html; charset=utf-8",
         ".json": "application/json; charset=utf-8",
+        ".xml": "application/xml; charset=utf-8",
         ".js": "text/javascript; charset=utf-8",
         ".css": "text/css; charset=utf-8",
         ".jpg": "image/jpeg",

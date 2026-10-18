@@ -1,7 +1,11 @@
 import { getOrders } from "../api/orderService.js";
 import { collectOrderNotificationUpdates } from "../api/orderNotificationState.js";
 import { getCurrentUser } from "./session.js";
-import { toast } from "./notifications.js";
+import {
+  desktopNotificationsEnabled,
+  showDesktopNotification,
+  toast,
+} from "./notifications.js";
 import { currentLanguage, translateText } from "./i18n.js";
 
 const storageKey = (uid) => `nexlab_order_notifications_${uid}`;
@@ -46,7 +50,7 @@ function previousState(uid) {
   }
 }
 
-function showUpdates(orders) {
+function showUpdates(orders, userId) {
   if (!orders.length) return;
   const language = currentLanguage();
   const labels = {
@@ -65,12 +69,20 @@ function showUpdates(orders) {
     return `№ ${order.id} · ${status}`;
   });
   if (orders.length > lines.length) lines.push(`+${orders.length - lines.length}`);
-  toast(`${labels[language] || labels.uk}: ${lines.join("; ")}`);
+  const title = labels[language] || labels.uk;
+  const body = lines.join("; ");
+  if (!showDesktopNotification({
+    userId,
+    title,
+    body,
+    tag: "nexlab-order-updates",
+    href: "orders.html",
+  })) toast(`${title}: ${body}`);
 }
 
 async function checkForUpdates() {
   const uid = getCurrentUser()?.id || "";
-  if (!uid || loading || (typeof document !== "undefined" && document.hidden)) {
+  if (!uid || loading || (typeof document !== "undefined" && document.hidden && !desktopNotificationsEnabled(uid))) {
     return;
   }
   loading = true;
@@ -83,7 +95,7 @@ async function checkForUpdates() {
     } catch {
       // Notifications still work for this check when browser storage is unavailable.
     }
-    showUpdates(result.updates);
+    showUpdates(result.updates, uid);
   } catch (error) {
     if (error.message !== "BACKEND_UNAVAILABLE" && error.message !== "UNAUTHENTICATED")
       console.warn("Order updates could not be checked", error);

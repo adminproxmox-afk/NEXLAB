@@ -4,6 +4,7 @@ const messages = {
   uk: {},
   ru: {
     "NEXLAB — головна сторінка": "NEXLAB — главная страница",
+    "Проєкти для самостійного складання": "Проекты для самостоятельной сборки",
     "Головна": "Главная", "Каталог": "Каталог", "Проєкти": "Проекты", "Спільнота": "Сообщество", "Акції": "Акции",
     "Головна навігація": "Главная навигация", "Перейти до основного вмісту": "Перейти к основному содержимому", "У Firebase немає налаштувань магазину: показуємо демонстраційні значення.": "В Firebase нет настроек магазина: показываем демонстрационные значения.", "У Firebase ще немає товарів: показуємо демонстраційний каталог.": "В Firebase пока нет товаров: показываем демонстрационный каталог.", "У Firebase ще немає DIY-проєктів: показуємо демонстраційні приклади.": "В Firebase пока нет DIY-проектов: показываем демонстрационные примеры.", "Пошук товарів": "Поиск товаров", "Шукати товар": "Найти товар",
     "Обране": "Избранное", "Порівняння товарів": "Сравнение товаров", "Кошик": "Корзина", "Увійти": "Войти",
@@ -93,9 +94,11 @@ const messages = {
     "СКЛАД НАБОРУ": "СОСТАВ НАБОРА", "Увесь каталог": "Весь каталог", "Деталі товару ↗": "Подробнее о товаре ↗", "Фото для ознайомлення": "Фото для ознакомления", "Є В НАЯВНОСТІ": "ЕСТЬ В НАЛИЧИИ", "НЕМАЄ В НАЯВНОСТІ": "НЕТ В НАЛИЧИИ",
     "Що знадобиться": "Что понадобится", "ESP32 DevKit V1": "ESP32 DevKit V1", "Датчик температури DHT22": "Датчик температуры DHT22", "OLED-дисплей 0.96″": "OLED-дисплей 0.96″", "Набір дротів Dupont": "Набор проводов Dupont",
     "позицій доступно": "позиций доступно", "позицій у наявності": "позиций в наличии", "шт.": "шт.", "ВІД КОМПОНЕНТІВ ДО ПЕРШОГО ЗАПУСКУ": "ОТ КОМПОНЕНТОВ ДО ПЕРВОГО ЗАПУСКА", "Збери й перевір": "Собери и проверь", "Схема з’єднань": "Схема соединений", "Плата → компонент": "Плата → компонент",
+    "Сервер не підтвердив результат. Перевір замовлення в історії; якщо його там немає, повтори оформлення — запит не створить дублікат.": "Сервер не подтвердил результат. Проверьте заказ в истории; если его там нет, повторите оформление — запрос не создаст дубликат.",
   },
   en: {
     "NEXLAB — головна сторінка": "NEXLAB — home page",
+    "Проєкти для самостійного складання": "Projects to build yourself",
     "Головна": "Home", "Каталог": "Catalog", "Проєкти": "Projects", "Спільнота": "Community", "Акції": "Offers",
     "Головна навігація": "Main navigation", "Перейти до основного вмісту": "Skip to main content", "У Firebase немає налаштувань магазину: показуємо демонстраційні значення.": "Firebase store settings are missing; demo values are shown.", "У Firebase ще немає товарів: показуємо демонстраційний каталог.": "Firebase has no products yet; the demo catalog is shown.", "У Firebase ще немає DIY-проєктів: показуємо демонстраційні приклади.": "Firebase has no DIY projects yet; demo examples are shown.", "Пошук товарів": "Search products", "Шукати товар": "Search products",
     "Обране": "Favorites", "Порівняння товарів": "Compare products", "Кошик": "Cart", "Увійти": "Sign in",
@@ -185,11 +188,13 @@ const messages = {
     "СКЛАД НАБОРУ": "KIT CONTENTS", "Увесь каталог": "Full catalog", "Деталі товару ↗": "Product details ↗", "Фото для ознайомлення": "Illustrative photo", "Є В НАЯВНОСТІ": "IN STOCK", "НЕМАЄ В НАЯВНОСТІ": "OUT OF STOCK",
     "Що знадобиться": "What you need", "ESP32 DevKit V1": "ESP32 DevKit V1", "Датчик температури DHT22": "DHT22 temperature sensor", "OLED-дисплей 0.96″": "0.96″ OLED display", "Набір дротів Dupont": "Dupont jumper wire kit",
     "позицій доступно": "parts available", "позицій у наявності": "parts in stock", "шт.": "pcs", "ВІД КОМПОНЕНТІВ ДО ПЕРШОГО ЗАПУСКУ": "FROM COMPONENTS TO FIRST LAUNCH", "Збери й перевір": "Build and test", "Схема з’єднань": "Wiring diagram", "Плата → компонент": "Board → component",
+    "Сервер не підтвердив результат. Перевір замовлення в історії; якщо його там немає, повтори оформлення — запит не створить дублікат.": "The server did not confirm the result. Check your order history; if the order is not there, try checkout again—the request will not create a duplicate.",
   },
 };
 
 Object.assign(messages.ru, {
   "Каталог товарів ще не синхронізований із базою замовлень. Адміністратору потрібно ініціалізувати каталог у Firebase; спробуй пізніше.": "Каталог товаров ещё не синхронизирован с базой заказов. Администратору нужно инициализировать каталог в Firebase; попробуйте позже.",
+  "Оформлення замовлень у Firebase ще не налаштовано: серверна функція не опублікована. Для локального демо запусти сайт командою npm start.": "Оформление заказов в Firebase ещё не настроено: серверная функция не опубликована. Для локального демо запусти сайт командой npm start.",
   "Бібліотеки:": "Библиотеки:",
   "Очікуваний результат:": "Ожидаемый результат:",
   "Документація:": "Документация:",
@@ -204,6 +209,7 @@ Object.assign(messages.ru, {
 });
 Object.assign(messages.en, {
   "Каталог товарів ще не синхронізований із базою замовлень. Адміністратору потрібно ініціалізувати каталог у Firebase; спробуй пізніше.": "The catalog is not synchronized with the order database yet. An administrator needs to initialize the Firebase catalog; please try again later.",
+  "Оформлення замовлень у Firebase ще не налаштовано: серверна функція не опублікована. Для локального демо запусти сайт командою npm start.": "Firebase checkout is not set up yet: the server function has not been deployed. For the local demo, start the site with npm start.",
   "Бібліотеки:": "Libraries:",
   "Очікуваний результат:": "Expected result:",
   "Документація:": "Documentation:",
@@ -592,6 +598,7 @@ const pageTranslations = {
   "Каталог DIY-проєктів": ["Каталог DIY-проектов", "DIY project catalog"],
   "NEXLAB — електроніка для твоїх ідей": ["NEXLAB — электроника для твоих идей", "NEXLAB — electronics for your ideas"],
   "Власні DIY-збірки спільноти NEXLAB: фото, схеми, код, відгуки та оцінки.": ["DIY-сборки сообщества NEXLAB: фото, схемы, код, отзывы и оценки.", "NEXLAB community DIY builds: photos, schematics, code, reviews, and ratings."],
+  "Фото, схеми, код і відгуки до DIY-збірок учасників NEXLAB.": ["Фото, схемы, код и отзывы к DIY-сборкам участников NEXLAB.", "Photos, schematics, code, and reviews for NEXLAB community DIY builds."],
   "Як навчальний демонстраційний сайт NEXLAB зберігає тестові дані.": ["Как учебный демонстрационный сайт NEXLAB хранит тестовые данные.", "How the NEXLAB educational demo site stores test data."],
   "DIY-проєкти NEXLAB з переліком компонентів, схемами та стартовим кодом.": ["DIY-проекты NEXLAB со списками компонентов, схемами и стартовым кодом.", "NEXLAB DIY projects with component lists, schematics, and starter code."],
 };
@@ -769,6 +776,48 @@ for (const [source, [ru, en]] of Object.entries(adminTranslations)) {
   messages.en[source] = en;
 }
 const commerceAndLearningTranslations = {
+  "Під час створення демо-акаунта обробляються ім’я, email та пароль; локальний сервер зберігає пароль лише у вигляді криптографічного хешу. Форма демо-замовлення містить ім’я отримувача, телефон, місто, адресу доставки, перевізника, спосіб оплати й склад кошика. Для відгуків та збірок спільноти можуть зберігатися оцінки, текст, фото, посилання на схему й код. Не вводь реальні персональні, платіжні чи чутливі дані.": ["При создании демо-аккаунта обрабатываются имя, email и пароль; локальный сервер хранит пароль только в виде криптографического хеша. Форма демо-заказа содержит имя получателя, телефон, город, адрес доставки, перевозчика, способ оплаты и состав корзины. Для отзывов и проектов сообщества могут храниться оценки, текст, фото, ссылки на схему и код. Не вводи реальные персональные, платёжные или чувствительные данные.", "When a demo account is created, NEXLAB processes a name, email address, and password; the local server stores only a cryptographic password hash. The demo checkout form includes recipient name, phone number, city, delivery address, carrier, payment method, and cart contents. Reviews and community builds may include ratings, text, photos, and links to schematics and code. Do not enter real personal, payment, or sensitive information."],
+  "Кошик, порівняння, обране, мова й тема зберігаються у сховищі браузера; ключ повторної спроби оформлення — лише у поточній вкладці. Локальний сервер NEXLAB зберігає демо-дані у SQLite в папці data. Опублікована версія має конфігурацію Firebase і за замовчуванням використовує Firebase Authentication та Cloud Firestore для облікових записів і доступних функцій. Демо-замовлення зі зміною складських залишків працюють лише за наявності розгорнутих захищених Cloud Functions. GitHub Pages роздає статичні файли й сам не запускає Node.js-сервер.": ["Корзина, сравнение, избранное, язык и тема хранятся в браузере; ключ повторной попытки оформления — только в текущей вкладке. Локальный сервер NEXLAB хранит демо-данные в SQLite в папке data. В опубликованной версии настроен Firebase; по умолчанию Firebase Authentication и Cloud Firestore используются для аккаунтов и доступных функций. Демо-заказы со списанием остатков работают только при развернутых защищённых Cloud Functions. GitHub Pages отдаёт статические файлы и сам не запускает Node.js-сервер.", "The cart, comparison list, favorites, language, and theme are stored in browser storage; the checkout retry key is kept only in the current tab. The local NEXLAB server stores demo data in SQLite under the data folder. The published build is configured for Firebase and uses Firebase Authentication and Cloud Firestore by default for accounts and available features. Demo orders that change stock work only when the secured Cloud Functions are deployed. GitHub Pages serves static files and does not run a Node.js server."],
+  "Дані потрібні для навчальної демонстрації каталогу, акаунтів і сценаріїв магазину. Браузерні дані залишаються на пристрої до очищення даних сайта. Локальна SQLite-база зберігається до ручного видалення. У Firebase автоматичне очищення демо-записів не налаштоване; строки зберігання залежать від налаштувань проєкту й адміністрування.": ["Данные нужны для учебной демонстрации каталога, аккаунтов и сценариев магазина. Данные браузера остаются на устройстве, пока не будут очищены данные сайта. Локальная база SQLite хранится до ручного удаления. В Firebase автоматическая очистка демо-записей не настроена; сроки хранения зависят от настроек проекта и администрирования.", "Data is used to demonstrate the catalog, accounts, and store flows for learning. Browser data remains on the device until site data is cleared. The local SQLite database remains until manually deleted. Firebase demo records are not automatically cleared; retention depends on project settings and administration."],
+  "Онлайн-платіжний сервіс не підключений, сайт не запитує дані банківських карток. Для опублікованої версії використовуються GitHub Pages і налаштований у коді проєкт Firebase; Google/Firebase може обробляти дані, необхідні для увімкнених сервісів, за власними правилами. Не вводь номер картки, CVV, пароль чи код підтвердження.": ["Онлайн-платёжный сервис не подключён, сайт не запрашивает данные банковских карт. Для опубликованной версии используются GitHub Pages и настроенный в коде проект Firebase; Google/Firebase может обрабатывать данные, необходимые для включённых сервисов, по собственным правилам. Не вводи номер карты, CVV, пароль или код подтверждения.", "No online payment service is connected, and the site does not request bank card details. The published version uses GitHub Pages and the Firebase project configured in the code; Google/Firebase may process data needed for enabled services under its own policies. Do not enter a card number, CVV, password, or verification code."],
+  "Очисти дані сайта у налаштуваннях браузера, щоб прибрати локальний кошик, порівняння й обране. Для локальної демо-бази зупини сервер і видали файл `data/nexlab.sqlite`. Записи Firebase керуються окремо у Firebase Console; перед очищенням переконайся, що це саме навчальний проєкт і потрібні дані збережено.": ["Очисти данные сайта в настройках браузера, чтобы удалить локальные корзину, сравнение и избранное. Для локальной демо-базы останови сервер и удали файл `data/nexlab.sqlite`. Записи Firebase управляются отдельно в Firebase Console; перед очисткой убедись, что это учебный проект и нужные данные сохранены.", "Clear site data in your browser settings to remove the local cart, comparison list, and favorites. For the local demo database, stop the server and delete `data/nexlab.sqlite`. Firebase records are managed separately in the Firebase Console; before clearing them, confirm this is the demo project and keep any data you need."],
+  "Спільнота": ["Сообщество", "Community"],
+  "Проєкти учасників": ["Проекты участников", "Community builds"],
+  "Навчальні проєкти": ["Учебные проекты", "Learning projects"],
+  "Оновлення майстерні": ["Новости мастерской", "Workshop updates"],
+  "Нові проєкти та навчальні матеріали NEXLAB.": ["Новые проекты и учебные материалы NEXLAB.", "New NEXLAB projects and learning guides."],
+  "Тестова адреса електронної пошти": ["Тестовый адрес электронной почты", "Test email address"],
+  "Спробувати демо": ["Попробовать демо", "Try the demo"],
+  "Демо-форма: використай тестову адресу. Email не зберігається й листи не надсилаються.": ["Демо-форма: используй тестовый адрес. Email не сохраняется, письма не отправляются.", "Demo form: use a test address. The email is not stored and no messages are sent."],
+  "Демо-підписку перевірено: адресу не збережено й не надіслано.": ["Демо-подписка проверена: адрес не сохранён и не отправлен.", "Demo signup checked: the address was not stored or sent."],
+  "Поширені запитання": ["Часто задаваемые вопросы", "Frequently asked questions"],
+  "Схематична ілюстрація": ["Схематическая иллюстрация", "Schematic illustration"],
+  "Онлайн-оплата не підключена; справжні платежі через сайт не приймаються.": ["Онлайн-оплата не подключена; настоящие платежи через сайт не принимаются.", "Online payments are not enabled; real payments are not accepted on this site."],
+  "Навчальний сценарій": ["Учебный сценарий", "Demo scenario"],
+  "Сума до сплати": ["Сумма к оплате", "Amount due"],
+  "Демонстраційні ціни. Перед запуском продажів магазин має підтвердити ціни й залишки.": ["Демонстрационные цены. Перед запуском продаж магазин должен подтвердить цены и наличие товаров.", "Demo prices. The store must confirm prices and stock before sales launch."],
+  "Перед реальним замовленням магазин має показати повну суму, вартість доставки й можливі комісії до підтвердження покупки.": ["Перед реальным заказом магазин должен показать полную сумму, стоимость доставки и возможные комиссии до подтверждения покупки.", "Before a real order, the store must show the total, shipping cost, and any fees before purchase confirmation."],
+  "Безпека платежів": ["Безопасность платежей", "Payment security"],
+  "Платіжний сервіс не підключений. Не надсилай номер картки, CVV, паролі чи коди підтвердження через цей сайт або контакти магазину.": ["Платёжный сервис не подключён. Не отправляй номер карты, CVV, пароли или коды подтверждения через этот сайт или контакты магазина.", "No payment service is connected. Do not send card numbers, CVVs, passwords, or verification codes through this site or store contacts."],
+  "Поширені запитання — NEXLAB": ["Часто задаваемые вопросы — NEXLAB", "Frequently asked questions — NEXLAB"],
+  "Відповіді про демонстраційний магазин, тестові замовлення та DIY-проєкти NEXLAB.": ["Ответы о демонстрационном магазине, тестовых заказах и DIY-проектах NEXLAB.", "Answers about the demo shop, test orders, and NEXLAB DIY projects."],
+  "Короткі відповіді про демо-магазин, заявки та навчальні проєкти NEXLAB.": ["Краткие ответы о демо-магазине, заявках и учебных проектах NEXLAB.", "Answers about the demo shop, test orders, and NEXLAB learning projects."],
+  "Це справжній магазин і чи можна оплачувати замовлення?": ["Это настоящий магазин и можно ли оплачивать заказ?", "Is this a real store, and can I pay for an order?"],
+  "Ні. NEXLAB — навчальний демонстраційний сайт. Реальні продажі й онлайн-оплата не підключені. Не вводь справжні персональні чи платіжні дані.": ["Нет. NEXLAB — учебный демонстрационный сайт. Реальные продажи и онлайн-оплата не подключены. Не вводи настоящие личные или платёжные данные.", "No. NEXLAB is an educational demo site. Real sales and online payments are not enabled. Do not enter real personal or payment details."],
+  "Як перевірити тестове оформлення замовлення?": ["Как проверить тестовое оформление заказа?", "How can I try the demo checkout?"],
+  "Для локальної демонстрації запусти сайт командою npm start, створи тестовий обліковий запис і додай товар у кошик. Публічне оформлення потребує налаштованих Firebase Authentication, Firestore і серверної функції замовлень.": ["Для локальной демонстрации запусти сайт командой npm start, создай тестовую учётную запись и добавь товар в корзину. Для оформления на публичном сайте нужно настроить Firebase Authentication, Firestore и серверную функцию заказов.", "For a local demo, run npm start, create a test account, and add an item to the cart. Public checkout requires Firebase Authentication, Firestore, and the order function to be configured."],
+  "Ціни, залишки й тарифи доставки актуальні?": ["Цены, остатки и тарифы доставки актуальны?", "Are prices, stock, and shipping rates current?"],
+  "Ні, це навчальні приклади. Публічний каталог показує демонстраційні дані, доки його не заповнили в Firebase. Вартість і строки доставки автоматично не розраховуються.": ["Нет, это учебные примеры. Публичный каталог показывает демонстрационные данные, пока его не заполнили в Firebase. Стоимость и сроки доставки автоматически не рассчитываются.", "No. These are educational examples. The public catalog shows demo data until Firebase is populated. Shipping cost and delivery times are not calculated automatically."],
+  "Де подивитися статус тестового замовлення?": ["Где посмотреть статус тестового заказа?", "Where can I check a demo order's status?"],
+  "Після збереження тестова заявка з’явиться в розділі «Мої замовлення». Там видно статус, історію змін і номер відстеження, якщо його додав адміністратор.": ["После сохранения тестовая заявка появится в разделе «Мои заказы». Там видны статус, история изменений и номер отслеживания, если его добавил администратор.", "After it is saved, the demo order appears under My Orders. You can see its status, change history, and tracking number if an administrator added one."],
+  "Як працюють гарантія та повернення?": ["Как работают гарантия и возврат?", "How do warranty and returns work?"],
+  "Умови на інформаційних сторінках наведені для навчального макета. Форма повернення демонструє процес і не створює реального звернення до продавця.": ["Условия на информационных страницах приведены для учебного макета. Форма возврата показывает процесс и не создаёт реального обращения к продавцу.", "The terms on information pages are examples for this educational demo. The return form demonstrates a workflow and does not contact a real seller."],
+  "Як зібрати навчальний проєкт?": ["Как собрать учебный проект?", "How do I build a learning project?"],
+  "Відкрий «Проєкти», обери рівень складності та бюджет, переглянь список компонентів і інструкцію. Прогрес кроків зберігається в обліковому записі.": ["Открой «Проекты», выбери уровень сложности и бюджет, посмотри список компонентов и инструкцию. Прогресс по шагам сохраняется в учётной записи.", "Open Projects, choose a difficulty and budget, then review the components and guide. Step progress is saved to your account."],
+  "Як поділитися власним проєктом?": ["Как поделиться своим проектом?", "How can I share my own project?"],
+  "Увійди й відкрий «Спільноту». Додай опис, фото, посилання на схему й код; інші учасники зможуть ставити запитання та оцінювати роботу.": ["Войди и открой «Сообщество». Добавь описание, фото, ссылки на схему и код; другие участники смогут задавать вопросы и оценивать работу.", "Sign in and open Community. Add a description, photo, and links to the schematic and code; other members can ask questions and rate the project."],
+  "Чи є фотографії точним зображенням товару?": ["Фотографии точно показывают товар?", "Do the photos show the exact item?"],
+  "Фотографії та ілюстрації призначені для ознайомлення й можуть походити зі сторінок виробників або продавців. Вони не підтверджують фактичну комплектацію демо-магазину.": ["Фотографии и иллюстрации предназначены для ознакомления и могут быть взяты со страниц производителей или продавцов. Они не подтверждают фактическую комплектацию демо-магазина.", "Photos and illustrations are for reference and may come from manufacturer or seller pages. They do not confirm the demo shop's actual stock or package contents."],
   "Якщо запущений сервер і створюється тестовий обліковий запис, сайт отримує ім’я, адресу електронної пошти та пароль. Пароль зберігається у вигляді криптографічного хешу. Під час входу використовується сесійний cookie. У демонстраційному оформленні замовлення форма також містить ім’я отримувача, телефон, місто, адресу доставки, перевізника, спосіб оплати та дані товарів у замовленні. Для відгуків можуть зберігатися оцінка, текст і фото; для збірок спільноти — опис, фото та посилання на схему й код; для збережених проєктів — їхні ідентифікатори.": ["Если запущен сервер и создаётся тестовая учётная запись, сайт получает имя, адрес электронной почты и пароль. Пароль хранится в виде криптографического хеша. При входе используется сессионный cookie. В форме демонстрационного заказа также указываются имя получателя, телефон, город, адрес доставки, перевозчик, способ оплаты и товары. В отзывах могут храниться оценка, текст и фото; в сборках сообщества — описание, фото и ссылки на схему и код; в сохранённых проектах — их идентификаторы.", "When the server is running and a demo account is created, the site receives a name, email address, and password. Passwords are stored as cryptographic hashes, and sign-in uses a session cookie. The demo checkout also includes the recipient's name, phone, city, delivery address, carrier, payment method, and items. Reviews may store ratings, text, and photos; community builds may store descriptions, photos, and links to schematics and code; saved projects store their IDs."],
   "Разом": ["Итого", "Total"],
   "Ти вже оцінив цей проєкт.": ["Ты уже оценил этот проект.", "You have already rated this project."],
@@ -815,6 +864,20 @@ const commerceAndLearningTranslations = {
   "Товар не знайдено": ["Товар не найден", "Product not found"],
   "Можливо, його вже немає в каталозі.": ["Возможно, его уже нет в каталоге.", "It may no longer be in the catalog."],
   "Повідомити, коли з’явиться": ["Сообщить, когда появится", "Notify me when available"],
+  "Стежимо за наявністю": ["Следим за наличием", "Watching availability"],
+  "Повідомимо в цьому акаунті, коли товар з’явиться.": ["Сообщим в этом аккаунте, когда товар появится.", "We’ll notify you in this account when the item is back."],
+  "Товар уже є в наявності.": ["Товар уже есть в наличии.", "The item is already in stock."],
+  "Не вдалося підписатися. Спробуй ще раз.": ["Не удалось подписаться. Попробуй ещё раз.", "Could not subscribe. Try again."],
+  "Повідомлення на пристрої": ["Уведомления на устройстве", "Device notifications"],
+  "Отримуй сповіщення про зміни замовлення й появу товарів у наявності, поки NEXLAB відкритий.": ["Получай уведомления об изменении заказов и появлении товаров, пока NEXLAB открыт.", "Get order and restock alerts while NEXLAB is open."],
+  "Увімкнути сповіщення": ["Включить уведомления", "Enable notifications"],
+  "Вимкнути сповіщення": ["Выключить уведомления", "Disable notifications"],
+  "Сповіщення ввімкнено, поки NEXLAB відкритий.": ["Уведомления включены, пока NEXLAB открыт.", "Notifications are enabled while NEXLAB is open."],
+  "Сповіщення працюватимуть, поки сайт відкрито в браузері.": ["Уведомления работают, пока сайт открыт в браузере.", "Notifications work while the site is open in your browser."],
+  "Сповіщення вимкнено для цього облікового запису.": ["Уведомления отключены для этой учётной записи.", "Notifications are disabled for this account."],
+  "Дозвіл заборонено. Зміни налаштування сповіщень для цього сайту в браузері.": ["Разрешение запрещено. Измени настройки уведомлений для этого сайта в браузере.", "Permission was denied. Change this site's notification setting in your browser."],
+  "Цей браузер не підтримує сповіщення на пристрої.": ["Этот браузер не поддерживает уведомления на устройстве.", "This browser does not support device notifications."],
+  "Не вдалося ввімкнути сповіщення. Перевір налаштування браузера.": ["Не удалось включить уведомления. Проверь настройки браузера.", "Could not enable notifications. Check your browser settings."],
   "Керуй даними облікового запису та своїми проєктами.": ["Управляй данными аккаунта и своими проектами.", "Manage your account details and projects."],
   "Основна інформація": ["Основная информация", "Basic information"],
   "Дата реєстрації": ["Дата регистрации", "Registration date"],
@@ -853,6 +916,22 @@ const commerceAndLearningTranslations = {
   "Не вдалося зберегти прогрес. Перевір з’єднання та спробуй ще раз.": ["Не удалось сохранить прогресс. Проверь соединение и попробуй ещё раз.", "Could not save your progress. Check your connection and try again."],
   "Проєкт прибрано з майстерні.": ["Проект удалён из мастерской.", "Project removed from your workshop."],
   "Не вдалося прибрати проєкт. Спробуй ще раз.": ["Не удалось удалить проект. Попробуй ещё раз.", "Could not remove the project. Try again."],
+  "NEXLAB / OFFLINE": ["NEXLAB / НЕТ СВЯЗИ", "NEXLAB / OFFLINE"],
+  "Компоненти, інструменти й ідеї для електронних проєктів.": ["Компоненты, инструменты и идеи для электронных проектов.", "Components, tools, and ideas for electronics projects."],
+  "Для тих, хто створює": ["Для тех, кто создаёт", "For makers"],
+  "Каталог і DIY-проєкти допомагають підібрати компоненти, оцінити склад набору та зберегти інструкції у своїй майстерні.": ["Каталог и DIY-проекты помогают подобрать компоненты, оценить состав набора и сохранить инструкции в своей мастерской.", "The catalog and DIY projects help you choose components, check kit contents, and save guides in your workshop."],
+  "Сайт є демонстраційним каталогом. Ціни, залишки, постачальники та умови обслуговування не підтверджені для реального продажу.": ["Сайт является демонстрационным каталогом. Цены, остатки, поставщики и условия обслуживания не подтверждены для реальных продаж.", "This is a demo catalog. Prices, stock, suppliers, and service terms have not been verified for real sales."],
+  "Реальні продажі ще не відкриті. Порядок повернення магазин має заповнити до приймання замовлень.": ["Реальные продажи ещё не открыты. Магазин должен указать порядок возврата до начала приёма заказов.", "Sales have not started. The store must publish its return process before accepting orders."],
+  "Як звернутися": ["Как обратиться", "How to contact the store"],
+  "Строки й відшкодування": ["Сроки и возмещение", "Timeframes and refunds"],
+  "Магазин ще не повідомив строки розгляду звернення, вимоги до стану товару, порядок обміну та повернення коштів. Ці правила потрібно оприлюднити до початку продажів.": ["Магазин ещё не сообщил сроки рассмотрения обращения, требования к состоянию товара, порядок обмена и возврата денег. Эти правила нужно опубликовать до начала продаж.", "The store has not set response times, item condition requirements, exchange procedures, or refund rules. These terms must be published before sales begin."],
+  "Права покупця": ["Права покупателя", "Customer rights"],
+  "Умови магазину не скасовують обов’язкових прав покупця за чинним законодавством України. Для конкретної покупки застосовуватимуться умови, показані до її підтвердження.": ["Условия магазина не отменяют обязательных прав покупателя по действующему законодательству Украины. Для конкретной покупки применяются условия, показанные до её подтверждения.", "Store terms do not remove customer rights under applicable Ukrainian law. The terms shown before confirmation apply to each purchase."],
+  "Гарантійні умови не визначені, оскільки магазин і постачальники ще не надали фактичних правил.": ["Гарантийные условия не определены: магазин и поставщики ещё не предоставили фактические правила.", "Warranty terms have not been set because the store and suppliers have not provided confirmed policies."],
+  "Строк і покриття": ["Срок и покрытие", "Duration and coverage"],
+  "Для кожного товару до початку продажів потрібно вказати гарантійний строк, що саме покривається, винятки та хто виконує гарантійне обслуговування.": ["Для каждого товара до начала продаж нужно указать срок гарантии, её покрытие, исключения и того, кто выполняет гарантийное обслуживание.", "Before sales begin, each product needs a warranty duration, coverage, exclusions, and service contact."],
+  "Звернення": ["Обращение", "Support request"],
+  "Ця демонстраційна сторінка не встановлює і не обмежує прав покупця, передбачених чинним законодавством.": ["Эта демонстрационная страница не устанавливает и не ограничивает права покупателя, предусмотренные действующим законодательством.", "This demo page does not establish or limit customer rights under applicable law."],
 };
 for (const [source, [ru, en]] of Object.entries(commerceAndLearningTranslations)) {
   messages.ru[source] = ru;
@@ -896,6 +975,23 @@ export function translateText(value, language = locale) {
       : translated;
   }
   if (language === "uk") return key;
+  const returnContact = value.match(/^Для навчального макета щодо повернення можна звернутися телефоном (.+)\. Місто відправлення — (.+); фактичну адресу повернення та порядок пересилання не визначено\.$/);
+  if (returnContact) return language === "ru"
+    ? `Для учебного макета по возврату можно обратиться по телефону ${returnContact[1]}. Город отправления — ${translateText(returnContact[2], language)}; фактический адрес возврата и порядок пересылки не определены.`
+    : `For this demo, contact ${returnContact[1]} about returns. The dispatch city is ${translateText(returnContact[2], language)}; no actual return address or shipping process has been set.`;
+  const warrantyContact = value.match(/^Для навчального макета: (.+); підготуйте номер замовлення, назву товару та опис проблеми\. Фактичний процес гарантійного обслуговування не налаштований\.$/);
+  if (warrantyContact) return language === "ru"
+    ? `Для учебного макета: ${warrantyContact[1]}; подготовьте номер заказа, название товара и описание проблемы. Фактическое гарантийное обслуживание не настроено.`
+    : `For this demo: ${warrantyContact[1]}; have the order number, product name, and issue description ready. Actual warranty service is not configured.`;
+  const demoPaymentMethod = value.match(/^Спосіб «(.+)» наведено у формі лише як демонстраційний приклад\. Магазин не підтверджує його для реальних продажів\.$/);
+  if (demoPaymentMethod) return language === "ru"
+    ? `Способ «${translateText(demoPaymentMethod[1], language)}» указан в форме только как демонстрационный пример. Магазин не подтверждает его для реальных продаж.`
+    : `Method “${translateText(demoPaymentMethod[1], language)}” is listed in the form for demonstration only. The store does not support it for real sales.`;
+  const paymentAmountSuffix = "Перед реальним замовленням магазин має показати повну суму, вартість доставки й можливі комісії до підтвердження покупки.";
+  if (value.endsWith(paymentAmountSuffix)) {
+    const priceNote = value.slice(0, -paymentAmountSuffix.length).trim();
+    return `${translateText(priceNote, language)} ${translateText(paymentAmountSuffix, language)}`;
+  }
   const diagramLabel = value.match(/^Схема з’єднань (.+)$/);
   if (diagramLabel) return `${language === "ru" ? "Схема соединений" : "Wiring diagram"} ${translateText(diagramLabel[1], language)}`;
   const productPhotoAlt = value.match(/^(.+) — фото для ознайомлення$/);
@@ -990,8 +1086,14 @@ export function translateText(value, language = locale) {
   if (availableComponents) return language === "ru" ? `${availableComponents[1]} позиций доступно` : `${availableComponents[1]} parts available`;
   const availableRatio = value.match(/^(\d+\/\d+) позицій доступно$/);
   if (availableRatio) return language === "ru" ? `${availableRatio[1]} позиций доступно` : `${availableRatio[1]} parts available`;
-  const kitComponents = value.match(/^(\d+) components у наборі$/);
-  if (kitComponents) return language === "ru" ? `${kitComponents[1]} компонента в наборе` : `${kitComponents[1]} components in the kit`;
+  const kitComponents = value.match(/^(\d+) (?:components|компонент(?:а|и|ів)?) у наборі$/);
+  if (kitComponents) {
+    const count = Number(kitComponents[1]);
+    if (language === "en") return `${count} ${count === 1 ? "component" : "components"} in the kit`;
+    const plural = new Intl.PluralRules("ru-RU").select(count);
+    const noun = { one: "компонент", few: "компонента", many: "компонентов", other: "компонента" }[plural];
+    return `${count} ${noun} в наборе`;
+  }
   const whatYouNeed = value.match(/^Що знадобиться (\d+)$/);
   if (whatYouNeed) return language === "ru" ? `Что понадобится ${whatYouNeed[1]}` : `What you need ${whatYouNeed[1]}`;
   const categoryAndBrand = value.match(/^(.+?)(\s·\s)(.+)$/);

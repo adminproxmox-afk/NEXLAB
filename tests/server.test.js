@@ -120,10 +120,13 @@ test("demo coupon is available in a new local database and enforces its minimum"
 test("static pages, scripts and assets work; private files are inaccessible", async () => {
   const f = await fixture();
   try {
+    const home = await fetch(f.origin + "/");
+    assert.match(home.headers.get("content-security-policy"), /img-src 'self' https: data:/);
     for (const path of [
       "/",
       "/checkout.html",
       "/delivery.html",
+      "/sitemap.xml",
       "/js/main.js",
       "/api/client.js",
       "/guides/weather-station.ino",
@@ -156,6 +159,7 @@ test("static pages, scripts and assets work; private files are inaccessible", as
       (_, index) => !offlineResponses[index].ok,
     );
     assert.deepEqual(unavailable, []);
+    assert.match(await (await fetch(f.origin + "/sitemap.xml")).text(), /<urlset/);
   } finally {
     await f.close();
   }
@@ -301,6 +305,33 @@ test("orders recalculate totals, reduce stock once and never seed fake orders", 
     assert.equal(
       f.db.prepare("SELECT stock FROM inventory WHERE id=?").get(item.id).stock,
       22,
+    );
+  } finally {
+    await f.close();
+  }
+});
+test("concurrent retries of one checkout request create only one order", async () => {
+  const f = await fixture();
+  try {
+    const c = f.client();
+    await c.register();
+    const stockBefore = f.db.prepare("SELECT stock FROM inventory WHERE id=?").get(item.id).stock;
+    const key = crypto.randomUUID();
+    const results = await Promise.all([
+      submit(c, [item], key),
+      submit(c, [item], key),
+    ]);
+
+    assert.deepEqual(results.map(({ status }) => status).sort(), [200, 201]);
+    assert.equal(results[0].data.order.id, results[1].data.order.id);
+    assert.equal(f.db.prepare("SELECT COUNT(*) AS count FROM orders").get().count, 1);
+    assert.equal(
+      f.db.prepare("SELECT stock FROM inventory WHERE id=?").get(item.id).stock,
+      stockBefore - item.quantity,
+    );
+    assert.equal(
+      f.db.prepare("SELECT COUNT(*) AS count FROM inventory_movements WHERE product_id=? AND reason='order_reserved'").get(item.id).count,
+      1,
     );
   } finally {
     await f.close();
@@ -929,6 +960,12 @@ test("accounts and orders survive a server restart", async () => {
     const a = f.client();
     await a.register();
     await submit(a);
+    await a.call("/api/my-projects", "POST", { projectId: "weather-station" });
+    await a.call("/api/my-projects", "PATCH", {
+      projectId: "weather-station",
+      checklist: [true, true, true, true],
+      stepChecklist: [true, true, true, true, true],
+    });
     await f.close();
     f = await fixture({ dbPath });
     const b = f.client();
@@ -943,6 +980,11 @@ test("accounts and orders survive a server restart", async () => {
       200,
     );
     assert.equal((await b.call("/api/orders")).data.orders.length, 1);
+    const savedProjects = (await b.call("/api/my-projects")).data.projects;
+    assert.equal(savedProjects.length, 1);
+    assert.equal(savedProjects[0].progress, 100);
+    assert.deepEqual(savedProjects[0].checklist, [true, true, true, true]);
+    assert.deepEqual(savedProjects[0].stepChecklist, [true, true, true, true, true]);
   } finally {
     await f.close();
     rmSync(dir, { recursive: true, force: true });

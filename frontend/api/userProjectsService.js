@@ -8,6 +8,19 @@ async function currentUid() {
   return auth.currentUser.uid;
 }
 
+export async function ensureFirebaseProject(firestoreSdk, db, reference, projectId) {
+  return firestoreSdk.runTransaction(db, async (transaction) => {
+    const snapshot = await transaction.get(reference);
+    if (!snapshot.exists())
+      transaction.set(reference, {
+        projectId,
+        checklist: [],
+        stepChecklist: [],
+        updatedAt: new Date().toISOString(),
+      });
+  });
+}
+
 export async function getMyProjects() {
   if (isFirebaseConfigured()) {
     const uid = await currentUid();
@@ -27,10 +40,11 @@ export async function saveMyProject(projectId) {
     const uid = await currentUid();
     const { db, firestoreSdk } = await getFirebaseServices();
     const [collection, ownerId, subcollection, id] = path(uid, projectId);
-    await firestoreSdk.setDoc(
+    await ensureFirebaseProject(
+      firestoreSdk,
+      db,
       firestoreSdk.doc(db, collection, ownerId, subcollection, id),
-      { projectId, checklist: [], stepChecklist: [], updatedAt: new Date().toISOString() },
-      { merge: true },
+      projectId,
     );
     return { projectId };
   }

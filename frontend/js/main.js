@@ -69,7 +69,7 @@ function initializeConnectionNotice() {
     uk: {
       offline: "Немає з’єднання. Доступні лише збережені сторінки й локальний каталог.",
       unavailable: "Сервер тимчасово недоступний. Дані не збережуться, поки він не відновиться.",
-      restored: "Сервер знову доступний. Повтори останню дію — попередня спроба не збереглася.",
+      restored: "Сервер знову доступний. Перевір, чи збереглася остання дія, перш ніж повторювати її.",
       browserRestored: "З’єднання відновлено. Онови сторінку, щоб завантажити актуальні дані.",
       reload: "Оновити сторінку",
       more: "Детальніше",
@@ -77,7 +77,7 @@ function initializeConnectionNotice() {
     ru: {
       offline: "Нет соединения. Доступны только сохранённые страницы и локальный каталог.",
       unavailable: "Сервер временно недоступен. Данные не сохранятся, пока он не восстановится.",
-      restored: "Сервер снова доступен. Повтори последнее действие — предыдущая попытка не сохранилась.",
+      restored: "Сервер снова доступен. Проверь, сохранилось ли последнее действие, прежде чем повторять его.",
       browserRestored: "Соединение восстановлено. Обнови страницу, чтобы загрузить актуальные данные.",
       reload: "Обновить страницу",
       more: "Подробнее",
@@ -85,7 +85,7 @@ function initializeConnectionNotice() {
     en: {
       offline: "You are offline. Only saved pages and the local catalog are available.",
       unavailable: "The server is temporarily unavailable. Changes will not be saved until it recovers.",
-      restored: "The server is available again. Retry your last action; the previous attempt was not saved.",
+      restored: "The server is available again. Check whether your last action was saved before repeating it.",
       browserRestored: "Connection restored. Refresh the page to load current data.",
       reload: "Refresh page",
       more: "More information",
@@ -246,7 +246,7 @@ async function start() {
     getProducts(),
     getCategories(),
   ]);
-  initializeStockAlertNotifications(products);
+  initializeStockAlertNotifications();
   reconcileCart();
   renderHomeCategories(categories);
   const featured = document.querySelector('[data-products="featured"]');
