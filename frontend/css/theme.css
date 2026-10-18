@@ -198,15 +198,7 @@
 :root[data-theme="light"] :is(.product-tag, .photo-source-label) {
   color: #f3f3ed;
 }
-:root[data-theme="light"] .announcement-bar {
-  border-color: #c3e3d7;
-  background: #e3f5ee;
-  color: #1c4d40;
-}
-:root[data-theme="light"] .announcement-bar button {
-  color: #1c4d40;
-}
-:root[data-theme="light"] :is(.demo-notice, .guide-notice, .cart-assurance) {
+:root[data-theme="light"] :is(.guide-notice, .cart-assurance) {
   border-color: #c6e4d7;
   background: #eef8f2;
 }
@@ -214,19 +206,12 @@
   color: #367a40;
 }
 :root[data-theme="light"] :is(.service-error, .checkout-message) {
-  border-color: #e7b8bc;
-  background: #fff0f1;
-  color: #a13a45;
+  border-color: #c6e4d7;
+  background: #eef8f2;
+  color: #1c4d40;
 }
-:root[data-theme="light"] :is(
-  .field-error:not(:empty),
-  .stock-out,
-  .detail-out,
-  .status-cancelled,
-  .discount-badge,
-  .favorite-button.is-favorite
-) {
-  color: #a13a45;
+:root[data-theme="light"] :is(.field-error:not(:empty), .stock-out, .detail-out, .status-cancelled) {
+  color: #53645a;
 }
 :root[data-theme="light"] :is(.hero-art, .hero-art *, .product-art:not(.product-photo), .product-art:not(.product-photo) *, .toast, .toast *, .guide-panel pre, .guide-panel pre *) {
   color: #eef5f0;
@@ -249,8 +234,7 @@
   color: var(--accent-bright);
 }
 :root[data-theme="light"] .status-cancelled {
-  background: #fff0f1;
-  color: #a13a45;
+  background: #edf3ef;
 }
 :root[data-theme="light"] ::selection {
   background: #b9e8d9;
@@ -262,9 +246,6 @@
 }
 :root[data-theme="light"] .status-pending {
   color: var(--accent-bright);
-}
-:root[data-theme="light"] .status-cancelled {
-  color: #a13a45;
 }
 :root[data-theme="light"] .project-stock-note {
   border-color: #c6e4d7;

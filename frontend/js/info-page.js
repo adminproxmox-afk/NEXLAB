@@ -208,7 +208,7 @@ export function initializeInfoPage(settings = shopConfig) {
     root.dataset.infoPage === "privacy"
       ? '<p class="info-legal-link"><a href="https://zakon.rada.gov.ua/laws/show/2297-17" target="_blank" rel="noopener noreferrer">Закон України «Про захист персональних даних» ↗</a></p>'
       : "";
-  root.innerHTML = `<div class="breadcrumbs"><a href="index.html">Головна</a><span>/</span><span>${safe(page.title)}</span></div><div class="page-title"><p class="eyebrow">NEXLAB / Покупцям</p><h1>${safe(page.title)}</h1><p>${safe(page.lead)}</p><p class="demo-notice">${safe(config.demoNotice)}</p></div><div class="info-sections ${root.dataset.infoPage === "faq" ? "faq-list" : ""}">${page
+  root.innerHTML = `<div class="breadcrumbs"><a href="index.html">Головна</a><span>/</span><span>${safe(page.title)}</span></div><div class="page-title"><p class="eyebrow">NEXLAB / Покупцям</p><h1>${safe(page.title)}</h1><p>${safe(page.lead)}</p></div><div class="info-sections ${root.dataset.infoPage === "faq" ? "faq-list" : ""}">${page
     .sections()
     .map(
       ([heading, copy]) => root.dataset.infoPage === "faq"

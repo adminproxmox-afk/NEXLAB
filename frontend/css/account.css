@@ -2,7 +2,7 @@
   display: block;
   min-height: 0;
   margin-top: 3px;
-  color: #f08087;
+  color: #9bd7c2;
   font-size: 10px;
 }
 .field-error:not(:empty) {
@@ -11,7 +11,7 @@
 .auth-card input[aria-invalid="true"],
 .profile-form input[aria-invalid="true"],
 .review-form textarea[aria-invalid="true"] {
-  border-color: #e26375;
+  border-color: #57cdb3;
 }
 .auth-card .terms-check {
   grid-template-columns: 18px 1fr;
@@ -333,8 +333,8 @@
   color: #aed09c;
 }
 .status-cancelled {
-  background: #3a252b;
-  color: #f08087;
+  background: #2c342f;
+  color: #b5c1b8;
 }
 .order-bottom {
   margin-top: 18px;

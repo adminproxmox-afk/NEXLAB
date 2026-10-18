@@ -1,5 +1,4 @@
 import { login, register } from "../api/authService.js";
-import { hasBackend } from "../api/client.js";
 import { toast } from "./notifications.js";
 import { requestedAuthDestination, safeAuthDestination } from "./auth-redirect.js";
 
@@ -43,16 +42,6 @@ function preserveAuthRedirect() {
 
 export function initializeAuthForms() {
   preserveAuthRedirect();
-  if (!hasBackend()) {
-    const form = document.querySelector(
-      "[data-login-form],[data-register-form]",
-    );
-    if (form)
-      form.insertAdjacentHTML(
-        "beforebegin",
-        '<p class="demo-notice" role="status">Для облікових записів потрібен запущений сервер NEXLAB або налаштований Firebase. Каталог і проєкти доступні без входу.</p>',
-      );
-  }
   const loginForm = document.querySelector("[data-login-form]");
   loginForm?.addEventListener("submit", async (event) => {
     event.preventDefault();

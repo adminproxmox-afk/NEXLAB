@@ -211,36 +211,6 @@ button {
 .pad {
   fill: #78cbb0;
 }
-.announcement-bar {
-  border-bottom: 1px solid #285e53;
-  background: #142722;
-  color: #bde8dc;
-  font-size: 11px;
-}
-.announcement-bar[hidden] {
-  display: none;
-}
-.announcement-bar > div {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  min-height: 34px;
-}
-.announcement-bar button {
-  flex: none;
-  width: 26px;
-  height: 26px;
-  border: 0;
-  border-radius: 50%;
-  background: transparent;
-  color: var(--accent-bright);
-  font-size: 19px;
-  cursor: pointer;
-}
-.announcement-bar button:hover {
-  background: #203a32;
-}
 .led:not(.led-muted) {
   animation: signal-pulse 2.2s ease-in-out infinite;
 }

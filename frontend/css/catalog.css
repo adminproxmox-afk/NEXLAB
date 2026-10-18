@@ -199,10 +199,10 @@
   font-weight: 400;
 }
 .stock-out {
-  color: #f08087;
+  color: #aab9af;
 }
 .stock-out::before {
-  background: #e26375;
+  background: #829589;
 }
 .add-button:disabled,
 .button:disabled,

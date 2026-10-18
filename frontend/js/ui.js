@@ -22,12 +22,6 @@ if (mainContent) {
 
 initializeI18n();
 
-document.addEventListener("click", (event) => {
-  if (!event.target.closest("[data-dismiss-announcement]")) return;
-  sessionStorage.setItem("nexlab-demo-notice-dismissed", "1");
-  document.querySelector("[data-announcement]").hidden = true;
-});
-
 const prefix = location.pathname.toLowerCase().includes("/admin/") ? "../" : "";
 const path = location.pathname.split("/").pop() || "index.html";
 const safe = (value) =>
@@ -42,13 +36,6 @@ const safe = (value) =>
 export function renderSharedLayout(settings = { name: "NEXLAB" }) {
   const storeName = safe(settings.name || "NEXLAB");
   const lightTheme = document.documentElement.dataset.theme === "light";
-  const notice = document.querySelector("[data-announcement]");
-  if (notice) {
-    notice.querySelector("span").textContent =
-      settings.demoNotice ||
-      "Демонстраційний сайт: каталог і заявки наведено для прикладу. Продажі ще не відкриті — не вводь реальні персональні дані.";
-    notice.hidden = sessionStorage.getItem("nexlab-demo-notice-dismissed") === "1";
-  }
   const header = document.querySelector("[data-site-header]");
   if (header) {
     header.innerHTML = `<header class="site-header"><div class="header-inner wrap">
