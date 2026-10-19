@@ -206,7 +206,7 @@
 }
 .footer-main {
   display: grid;
-  grid-template-columns: 1.3fr repeat(3, 1fr) 1.5fr;
+  grid-template-columns: 1.3fr repeat(3, 1fr);
   gap: 32px;
   padding-block: 57px 42px;
 }
@@ -249,65 +249,6 @@
   border: 1px solid #38413a;
   border-radius: 7px;
   color: #c6cec4;
-}
-.footer-newsletter {
-  min-width: 0;
-}
-.footer-newsletter > strong {
-  display: block;
-  margin: 3px 0 12px;
-  color: var(--text);
-  font-size: 11px;
-}
-.footer-newsletter > p {
-  margin: 0 0 12px;
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.5;
-}
-.footer-newsletter form {
-  display: grid;
-  gap: 8px;
-}
-.footer-newsletter input {
-  width: 100%;
-  min-width: 0;
-  padding: 9px 10px;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: var(--surface);
-  color: var(--text);
-  font: inherit;
-  font-size: 11px;
-}
-.footer-newsletter button {
-  min-height: 36px;
-  border: 0;
-  border-radius: 6px;
-  background: var(--accent);
-  color: #10231d;
-  font: inherit;
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
-}
-.footer-newsletter small,
-.footer-newsletter-status {
-  display: block;
-  margin: 8px 0 0;
-  color: var(--faint);
-  font-size: 10px;
-  line-height: 1.5;
-}
-.footer-newsletter-status:not([hidden]) {
-  color: var(--accent-bright);
-}
-.footer-newsletter-status[hidden] {
-  display: none;
-}
-.footer-newsletter :is(input, button):focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
 }
 .footer-bottom {
   display: flex;

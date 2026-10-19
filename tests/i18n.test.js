@@ -96,9 +96,8 @@ test("checkout explains when Firebase order functions are not deployed", () => {
   assert.match(checkoutErrorMessage({ code: "permission-denied" }, true), /firebase\/firestore\.rules/);
 });
 
-test("footer community and demo newsletter copy is localized", () => {
-  assert.equal(translateText("Оновлення майстерні", "en"), "Workshop updates");
-  assert.equal(translateText("Демо-підписку перевірено: адресу не збережено й не надіслано.", "en"), "Demo signup checked: the address was not stored or sent.");
+test("learning links in the shared footer are localized", () => {
+  assert.equal(translateText("Навчальні проєкти", "en"), "Learning projects");
 });
 
 test("home, community, shipping, privacy, and build guides localize page copy", () => {
