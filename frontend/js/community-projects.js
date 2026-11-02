@@ -25,6 +25,10 @@ const date = (value) => formatDate(value, {
   day: "2-digit", month: "long", year: "numeric",
 });
 
+const dateMarkup = (value) => value && Number.isFinite(new Date(value).getTime())
+  ? `<time datetime="${safe(new Date(value).toISOString())}">${date(value)}</time>`
+  : '<span>Дату не вказано</span>';
+
 export async function initializeCommunityProjects() {
   const root = document.querySelector("[data-community-projects]");
   if (!root) return;
@@ -81,6 +85,7 @@ export async function initializeCommunityProjects() {
     ? new URLSearchParams(location.search).get("id") || ""
     : null;
   let loading = false;
+  let loadedProjects = [];
   async function render({ append = false } = {}) {
     if (loading) return;
     loading = true;
@@ -91,10 +96,15 @@ export async function initializeCommunityProjects() {
         : await getCommunityProjects({ append });
       const projects = result.projects;
       if (!isDetailPage) {
-        const questions = collectCommunityQuestions(projects);
+        loadedProjects = append ? [...loadedProjects, ...projects] : projects;
+        const questions = collectCommunityQuestions(loadedProjects);
         if (questionsRoot) questionsRoot.innerHTML = questions.length
-          ? `<div class="community-question-feed">${questions.map((question) => `<article class="community-question-card"><p class="community-question-state ${question.answer ? "is-answered" : ""}">${question.answer ? "Є відповідь" : "Очікує відповіді"}</p><h2>${safe(question.projectTitle)}</h2><p>${safe(question.text)}</p><p class="community-question-byline">${safe(question.userName)} · <time datetime="${safe(question.date)}">${date(question.date)}</time></p><a href="community-project.html?id=${encodeURIComponent(question.projectId)}">Перейти до обговорення →</a></article>`).join("")}</div>`
-          : '<div class="project-empty"><h2>Питань поки немає</h2><p>Відкрий збірку та запитай про схему чи код.</p></div>';
+          ? `<div class="community-question-feed">${questions.map((question) => `<article class="community-question-card"><p class="community-question-state ${question.answer ? "is-answered" : ""}">${question.answer ? "Є відповідь" : "Очікує відповіді"}</p><h2>${safe(question.projectTitle)}</h2><p>${safe(question.text)}</p><p class="community-question-byline">${safe(question.userName)} · ${dateMarkup(question.date)}</p><a href="community-project.html?id=${encodeURIComponent(question.projectId)}">Перейти до обговорення →</a></article>`).join("")}</div>`
+          : '<div class="project-empty"><h2>У завантажених проєктах питань поки немає</h2><p>Відкрий збірку та запитай про схему чи код.</p></div>';
+      }
+      if (!isDetailPage && questionsRoot) {
+        questionsRoot.insertAdjacentHTML("afterbegin", '<p class="muted">Нещодавні обговорення із завантажених проєктів: до 30 питань на проєкт.</p>');
+        if (result.hasMore) questionsRoot.insertAdjacentHTML("beforeend", '<button class="button button-quiet" type="button" data-community-more>Завантажити ще проєкти</button>');
       }
       if (isDetailPage && projects[0]) {
         document.title = `${projects[0].title} — Проєкти спільноти — NEXLAB`;
@@ -108,15 +118,15 @@ export async function initializeCommunityProjects() {
         return `
         <article class="community-project-card" data-community-card="${safe(project.id)}">
           <a class="community-project-photo" href="${safe(project.photoUrl)}" target="_blank" rel="noopener noreferrer"><img src="${safe(project.photoUrl)}" alt="Фото проєкту: ${safe(project.title)}" loading="lazy" decoding="async" referrerpolicy="no-referrer"></a>
-          <div class="community-project-copy"><div class="community-project-meta"><span>${safe(project.userName)}</span><time datetime="${safe(project.date)}">${date(project.date)}</time></div>
+          <div class="community-project-copy"><div class="community-project-meta"><span>${safe(project.userName)}</span>${dateMarkup(project.date)}</div>
             <h2>${isDetailPage ? safe(project.title) : `<a href="community-project.html?id=${encodeURIComponent(project.id)}">${safe(project.title)}</a>`}</h2><p>${safe(project.description)}</p>
             <div class="community-project-links">${project.schematicUrl ? `<a href="${safe(project.schematicUrl)}" target="_blank" rel="noopener noreferrer">Відкрити схему ↗</a>` : ""}<a href="${safe(project.codeUrl)}" target="_blank" rel="noopener noreferrer">Переглянути код ↗</a></div>
             <section class="community-comments" aria-label="Оцінки та коментарі"><h3>Відгуки <span>${project.commentCountApproximate ? `≈${project.commentCount}${project.commentCount >= 30 ? "+" : ""}` : project.commentCount ?? project.comments.length}</span>${project.rating ? `<small> · ${project.ratingApproximate ? "≈ " : ""}★ ${project.rating.toFixed(1)} / 5</small>` : ""}</h3>
-              ${project.comments.length ? `<ul>${project.comments.map((comment) => `<li><div><strong>${safe(comment.userName)}</strong><span aria-label="Оцінка ${comment.rating} з 5">${"★".repeat(comment.rating)}${"☆".repeat(5 - comment.rating)}</span></div><p>${safe(comment.text)}</p><time datetime="${safe(comment.date)}">${date(comment.date)}</time></li>`).join("")}</ul>` : '<p class="community-no-comments">Ще немає оцінок. Стань першим, хто поділиться враженням.</p>'}
+              ${project.comments.length ? `<ul>${project.comments.map((comment) => `<li><div><strong>${safe(comment.userName)}</strong><span aria-label="Оцінка ${comment.rating} з 5">${"★".repeat(comment.rating)}${"☆".repeat(5 - comment.rating)}</span></div><p>${safe(comment.text)}</p>${dateMarkup(comment.date)}</li>`).join("")}</ul>` : '<p class="community-no-comments">Ще немає оцінок. Стань першим, хто поділиться враженням.</p>'}
               ${hasRated ? '<p class="community-no-comments" role="status">Ти вже оцінив цей проєкт.</p>' : `<form class="community-comment-form" data-community-comment-form="${safe(project.id)}"><label>Твоя оцінка<select name="rating" required><option value="5">★★★★★ · 5</option><option value="4">★★★★☆ · 4</option><option value="3">★★★☆☆ · 3</option><option value="2">★★☆☆☆ · 2</option><option value="1">★☆☆☆☆ · 1</option></select></label><label>Коментар<textarea name="text" rows="2" maxlength="1000" required placeholder="Що сподобалось або що варто врахувати?"></textarea></label><button class="button button-quiet" type="submit">Залишити відгук</button><p role="status" data-comment-status></p></form>`}
             </section>
             <section class="community-questions" aria-label="Питання та відповіді"><h3>Питання та відповіді <span>${project.questionCountApproximate ? `≈${project.questionCount}${project.questionCount >= 30 ? "+" : ""}` : project.questionCount ?? (project.questions || []).length}</span></h3>
-              ${(project.questions || []).length ? `<ul>${project.questions.map((question) => `<li><div><strong>${safe(question.userName)}</strong><time datetime="${safe(question.date)}">${date(question.date)}</time></div><p class="community-question-text">${safe(question.text)}</p>${question.answer ? `<div class="community-answer"><strong>Відповідь · ${safe(question.answeredBy || project.userName)}</strong><p>${safe(question.answer)}</p>${question.answeredAt ? `<time datetime="${safe(question.answeredAt)}">${date(question.answeredAt)}</time>` : ""}</div>` : `<p class="community-no-answer">Очікує відповіді автора збірки.</p>`}${canAnswer ? `<form class="community-answer-form" data-community-answer-form="${safe(project.id)}" data-question-id="${safe(question.id)}"><label>${question.answer ? "Змінити відповідь" : "Твоя відповідь"}<textarea name="answer" rows="2" maxlength="1000" required>${safe(question.answer || "")}</textarea></label><button class="button button-quiet" type="submit">${question.answer ? "Оновити відповідь" : "Відповісти"}</button><p role="status" data-question-status></p></form>` : ""}</li>`).join("")}</ul>` : '<p class="community-no-comments">Питань поки немає.</p>'}
+              ${(project.questions || []).length ? `<ul>${project.questions.map((question) => `<li><div><strong>${safe(question.userName)}</strong>${dateMarkup(question.date)}</div><p class="community-question-text">${safe(question.text)}</p>${question.answer ? `<div class="community-answer"><strong>Відповідь · ${safe(question.answeredBy || project.userName)}</strong><p>${safe(question.answer)}</p>${question.answeredAt ? `${dateMarkup(question.answeredAt)}` : ""}</div>` : `<p class="community-no-answer">Очікує відповіді автора збірки.</p>`}${canAnswer ? `<form class="community-answer-form" data-community-answer-form="${safe(project.id)}" data-question-id="${safe(question.id)}"><label>${question.answer ? "Змінити відповідь" : "Твоя відповідь"}<textarea name="answer" rows="2" maxlength="1000" required>${safe(question.answer || "")}</textarea></label><button class="button button-quiet" type="submit">${question.answer ? "Оновити відповідь" : "Відповісти"}</button><p role="status" data-question-status></p></form>` : ""}</li>`).join("")}</ul>` : '<p class="community-no-comments">Питань поки немає.</p>'}
               <form class="community-question-form" data-community-question-form="${safe(project.id)}"><label>Поставити запитання<textarea name="text" rows="2" maxlength="1000" required placeholder="Запитай про схему, вибір деталей або налаштування"></textarea></label><button class="button button-quiet" type="submit">Надіслати запитання</button><p role="status" data-question-status></p></form>
             </section>
           </div>
@@ -133,6 +143,12 @@ export async function initializeCommunityProjects() {
     } catch (error) {
       const missingProject = isDetailPage && error.status === 404;
       const failure = `<div class="project-empty" role="alert" data-community-load-error><h2>${missingProject ? "Проєкт не знайдено" : "Не вдалося завантажити проєкти"}</h2><p>${missingProject ? "Збірку видалено або посилання застаріло." : error.status === 401 || error.message === "UNAUTHENTICATED" ? "Увійди до акаунта й повтори спробу." : "Перевір з’єднання та спробуй ще раз."}</p>${missingProject ? '<a class="button button-quiet" href="community.html">До спільноти</a>' : `<button class="button button-quiet" type="button" data-community-retry${append ? ' data-community-retry-append' : ""}>Спробувати ще раз</button>`}</div>`;
+      if (!isDetailPage && questionsRoot) {
+        const questionFailure = failure.replace("Не вдалося завантажити проєкти", "Не вдалося завантажити питання");
+        questionsRoot.querySelectorAll("[data-community-load-error]").forEach((item) => item.remove());
+        if (append) questionsRoot.insertAdjacentHTML("beforeend", questionFailure);
+        else questionsRoot.innerHTML = questionFailure;
+      }
       if (append) grid.insertAdjacentHTML("beforeend", failure);
       else grid.innerHTML = failure;
     } finally {

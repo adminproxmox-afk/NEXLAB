@@ -261,3 +261,14 @@ test("restock subscription and availability feedback is localized", () => {
   assert.equal(translateText("Повідомлення на пристрої", "en"), "Device notifications");
   assert.equal(translateText("Сповіщення працюватимуть, поки сайт відкрито в браузері.", "en"), "Notifications work while the site is open in your browser.");
 });
+test("question scope, date fallback, and load errors are localized", () => {
+  for (const [uk, en] of [
+    ["Дату не вказано", "Date unavailable"],
+    ["Не вдалося завантажити питання", "Could not load questions"],
+    ["Нещодавні обговорення із завантажених проєктів: до 30 питань на проєкт.", "Recent discussions from loaded projects: up to 30 questions per project."],
+    ["У завантажених проєктах питань поки немає", "No questions in the loaded projects yet"],
+  ]) {
+    assert.equal(translateText(uk, "uk"), uk);
+    assert.equal(translateText(uk, "en"), en);
+  }
+});
