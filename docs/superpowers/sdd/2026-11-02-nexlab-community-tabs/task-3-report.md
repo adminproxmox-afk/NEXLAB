@@ -18,3 +18,10 @@
 ## Notes
 
 - In the local demo state, the offers shown were the current product discount and validated coupon; no configured kit discount was returned. Kit price/terms are covered with catalog-backed fixtures.
+
+## Round 1 review fixes
+
+- Split complete-kit and coupon minimum-subtotal terms into independent text nodes and added exact English translations. Localization regression assertions cover `повний комплект деталей` → `complete kit of parts` and `мінімальна сума` → `minimum subtotal`.
+- Moved optional offer retrieval/rendering into non-awaited `loadOffers()`. Community tab listeners and form/project handlers can initialize while catalog and coupon requests remain pending.
+- Focused command: `node --test tests/i18n.test.js tests/site-links.test.js` — passed, 36 tests, 0 failures.
+- Full command: `npm test` — passed, 118 frontend tests and 13 Cloud Functions tests, 0 failures.

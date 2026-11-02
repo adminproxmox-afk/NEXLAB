@@ -59,7 +59,8 @@ export async function initializeCommunityProjects() {
   if (!isDetailPage && ideasRoot) {
     ideasRoot.innerHTML = `<div class="community-idea-grid">${communityIdeas.map((idea) => `<article class="community-idea-card"><p class="eyebrow">${safe(idea.difficulty)}</p><h2>${safe(idea.title)}</h2><p>${safe(idea.summary)}</p><p><strong>Компоненти:</strong> ${idea.components.map(safe).join(", ")}</p><a class="button button-quiet" href="${safe(idea.href)}">Відкрити проєкт</a></article>`).join("")}</div>`;
   }
-  if (!isDetailPage && offersRoot) {
+  async function loadOffers() {
+    if (isDetailPage || !offersRoot) return;
     try {
       const [products, projects] = await Promise.all([getProducts(), getProjects()]);
       let coupon;
@@ -68,13 +69,14 @@ export async function initializeCommunityProjects() {
       offersRoot.innerHTML = offers.length
         ? `<div class="community-offer-grid">${offers.map((offer) => {
           const product = offer.kind === "product" ? products.find((item) => item.id === offer.id.slice(8)) : null;
-          return `<article class="community-offer-card">${product ? productArt(product) : ""}<p class="eyebrow">${offer.kind === "product" ? "Знижка на товар" : offer.kind === "kit" ? "Знижка на повний комплект" : "Промокод"}</p><h3>${safe(offer.title)}</h3>${offer.kind === "product" || (Number.isFinite(offer.price) && Number.isFinite(offer.oldPrice)) ? `<p><del>${formatMoney(offer.oldPrice)}</del> <strong>${formatMoney(offer.price)}</strong></p>` : ""}${offer.kind === "kit" ? `<p>−${safe(offer.percent)}% · повний комплект деталей</p>` : ""}${offer.kind === "coupon" ? `<p>${safe(offer.code)} · −${safe(offer.percent)}% · мінімальна сума ${formatMoney(offer.minTotal)}</p>` : ""}<a class="button button-quiet" href="${safe(offer.href)}">${offer.kind === "coupon" ? "До акційного каталогу" : "Переглянути пропозицію"}</a></article>`;
+          return `<article class="community-offer-card">${product ? productArt(product) : ""}<p class="eyebrow">${offer.kind === "product" ? "Знижка на товар" : offer.kind === "kit" ? "Знижка на повний комплект" : "Промокод"}</p><h3>${safe(offer.title)}</h3>${offer.kind === "product" || (Number.isFinite(offer.price) && Number.isFinite(offer.oldPrice)) ? `<p><del>${formatMoney(offer.oldPrice)}</del> <strong>${formatMoney(offer.price)}</strong></p>` : ""}${offer.kind === "kit" ? `<p>−${safe(offer.percent)}% · <span>повний комплект деталей</span></p>` : ""}${offer.kind === "coupon" ? `<p>${safe(offer.code)} · −${safe(offer.percent)}% · <span>мінімальна сума</span> ${formatMoney(offer.minTotal)}</p>` : ""}<a class="button button-quiet" href="${safe(offer.href)}">${offer.kind === "coupon" ? "До акційного каталогу" : "Переглянути пропозицію"}</a></article>`;
         }).join("")}</div>`
         : '<div class="project-empty"><h2>Акційних пропозицій поки немає</h2><p><a href="catalog.html">Переглянути каталог</a></p></div>';
     } catch {
       offersRoot.innerHTML = '<div class="project-empty" role="status"><h2>Акційних пропозицій поки немає</h2><p><a href="catalog.html">Переглянути каталог</a></p></div>';
     }
   }
+  void loadOffers();
   const detailId = isDetailPage
     ? new URLSearchParams(location.search).get("id") || ""
     : null;

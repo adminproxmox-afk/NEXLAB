@@ -67,6 +67,16 @@ test("community offers validate only the known demo coupon through the promotion
   assert.match(source, /catalog\.html/);
 });
 
+test("optional offers load without blocking Community handlers or the first build request", async () => {
+  const source = await readFile(join(root, "js", "community-projects.js"), "utf8");
+  const offerCall = source.indexOf("void loadOffers();");
+  const submitHandler = source.indexOf('root.addEventListener("submit"');
+  const initialProjects = source.indexOf("await render();", submitHandler);
+  assert.ok(offerCall >= 0 && offerCall < submitHandler);
+  assert.ok(submitHandler >= 0 && initialProjects > submitHandler);
+  assert.doesNotMatch(source, /await\s+loadOffers\(\)/);
+});
+
 test("DIY project cards have a section heading in the page hierarchy", async () => {
   const html = await readFile(join(root, "projects.html"), "utf8");
   assert.match(html, /<h1\b/);

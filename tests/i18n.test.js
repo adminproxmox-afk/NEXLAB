@@ -208,6 +208,8 @@ test("commerce, community, offline, and learning states localize", () => {
   assert.equal(translateText("Промокод NEXLAB10", "en"), "Promo code NEXLAB10");
   assert.equal(translateText("Знижка на товар", "en"), "Product discount");
   assert.equal(translateText("Знижка на повний комплект", "en"), "Complete kit discount");
+  assert.equal(translateText("повний комплект деталей", "en"), "complete kit of parts");
+  assert.equal(translateText("мінімальна сума", "en"), "minimum subtotal");
   assert.equal(translateText("До акційного каталогу", "en"), "Go to sale catalog");
   assert.equal(translateText("Переглянути пропозицію", "en"), "View offer");
   assert.equal(translateText("Індикатор вологості ґрунту", "en"), "Soil moisture indicator");
