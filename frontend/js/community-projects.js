@@ -11,6 +11,7 @@ import { showAuthDialog } from "./authGate.js";
 import { toast } from "./notifications.js";
 import { formatDate } from "./i18n.js";
 import { prepareCommunityImage } from "../api/imageUpload.js";
+import { communityIdeas, collectCommunityQuestions } from "./community-feed.js";
 
 const safe = (value) => String(value ?? "").replace(/[&<>"']/g, (char) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char],
@@ -24,6 +25,30 @@ export async function initializeCommunityProjects() {
   if (!root) return;
   const grid = root.querySelector("[data-community-project-grid]");
   const form = root.querySelector("[data-community-project-form]");
+  const ideasRoot = root.querySelector("[data-community-ideas]");
+  const questionsRoot = root.querySelector("[data-community-questions]");
+  const tabs = [...root.querySelectorAll('[role="tab"]')];
+  const activateTab = (tab, { focus = false } = {}) => {
+    tabs.forEach((item) => {
+      const selected = item === tab;
+      item.setAttribute("aria-selected", String(selected));
+      item.tabIndex = selected ? 0 : -1;
+      root.querySelector(`#${item.getAttribute("aria-controls")}`).hidden = !selected;
+    });
+    if (focus) tab.focus();
+    if (tab.id) history.replaceState(null, "", `#${tab.id.replace("community-tab-", "")}`);
+  };
+  tabs.forEach((tab, index) => tab.addEventListener("click", () => activateTab(tab)));
+  root.querySelector('[role="tablist"]')?.addEventListener("keydown", (event) => {
+    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+    event.preventDefault();
+    const current = tabs.indexOf(document.activeElement);
+    const next = event.key === "Home" ? 0 : event.key === "End" ? tabs.length - 1
+      : (current + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
+    activateTab(tabs[next], { focus: true });
+  });
+  const initialTab = tabs.find((tab) => tab.id.endsWith(location.hash.slice(1))) || tabs[0];
+  if (initialTab) activateTab(initialTab);
   const isDetailPage = root.hasAttribute("data-community-project-detail");
   const detailId = isDetailPage
     ? new URLSearchParams(location.search).get("id") || ""
@@ -38,6 +63,13 @@ export async function initializeCommunityProjects() {
         ? { projects: [await getCommunityProjectById(detailId)], hasMore: false }
         : await getCommunityProjects({ append });
       const projects = result.projects;
+      if (!isDetailPage) {
+        if (ideasRoot) ideasRoot.innerHTML = `<div class="community-idea-grid">${communityIdeas.map((idea) => `<article class="community-idea-card"><p class="eyebrow">${safe(idea.difficulty)}</p><h2>${safe(idea.title)}</h2><p>${safe(idea.summary)}</p><p><strong>Компоненти:</strong> ${idea.components.map(safe).join(", ")}</p><a class="button button-quiet" href="${safe(idea.href)}">Відкрити проєкт</a></article>`).join("")}</div>`;
+        const questions = collectCommunityQuestions(projects);
+        if (questionsRoot) questionsRoot.innerHTML = questions.length
+          ? `<div class="community-question-feed">${questions.map((question) => `<article class="community-question-card"><p class="community-question-state ${question.answer ? "is-answered" : ""}">${question.answer ? "Є відповідь" : "Очікує відповіді"}</p><h2>${safe(question.projectTitle)}</h2><p>${safe(question.text)}</p><p class="community-question-byline">${safe(question.userName)} · <time datetime="${safe(question.date)}">${date(question.date)}</time></p><a href="community-project.html?id=${encodeURIComponent(question.projectId)}">Перейти до обговорення →</a></article>`).join("")}</div>`
+          : '<div class="project-empty"><h2>Питань поки немає</h2><p>Відкрий збірку та запитай про схему чи код.</p></div>';
+      }
       if (isDetailPage && projects[0]) {
         document.title = `${projects[0].title} — Проєкти спільноти — NEXLAB`;
         const description = document.querySelector('meta[name="description"]');

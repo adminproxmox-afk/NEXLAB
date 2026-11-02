@@ -37,6 +37,18 @@ test("HTML pages do not link to missing local pages or assets", async () => {
   assert.deepEqual(broken, []);
 });
 
+test("community page has three accessible tabs connected to existing panels", async () => {
+  const html = await readFile(join(root, "community.html"), "utf8");
+  const tabs = [...html.matchAll(/<button\b(?=[^>]*role="tab")([^>]*)>/g)];
+  assert.equal(tabs.length, 3);
+  for (const [, attributes] of tabs) {
+    const controls = attributes.match(/aria-controls="([^"]+)"/)?.[1];
+    assert.ok(controls, "each tab should name its panel");
+    assert.match(html, new RegExp(`<[^>]+\\bid="${controls}"[^>]*role="tabpanel"`));
+  }
+  assert.match(html, /role="tablist"/);
+});
+
 test("DIY project cards have a section heading in the page hierarchy", async () => {
   const html = await readFile(join(root, "projects.html"), "utf8");
   assert.match(html, /<h1\b/);
