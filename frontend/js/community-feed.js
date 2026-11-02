@@ -74,14 +74,16 @@ export function buildCommunityOffers({ products = [], projects = [], coupon } = 
         projectId: project.id,
       };
       const productById = new Map(products.map((product) => [product.id, product]));
-      const kitSubtotal = Array.isArray(project.components) && project.components.length
-        ? project.components.reduce((total, component) => {
-            const product = productById.get(component.productId);
-            return total + (product && Number.isFinite(product.price) && Number.isFinite(component.quantity)
-              ? product.price * component.quantity
-              : 0);
-          }, 0)
-        : project.estimatedPrice;
+      const components = project.components;
+      const canPriceKit = Array.isArray(components) && components.length > 0
+        && components.every((component) => {
+          const product = productById.get(component.productId);
+          return product && Number.isFinite(product.price)
+            && Number.isInteger(component.quantity) && component.quantity > 0;
+        });
+      const kitSubtotal = canPriceKit
+        ? components.reduce((total, component) => total + productById.get(component.productId).price * component.quantity, 0)
+        : (!Array.isArray(components) || components.length === 0 ? project.estimatedPrice : null);
       if (Number.isFinite(kitSubtotal) && kitSubtotal > 0) {
         offer.oldPrice = kitSubtotal;
         offer.price = kitSubtotal - Math.floor(kitSubtotal * project.bundleDiscountPercent / 100);

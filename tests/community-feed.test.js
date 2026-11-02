@@ -47,3 +47,20 @@ test("offers use discounted products, configured bundles, and supplied validated
 test("offers omit coupon and discounts when unavailable", () => {
   assert.deepEqual(buildCommunityOffers({ products: [{ id: "plain", name: "Plain", price: 50, oldPrice: null }], projects: [{ id: "kit", name: "Kit", bundleDiscountPercent: 0 }] }), []);
 });
+
+test("kit offer omits prices when any component is missing from the current catalog", () => {
+  const [offer] = buildCommunityOffers({
+    products: [{ id: "known", name: "Known", price: 80, oldPrice: null }],
+    projects: [{
+      id: "partial-kit",
+      name: "Partial kit",
+      bundleDiscountPercent: 10,
+      components: [{ productId: "known", quantity: 1 }, { productId: "missing", quantity: 1 }],
+    }],
+  });
+  assert.equal(offer.kind, "kit");
+  assert.equal(offer.percent, 10);
+  assert.equal(offer.projectId, "partial-kit");
+  assert.equal(Object.hasOwn(offer, "price"), false);
+  assert.equal(Object.hasOwn(offer, "oldPrice"), false);
+});
