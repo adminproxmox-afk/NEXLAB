@@ -37,6 +37,46 @@ test("HTML pages do not link to missing local pages or assets", async () => {
   assert.deepEqual(broken, []);
 });
 
+test("community page has three accessible tabs connected to existing panels", async () => {
+  const html = await readFile(join(root, "community.html"), "utf8");
+  const tabs = [...html.matchAll(/<button\b(?=[^>]*role="tab")([^>]*)>/g)];
+  assert.equal(tabs.length, 3);
+  for (const [, attributes] of tabs) {
+    const controls = attributes.match(/aria-controls="([^"]+)"/)?.[1];
+    assert.ok(controls, "each tab should name its panel");
+    assert.match(html, new RegExp(`<[^>]+\\bid="${controls}"[^>]*role="tabpanel"`));
+  }
+  assert.match(html, /role="tablist"/);
+});
+
+test("curated community ideas render before the asynchronous project request", async () => {
+  const source = await readFile(join(root, "js", "community-projects.js"), "utf8");
+  const ideaRender = source.indexOf("ideasRoot.innerHTML =");
+  const projectRender = source.indexOf("async function render(");
+  assert.ok(ideaRender >= 0 && ideaRender < projectRender);
+});
+
+test("community offers validate only the known demo coupon through the promotion service", async () => {
+  const [source, feed] = await Promise.all([
+    readFile(join(root, "js", "community-projects.js"), "utf8"),
+    readFile(join(root, "js", "community-feed.js"), "utf8"),
+  ]);
+  assert.match(source, /getCoupon\("NEXLAB10",\s*1000\)/);
+  assert.match(source, /catch\s*\{\s*coupon\s*=\s*undefined/);
+  assert.match(feed, /product\.html\?id=/);
+  assert.match(source, /catalog\.html/);
+});
+
+test("optional offers load without blocking Community handlers or the first build request", async () => {
+  const source = await readFile(join(root, "js", "community-projects.js"), "utf8");
+  const offerCall = source.indexOf("void loadOffers();");
+  const submitHandler = source.indexOf('root.addEventListener("submit"');
+  const initialProjects = source.indexOf("await render();", submitHandler);
+  assert.ok(offerCall >= 0 && offerCall < submitHandler);
+  assert.ok(submitHandler >= 0 && initialProjects > submitHandler);
+  assert.doesNotMatch(source, /await\s+loadOffers\(\)/);
+});
+
 test("DIY project cards have a section heading in the page hierarchy", async () => {
   const html = await readFile(join(root, "projects.html"), "utf8");
   assert.match(html, /<h1\b/);

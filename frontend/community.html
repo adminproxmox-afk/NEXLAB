@@ -28,7 +28,15 @@
     <main class="wrap page-main community-page" data-community-projects>
       <div class="breadcrumbs"><a href="index.html">Головна</a><span>/</span><span>Проєкти спільноти</span></div>
       <header class="projects-intro"><div><p class="eyebrow">NEXLAB / Спільнота</p><h1>Ідеї, які <span>вже працюють.</span></h1><p>Ділися власними електронними збірками: додай фото, короткий опис, схему та код. Постав оцінку й допоможи іншим зібрати свій проєкт.</p></div></header>
-      <section class="community-submit-section" aria-labelledby="community-submit-title">
+      <div class="community-tabs" data-community-tabs>
+        <div class="community-tablist" role="tablist" aria-label="Розділи спільноти">
+          <button id="community-tab-ideas" type="button" role="tab" aria-selected="true" aria-controls="community-panel-ideas" tabindex="0">Ідеї</button>
+          <button id="community-tab-builds" type="button" role="tab" aria-selected="false" aria-controls="community-panel-builds" tabindex="-1">Збірки</button>
+          <button id="community-tab-questions" type="button" role="tab" aria-selected="false" aria-controls="community-panel-questions" tabindex="-1">Питання</button>
+        </div>
+        <section id="community-panel-ideas" class="community-tabpanel" role="tabpanel" aria-labelledby="community-tab-ideas" tabindex="0" data-community-ideas><p role="status">Завантажуємо ідеї…</p></section>
+        <section id="community-panel-builds" class="community-tabpanel" role="tabpanel" aria-labelledby="community-tab-builds" tabindex="0" data-community-builds hidden>
+        <section class="community-submit-section" aria-labelledby="community-submit-title">
         <details class="community-submit-details"><summary class="button button-primary" id="community-submit-title">＋ Опублікувати свою збірку</summary>
           <form class="profile-panel community-project-form" data-community-project-form>
             <label>Назва збірки<input name="title" maxlength="120" required></label>
@@ -41,8 +49,15 @@
             <button class="button button-primary" type="submit">Опублікувати</button><p role="status" data-community-form-status></p>
           </form>
         </details>
+        </section>
+        <section class="community-project-grid" data-community-project-grid aria-label="Проєкти учасників"><p role="status">Завантажуємо проєкти спільноти…</p></section>
+        </section>
+        <section id="community-panel-questions" class="community-tabpanel" role="tabpanel" aria-labelledby="community-tab-questions" tabindex="0" data-community-questions hidden><p role="status">Завантажуємо питання…</p></section>
+      </div>
+      <section class="community-offers" aria-labelledby="community-offers-title">
+        <h2 id="community-offers-title">Акційні пропозиції</h2>
+        <div data-community-offers><p role="status">Завантажуємо пропозиції…</p></div>
       </section>
-      <section class="community-project-grid" data-community-project-grid aria-label="Проєкти учасників"><p role="status">Завантажуємо проєкти спільноти…</p></section>
     </main>
     <div data-site-footer></div>
     <div class="toast-region" aria-live="polite" data-toast-region></div>

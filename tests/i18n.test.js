@@ -199,6 +199,22 @@ test("admin workspace labels and dynamic order details localize", () => {
 });
 
 test("commerce, community, offline, and learning states localize", () => {
+  assert.equal(translateText("Ідеї", "en"), "Ideas");
+  assert.equal(translateText("Збірки", "en"), "Builds");
+  assert.equal(translateText("Питання", "en"), "Questions");
+  assert.equal(translateText("Акційні пропозиції", "en"), "Special offers");
+  assert.equal(translateText("Очікує відповіді", "en"), "Awaiting a reply");
+  assert.equal(translateText("Питань поки немає", "en"), "No questions yet");
+  assert.equal(translateText("Промокод NEXLAB10", "en"), "Promo code NEXLAB10");
+  assert.equal(translateText("Знижка на товар", "en"), "Product discount");
+  assert.equal(translateText("Знижка на повний комплект", "en"), "Complete kit discount");
+  assert.equal(translateText("повний комплект деталей", "en"), "complete kit of parts");
+  assert.equal(translateText("мінімальна сума", "en"), "minimum subtotal");
+  assert.equal(translateText("До акційного каталогу", "en"), "Go to sale catalog");
+  assert.equal(translateText("Переглянути пропозицію", "en"), "View offer");
+  assert.equal(translateText("Індикатор вологості ґрунту", "en"), "Soil moisture indicator");
+  assert.equal(translateText("Світло з датчиком руху", "en"), "Motion-activated light");
+  assert.equal(translateText("Екран кімнатного клімату", "en"), "Room climate display");
   assert.equal(translateText("Фото, схеми, код і відгуки до DIY-збірок учасників NEXLAB.", "en"), "Photos, schematics, code, and reviews for NEXLAB community DIY builds.");
   assert.equal(translateText("Купон можна застосувати під час оформлення. Доставка оплачується окремо за тарифом перевізника.", "en"), "Apply coupons at checkout. Shipping is charged separately at the carrier's rate.");
   assert.equal(translateText("Ще немає оцінок. Стань першим, хто поділиться враженням.", "en"), "No ratings yet. Be the first to share your thoughts.");
@@ -244,4 +260,15 @@ test("restock subscription and availability feedback is localized", () => {
   assert.equal(translateText("Повідомимо в цьому акаунті, коли товар з’явиться.", "en"), "We’ll notify you in this account when the item is back.");
   assert.equal(translateText("Повідомлення на пристрої", "en"), "Device notifications");
   assert.equal(translateText("Сповіщення працюватимуть, поки сайт відкрито в браузері.", "en"), "Notifications work while the site is open in your browser.");
+});
+test("question scope, date fallback, and load errors are localized", () => {
+  for (const [uk, en] of [
+    ["Дату не вказано", "Date unavailable"],
+    ["Не вдалося завантажити питання", "Could not load questions"],
+    ["Нещодавні обговорення із завантажених проєктів: до 30 питань на проєкт.", "Recent discussions from loaded projects: up to 30 questions per project."],
+    ["У завантажених проєктах питань поки немає", "No questions in the loaded projects yet"],
+  ]) {
+    assert.equal(translateText(uk, "uk"), uk);
+    assert.equal(translateText(uk, "en"), en);
+  }
 });
