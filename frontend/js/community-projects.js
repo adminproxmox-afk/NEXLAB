@@ -25,6 +25,7 @@ export async function initializeCommunityProjects() {
   if (!root) return;
   const grid = root.querySelector("[data-community-project-grid]");
   const form = root.querySelector("[data-community-project-form]");
+  const isDetailPage = root.hasAttribute("data-community-project-detail");
   const ideasRoot = root.querySelector("[data-community-ideas]");
   const questionsRoot = root.querySelector("[data-community-questions]");
   const tabs = [...root.querySelectorAll('[role="tab"]')];
@@ -49,7 +50,9 @@ export async function initializeCommunityProjects() {
   });
   const initialTab = tabs.find((tab) => tab.id.endsWith(location.hash.slice(1))) || tabs[0];
   if (initialTab) activateTab(initialTab);
-  const isDetailPage = root.hasAttribute("data-community-project-detail");
+  if (!isDetailPage && ideasRoot) {
+    ideasRoot.innerHTML = `<div class="community-idea-grid">${communityIdeas.map((idea) => `<article class="community-idea-card"><p class="eyebrow">${safe(idea.difficulty)}</p><h2>${safe(idea.title)}</h2><p>${safe(idea.summary)}</p><p><strong>Компоненти:</strong> ${idea.components.map(safe).join(", ")}</p><a class="button button-quiet" href="${safe(idea.href)}">Відкрити проєкт</a></article>`).join("")}</div>`;
+  }
   const detailId = isDetailPage
     ? new URLSearchParams(location.search).get("id") || ""
     : null;
@@ -64,7 +67,6 @@ export async function initializeCommunityProjects() {
         : await getCommunityProjects({ append });
       const projects = result.projects;
       if (!isDetailPage) {
-        if (ideasRoot) ideasRoot.innerHTML = `<div class="community-idea-grid">${communityIdeas.map((idea) => `<article class="community-idea-card"><p class="eyebrow">${safe(idea.difficulty)}</p><h2>${safe(idea.title)}</h2><p>${safe(idea.summary)}</p><p><strong>Компоненти:</strong> ${idea.components.map(safe).join(", ")}</p><a class="button button-quiet" href="${safe(idea.href)}">Відкрити проєкт</a></article>`).join("")}</div>`;
         const questions = collectCommunityQuestions(projects);
         if (questionsRoot) questionsRoot.innerHTML = questions.length
           ? `<div class="community-question-feed">${questions.map((question) => `<article class="community-question-card"><p class="community-question-state ${question.answer ? "is-answered" : ""}">${question.answer ? "Є відповідь" : "Очікує відповіді"}</p><h2>${safe(question.projectTitle)}</h2><p>${safe(question.text)}</p><p class="community-question-byline">${safe(question.userName)} · <time datetime="${safe(question.date)}">${date(question.date)}</time></p><a href="community-project.html?id=${encodeURIComponent(question.projectId)}">Перейти до обговорення →</a></article>`).join("")}</div>`

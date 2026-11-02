@@ -49,6 +49,13 @@ test("community page has three accessible tabs connected to existing panels", as
   assert.match(html, /role="tablist"/);
 });
 
+test("curated community ideas render before the asynchronous project request", async () => {
+  const source = await readFile(join(root, "js", "community-projects.js"), "utf8");
+  const ideaRender = source.indexOf("ideasRoot.innerHTML =");
+  const projectRender = source.indexOf("async function render(");
+  assert.ok(ideaRender >= 0 && ideaRender < projectRender);
+});
+
 test("DIY project cards have a section heading in the page hierarchy", async () => {
   const html = await readFile(join(root, "projects.html"), "utf8");
   assert.match(html, /<h1\b/);

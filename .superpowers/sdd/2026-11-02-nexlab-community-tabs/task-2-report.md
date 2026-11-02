@@ -14,3 +14,9 @@
 
 ## Review notes
 Questions summarize the projects returned by the existing current page request; the service's per-project question cap remains as specified. The question feed refreshes whenever existing project rendering refreshes or pagination loads another page. No offer or localization code was changed.
+
+## Round 1 fix — static Ideas availability
+- Moved curated Ideas rendering into initialization before the asynchronous project `render()` request. The default Ideas tab now shows its local content even when project loading fails.
+- Added a focused structural regression assertion that verifies the Ideas render precedes the async project-render function.
+- Verification command: `node --test tests/site-links.test.js tests/community-feed.test.js`
+- Exact result: 24 tests; 24 passed, 0 failed, 0 cancelled, 0 skipped.
