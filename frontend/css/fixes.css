@@ -1235,9 +1235,14 @@
 .community-tabpanel:focus-visible { outline: 3px solid var(--accent, #29a184); outline-offset: 3px; }
 .community-tabpanel[hidden] { display: none; }
 .community-idea-grid,
-.community-question-feed { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px; }
+.community-question-feed,
+.community-offer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px; }
 .community-idea-card,
 .community-question-card { min-width: 0; padding: 20px; border: 1px solid var(--border, #33413a); border-radius: 12px; background: var(--card, #171c19); overflow-wrap: anywhere; }
+.community-offers { margin-block: 36px; }
+.community-offer-card { min-width: 0; padding: 20px; border: 1px solid var(--border, #33413a); border-radius: 12px; background: var(--card, #171c19); overflow-wrap: anywhere; }
+.community-offer-card h3 { margin: 0 0 10px; }
+.community-offer-card p { color: var(--muted, #aeb9af); }
 .community-idea-card h2,
 .community-question-card h2 { margin: 0 0 10px; font-size: 20px; }
 .community-question-card > a { color: var(--accent, #29a184); }

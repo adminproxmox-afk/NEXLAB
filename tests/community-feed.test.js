@@ -64,3 +64,21 @@ test("kit offer omits prices when any component is missing from the current cata
   assert.equal(Object.hasOwn(offer, "price"), false);
   assert.equal(Object.hasOwn(offer, "oldPrice"), false);
 });
+
+test("coupon cards only accept an active, valid response for the known demo code", () => {
+  const base = { products: [], projects: [] };
+  assert.deepEqual(buildCommunityOffers({ ...base, coupon: { code: "NEXLAB10", active: false, percent: 10, minTotal: 100 } }), []);
+  assert.deepEqual(buildCommunityOffers({ ...base, coupon: { code: "OTHER", active: true, percent: 10, minTotal: 100 } }), []);
+  assert.deepEqual(buildCommunityOffers({ ...base, coupon: { code: "NEXLAB10", active: true, percent: 0, minTotal: 100 } }), []);
+  assert.deepEqual(buildCommunityOffers({ ...base, coupon: { code: "NEXLAB10", active: true, percent: 10, minTotal: -1 } }), []);
+});
+
+test("kit offers have a valid detail link and derive full kit prices from catalog data", () => {
+  const [offer] = buildCommunityOffers({
+    products: [{ id: "a", price: 100 }, { id: "b", price: 50 }],
+    projects: [{ id: "kit-demo", name: "Kit", bundleDiscountPercent: 10, components: [{ productId: "a", quantity: 1 }, { productId: "b", quantity: 2 }] }],
+  });
+  assert.equal(offer.href, "project.html?id=kit-demo");
+  assert.equal(offer.oldPrice, 200);
+  assert.equal(offer.price, 180);
+});

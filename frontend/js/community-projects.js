@@ -11,7 +11,12 @@ import { showAuthDialog } from "./authGate.js";
 import { toast } from "./notifications.js";
 import { formatDate } from "./i18n.js";
 import { prepareCommunityImage } from "../api/imageUpload.js";
-import { communityIdeas, collectCommunityQuestions } from "./community-feed.js";
+import { communityIdeas, collectCommunityQuestions, buildCommunityOffers } from "./community-feed.js";
+import { getProducts } from "../api/productService.js";
+import { getProjects } from "../api/projectService.js";
+import { getCoupon } from "../api/promotionService.js";
+import { productArt } from "./products.js";
+import { formatMoney } from "./i18n.js";
 
 const safe = (value) => String(value ?? "").replace(/[&<>"']/g, (char) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char],
@@ -28,6 +33,7 @@ export async function initializeCommunityProjects() {
   const isDetailPage = root.hasAttribute("data-community-project-detail");
   const ideasRoot = root.querySelector("[data-community-ideas]");
   const questionsRoot = root.querySelector("[data-community-questions]");
+  const offersRoot = root.querySelector("[data-community-offers]");
   const tabs = [...root.querySelectorAll('[role="tab"]')];
   const activateTab = (tab, { focus = false } = {}) => {
     tabs.forEach((item) => {
@@ -52,6 +58,22 @@ export async function initializeCommunityProjects() {
   if (initialTab) activateTab(initialTab);
   if (!isDetailPage && ideasRoot) {
     ideasRoot.innerHTML = `<div class="community-idea-grid">${communityIdeas.map((idea) => `<article class="community-idea-card"><p class="eyebrow">${safe(idea.difficulty)}</p><h2>${safe(idea.title)}</h2><p>${safe(idea.summary)}</p><p><strong>Компоненти:</strong> ${idea.components.map(safe).join(", ")}</p><a class="button button-quiet" href="${safe(idea.href)}">Відкрити проєкт</a></article>`).join("")}</div>`;
+  }
+  if (!isDetailPage && offersRoot) {
+    try {
+      const [products, projects] = await Promise.all([getProducts(), getProjects()]);
+      let coupon;
+      try { coupon = await getCoupon("NEXLAB10", 1000); } catch { coupon = undefined; }
+      const offers = buildCommunityOffers({ products, projects, coupon });
+      offersRoot.innerHTML = offers.length
+        ? `<div class="community-offer-grid">${offers.map((offer) => {
+          const product = offer.kind === "product" ? products.find((item) => item.id === offer.id.slice(8)) : null;
+          return `<article class="community-offer-card">${product ? productArt(product) : ""}<p class="eyebrow">${offer.kind === "product" ? "Знижка на товар" : offer.kind === "kit" ? "Знижка на повний комплект" : "Промокод"}</p><h3>${safe(offer.title)}</h3>${offer.kind === "product" || (Number.isFinite(offer.price) && Number.isFinite(offer.oldPrice)) ? `<p><del>${formatMoney(offer.oldPrice)}</del> <strong>${formatMoney(offer.price)}</strong></p>` : ""}${offer.kind === "kit" ? `<p>−${safe(offer.percent)}% · повний комплект деталей</p>` : ""}${offer.kind === "coupon" ? `<p>${safe(offer.code)} · −${safe(offer.percent)}% · мінімальна сума ${formatMoney(offer.minTotal)}</p>` : ""}<a class="button button-quiet" href="${safe(offer.href)}">${offer.kind === "coupon" ? "До акційного каталогу" : "Переглянути пропозицію"}</a></article>`;
+        }).join("")}</div>`
+        : '<div class="project-empty"><h2>Акційних пропозицій поки немає</h2><p><a href="catalog.html">Переглянути каталог</a></p></div>';
+    } catch {
+      offersRoot.innerHTML = '<div class="project-empty" role="status"><h2>Акційних пропозицій поки немає</h2><p><a href="catalog.html">Переглянути каталог</a></p></div>';
+    }
   }
   const detailId = isDetailPage
     ? new URLSearchParams(location.search).get("id") || ""

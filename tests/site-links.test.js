@@ -56,6 +56,17 @@ test("curated community ideas render before the asynchronous project request", a
   assert.ok(ideaRender >= 0 && ideaRender < projectRender);
 });
 
+test("community offers validate only the known demo coupon through the promotion service", async () => {
+  const [source, feed] = await Promise.all([
+    readFile(join(root, "js", "community-projects.js"), "utf8"),
+    readFile(join(root, "js", "community-feed.js"), "utf8"),
+  ]);
+  assert.match(source, /getCoupon\("NEXLAB10",\s*1000\)/);
+  assert.match(source, /catch\s*\{\s*coupon\s*=\s*undefined/);
+  assert.match(feed, /product\.html\?id=/);
+  assert.match(source, /catalog\.html/);
+});
+
 test("DIY project cards have a section heading in the page hierarchy", async () => {
   const html = await readFile(join(root, "projects.html"), "utf8");
   assert.match(html, /<h1\b/);
